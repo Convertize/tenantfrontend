@@ -1,0 +1,195 @@
+{% load shop_tags user_agents compress l10n %}
+{% compress js inline %}
+{% localize off %}
+	<script type="text/javascript">
+		var dataLayer = dataLayer || [];
+	</script>
+
+	{% if request.cart.customer %}
+		<script type="text/javascript">
+		dataLayer.push({
+			clientEmail: "{{ request.cart.customer.email }}",
+			{% if request.session.customer == request.cart.customer %}
+			clientName: "{{ request.cart.customer.name }}",
+			{% endif %}
+			clientID: "{{ request.cart.customer.uuid }}"
+		});
+		</script>
+		{% elif order.customer %}
+		<script type="text/javascript">
+		dataLayer.push({
+			clientEmail: "{{ order.customer.email }}",
+			{% if request.session.customer == order.customer %}
+			clientName: "{{ order.customer.name }}",
+			{% endif %}
+			clientID: "{{ order.customer.uuid }}"
+		});
+		 </script>
+	{% endif %}
+
+	{% if products %}
+		<script type="text/javascript">
+			var lista = [];
+			{% for p in products|slice:"30" %}
+			lista.push({{ p.django_id }})
+			{% endfor %}
+			dataLayer.push({
+				productIdItems: lista
+			})
+		</script>
+	{% endif %}
+
+	{% if product %}
+	<script type="text/javascript">
+		dataLayer.push({
+			event: "viewProduct",
+			pageName: "product",
+			productUPC: "{{ product.upc }}",
+			productSKU: "{% if sku %}{{ sku.id }}{% else %}{{ product.get_sku_default.id }}{% endif %}",
+			productName: "{{ product.name|title }}",
+			productPrice: "{{ product.price|stringformat:'g'}}",
+			{% if product.category %}
+			productDepartment: "{{ product.category.get_root.title|title }}",
+			productCategory: "{{ product.category.parent.title|title }}",
+			productSubCategory: "{{ product.category.title|title }}",
+			{% endif %}
+			{% if product.brand %}productBrand: "{{ product.brand.title }}",{% endif %}
+					   
+			// Measure a view of product details. This example assumes the detail view occurs on pageload,
+			// and also tracks a standard pageview of the details page.
+			'ecommerce': {
+				'detail': {
+					'products': [{
+						'name': '{{ product.name|title }}',
+						'id': '{% if sku %}{{ sku.id }}{% else %}{{ product.get_sku_default.id }}{% endif %}',
+						{% if product.brand %}'brand': '{{ product.brand.title }}',{% endif %}
+						'category': '{{ product.category.parent.title|title }}',
+						'price': '{{ product.price}}',
+					}]
+				}
+			}
+		});
+	</script>
+
+	{% elif request.path == '/' %}
+		<script type="text/javascript">
+			dataLayer.push({
+				event: "viewHome",
+				pageName: "home"
+			});
+		</script>
+
+	{% elif object.django_ct == 'categories.category' %}
+		<script type="text/javascript">
+			dataLayer.push({
+				event: "viewCategory",
+				pageName: "category",
+				categoryId: "{{ object.id }}",
+				categoryName: "{{ object.name|title }}"
+			});
+		</script>
+
+	{% elif object.django_ct == 'products.brand' %}
+		<script type="text/javascript">
+			dataLayer.push({
+				event: "viewBrand",
+				pageName: "brand",
+				brandId: "{{ object.id }}",
+				brandName: "{{ object.name|title }}"
+			});
+		</script>
+
+	{% elif object.django_ct == 'products.collection' %}
+		<script type="text/javascript">
+			dataLayer.push({
+				event: "viewCollection",
+				pageName: "collection",
+				collectionId: "{{ object.id }}",
+				collectionName: "{{ object.name|title }}"
+			});
+		</script>
+
+	{% elif not '/checkout/' in request.path %}
+		<script type="text/javascript">
+			if($('body').attr('id') == 'category'){
+				dataLayer.push({
+					event: "search",
+					{% if query %}query: "{{ query }}",{% endif %}
+					pageName: "search"
+				});
+			};
+		</script>
+	{% endif %}
+
+	{% if '/checkout/sucesso/' in request.path %}
+		<script type="text/javascript">
+			if(!Cookies.get("orderADS-{{ order.id }}")){
+				dataLayer.push({
+					event: "checkoutSuccess",
+					transactionId: "{{ order.id }}",
+					orderTotal: "{{ order.total|stringformat:'g' }}"
+				});
+				Cookies.set("orderADS-{{ order.id }}", true, {expires: 1});
+			}
+		</script>
+
+		<script type="text/javascript">
+			dataLayer.push({
+				'ecommerce': {
+					'purchase': {
+						'actionField': {
+							'id': '{{ order.id }}',
+							'affiliation': 'Farma Ponte',
+							'revenue': '{{ order.total }}',
+							'shipping': '{{ order.shipping_total }}'
+						},
+						'products': [{% for item in order.items.all %}{
+							'name': '{{ item.sku }}',
+							'id': '{{ item.sku.id }}',
+							'price': '{{ item.unit_price }}',
+							{% if item.sku.product.brand %}'brand': '{{ item.sku.product.brand.title }}',{% endif %}
+							'category': '{{ item.sku.product.category.title }}',
+							'quantity': {{ item.quantity }}
+						}{% if not forloop.last %},{% endif %}{% endfor %}]
+					}
+				}
+			});
+		</script>
+	{% endif %}
+
+	{% if request.path == '/checkout/' %}
+	<script type="text/javascript">
+	  var dataLayer = dataLayer || [];
+		var CheckoutItems = [];
+		var CartItems = [];
+		for (index = 0; index < dataLayer.length; ++index){
+			if(dataLayer[index].ecommerce && dataLayer[index].ecommerce.checkout.products){
+				for (index2 = 0; index2 < dataLayer[index].ecommerce.checkout.products.length; ++index2){
+					CartItems.push(dataLayer[index].ecommerce.checkout.products[index2].id)
+					CheckoutItems.push({
+						id: dataLayer[index].ecommerce.checkout.products[index2].product_id,
+						skuId: dataLayer[index].ecommerce.checkout.products[index2].id,
+						quantity: dataLayer[index].ecommerce.checkout.products[index2].quantity,
+						price: dataLayer[index].ecommerce.checkout.products[index2].unit_price,
+						productName: dataLayer[index].ecommerce.checkout.products[index2].product_name,
+						productDepartment: dataLayer[index].ecommerce.checkout.products[index2].department,
+						productCategory: dataLayer[index].ecommerce.checkout.products[index2].department,
+						productSubCategory: dataLayer[index].ecommerce.checkout.products[index2].category,
+						productBrand: dataLayer[index].ecommerce.checkout.products[index2].brand ? dataLayer[index].ecommerce.checkout.products[index2].brand:""
+					});
+				}
+			}
+		};
+		dataLayer.push({
+			event: "checkout",
+			CartItems: CartItems,
+			CheckoutItems: CheckoutItems,
+			{% localize off %}
+			CartTotal: "{{ request.cart.total }}"
+			{% endlocalize %}
+		});
+	</script>
+	{% endif %}
+
+{% endlocalize %}
+{% endcompress %}

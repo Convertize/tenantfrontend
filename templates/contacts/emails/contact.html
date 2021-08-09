@@ -1,0 +1,9 @@
+CONTATO » SITE<br />
+<font face="Arial, Helvetica, sans-serif" color="#666666" size="2">
+    <b>Nome:</b>&nbsp;{{ contato.name }}<br /><br />
+    <b>Email:</b>&nbsp;{{ contato.email }}<br /><br />
+    <b>Telefone:</b>&nbsp;{{ contato.phone }}<br /><br />
+    <b>Assunto:</b>&nbsp;{{ contato.subject }}<br /><br />
+    <b>Mensagem:</b><br />
+    {{ contato.message|striptags }}
+</font>

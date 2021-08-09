@@ -1,0 +1,39 @@
+{% extends "shop/customers/central/base.html" %}{% load i18n fieldset_form %}
+
+{% block meta_title %}{{ title }} {{ block.super }}{% endblock %}
+
+{% block main %}
+                        <form action="" method="POST" class="edit-form">{% csrf_token %}
+                            {% if not form.fieldsets %}
+                                <h3 class="h4 mb-3">{% trans title %}</h3>
+                                {% if title|slugify == "alterar-e-mail" %}
+                                    <div class="required group">
+                                        <label><b>Seu atual e-mail é: </b></label>
+                                        <div class="group-input">
+                                            <div class="field">
+                                                {{ customer.email }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            {% draw_form form form.fieldsets %}
+                            <input class="btn btn-success btn-block mb-3" type="submit" value="{% trans 'Salvar alterações'|upper %}">
+                        </form>
+{% endblock %}
+
+{% block extra_footer %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".edit-form .title-box").addClass("h4 mb-3").removeClass("title-box float");
+            $(".edit-form .fieldset-form").addClass("mb-3").removeClass("fieldset-form float");
+            $(".edit-form .group").addClass("form-group").removeClass("group");
+            $(".edit-form label.required").addClass("font-weight-bold d-flex");
+            $(".edit-form .group-label label").addClass("d-flex");
+            $(".edit-form .help_text").addClass("form-text text-muted ml-auto mt-0").removeClass("help_text");
+            $(".edit-form .field").find("input,select,textarea").addClass("form-control");
+            $(".edit-form .field").find("input[type=checkbox], input[type=radio]").removeClass("form-control").closest(".form-group");
+        })
+    </script>
+{% endblock %}

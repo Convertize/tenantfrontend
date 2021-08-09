@@ -1,0 +1,112 @@
+{% load i18n l10n thumbnail shop_tags user_agents %}
+{% with p.has_stock as has_stock %}
+    {% get_data_json p.specifications as json_specifications %}
+    {% localize off %}
+        <div 
+            class="item-product{% if not has_stock %} not_stock{% endif %}" 
+            data-id="{{ p.id }}" 
+            data-sku="{{ p.get_sku_not_variation }}" 
+        >
+            <a href="{{ p.get_absolute_url }}" class="item-image">
+                {% if p.image %}
+                    <img data-src="{{ MEDIA_URL }}{{ p.image }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ p.name }}" title="{{ p.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" class="img-lazy" />
+                {% else %}
+                    <img alt="" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" />
+                {% endif %}
+                {% if p.descont_percentage %}
+                    <span class="descont"><span>{{ p.descont_percentage|floatformat }}%</span></span>
+                {% endif %}
+            </a>
+            <div class="desc">
+                <div>
+                    {% if p.get_seals %}
+                        <div class="seals position-relative">
+                            {% for seal in p.get_seals %}
+                                {% if "{" not in seal %}
+                                    {{ seal|safe }}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <h2 class="title">
+                        <a href="{{ p.get_absolute_url }}">
+                            {{ p.name }}
+                        </a>
+                    </h2>
+                    <div class="box-prices">
+                        {% if 'sim' in json_specifications.produto_controlado.value|lower and not p.has_stock %}
+                            <div class="clear pd10"></div>
+                            <p class="invalible">Venda não permitida</p>
+                        {% elif not has_stock %}
+                            <div class="clear pd10"></div>
+                            <p class="invalible">Avise-me</p>
+                        {% elif not p.available %}
+                            <div class="clear pd10"></div>
+                            <p class="invalible">Avise-me</p>
+                        {% elif p.price %}
+                            <div class="prices">
+                                {% if p.price < p.unit_price %}
+                                    <p class="unit-price">
+                                        {{ p.unit_price|currency }}
+                                    </p>
+                                {% endif %}
+                                <p class="sale-price" data-discount="{{ billet_discount|floatformat }}">
+                                    <strong>{{ p.price|get_price_boleto|currency }}</strong><small> no boleto</small>
+                                </p>
+                                <p class="card-installments">
+                                    <span class="parcel">ou <strong class="get_min_installments">{{ p.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ p.price|get_card_price|currency }}</strong> no cartão</span>
+                                </p>
+                            </div>
+                        {% else %}
+                            <p class="invalible">Produto Indisponível</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if has_stock and p.available %}
+                    <form method="POST" action="{{ p.get_absolute_url }}" class="product-form">
+                        <div style="display:none;">
+                            <input type="hidden" value="{{ p.product_id }}" name="product"/>
+                            <input type="hidden" value="{{ p.price }}" name="price"/>
+                        </div>
+                        {% regroup p.get_all_options|load_json by option_title as options %}
+                        {% if options %}
+                            <div class="variations">
+                                {% for option in options %}
+                                    <div class="required form-group"{% if option.list|length <= 1 %} style="display:none"{% endif %}>
+                                        <select name="option_{{ option.list.0.option_id }}" class="form-control">
+                                            <option value="">{{ option.grouper|title }}</option>
+                                            {% for value in option.list %}
+                                                <option 
+                                                    value="{{ value.option__value_id }}" 
+                                                    {% if not value.available %}disabled {% endif %}
+                                                    {% for o in p.get_options|load_json %}{% if o.value_id == value.option__value_id %}selected{% endif %}{% endfor %}
+                                                >
+                                                    {{ value.option__value }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="purchase">
+                            <label aria-label="Quantidade" class="m-0 mr-2">
+                                <input type="tel" value="1" name="quantity" />
+                            </label>
+                            {% if p.product_type == '3' %}
+                                <a href="{{ p.get_absolute_url }}" class="btn btn-checkout d-block" aria-label="Comprar">Comprar</a>
+                            {% else %}
+                                <button type="button" class="btn btn-checkout d-block" aria-label="Comprar">Comprar</button>
+                            {% endif %}
+                        </div>
+                    </form>
+
+                {% elif 'sim' in json_specifications.produto_controlado.value|lower and not p.has_stock %}
+                    <div class="purchase">
+                        <a href="{% url 'product:detail' p.slug %}" class="bt bt-checkout">Saiba mais</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endlocalize %}
+{% endwith %}

@@ -1,0 +1,65 @@
+{% extends "shop/base.html" %}{% load i18n %}
+
+{% block body_id %}profile{% endblock %}
+
+{% block content %}
+                <div class="top-content pt-5 pb-5">
+                    <div class="container">
+                        {% block top %}
+                            <h1>{% trans 'Painel de Controle' %}</h1>
+                            <h2 class="sub-title">{% trans 'Acesse seus dados cadastrais e pedidos' %}</h2>
+                        {% endblock %}
+                    </div>
+                </div>
+                <div class="container pt-4">
+                    {% include 'includes/messages.html' %}
+                    <div class="row">
+                        {% block sidebar %}
+                        <div class="col-12 col-md-3">
+                            <ul class="list-group mb-4">
+                                <li class="list-group-item p-0{% if '-pedidos' in request.path %} active{% endif %}">
+                                    <a href="{% url 'customers:my_orders' %}" class="d-block p-2">
+                                        {% trans 'Meus Pedidos' %}
+                                    </a>
+                                </li>
+                                <li class="list-group-item p-0{% if '-dados' in request.path %} active{% endif %}">
+                                    <a href="{% url 'customers:profile' %}" class="d-block p-2">
+                                        {% trans 'Dados cadastrais' %}
+                                    </a>
+                                </li>
+                                <li class="list-group-item p-0{% if '-enderecos' in request.path %} active{% endif %}">
+                                    <a href="{% url 'customers:my_addresses' %}" class="d-block p-2">
+                                        {% trans 'Endereços de Entrega' %}
+                                    </a>
+                                </li>
+                                <li class="list-group-item p-0{% if '-credito' in request.path %} active{% endif %}">
+                                    <a href="{% url 'customers:cards' %}" class="d-block p-2">
+                                        {% trans 'Meus Cartões de Crédito' %}
+                                    </a>
+                                </li>
+                                {% comment %}
+                                    <li class="list-group-item p-0">
+                                        <a href="{% url 'customers:my_wishlist' %}" class="d-block p-2">
+                                            {% trans 'Lista de Desejos' %}
+                                        </a>
+                                    </li>
+                                {% endcomment %}
+                                {% if request.session.customer.weddinglist_set.exists %}
+                                    {% for w in request.session.customer.wedding %}
+                                        <li class="list-group-item p-0">
+                                            <a href="{% url 'giftlist:panel' w.type_list.typegiftlist.slug w.id %}" class="d-block p-2">
+                                                {{ w.type_list.name }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                        {% endblock %}
+                        <div class="col-12 col-md-9">
+                            {% block main %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+{% endblock %}

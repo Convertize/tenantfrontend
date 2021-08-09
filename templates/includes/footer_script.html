@@ -1,0 +1,27 @@
+{% load admin_static compress cms_tags %}
+        {% compress js %}
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery-ui.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/popper.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/axios.min.js"></script>
+        {% endcompress %}
+        {% compress js %}
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/owl.carousel.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/lazyload.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/js.cookie.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.validate.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.countdown.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.toast.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.zoom.min.js"></script>
+        {% endcompress %}
+        {% compress js %}
+            <script type="text/javascript" src="{{ STATIC_URL }}js/authenticator.js" async></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/class/Class.js" async></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/class/BaseView.js" async></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/class/ProductView.js" async></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/class/SearchView.js" async></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/class/Nav.js" async></script>
+        {% endcompress %}
+		{% include 'includes/gtm.html' %}
+        {% if shop_settings.EXTRA_FOOTER %}{% render shop_settings.EXTRA_FOOTER|safe %}{% endif %}

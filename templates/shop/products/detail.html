@@ -1,0 +1,130 @@
+{% extends "shop/base.html" %}{% load i18n l10n shop_tags user_agents compress %}
+{% block body_id %}product{% endblock %}
+
+{% block extra_meta %}
+        <meta property="og:locale" content="pt_BR" />
+        <meta property="og:site_name" content="{{ settings_pote.SEO_TITLE }}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="{{ product.name }}" />
+        <meta property="og:url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}" />
+        <meta property="og:description" content="{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}" />
+        <meta property="og:image" content="http:{{ MEDIA_URL|cut:'https://' }}{{ product.image }}" />
+        <meta property="og:image:secure_url" content="https:{{ MEDIA_URL }}{{ product.image }}" />
+        <meta property="og:image:type" content="image/jpeg" />
+        {% localize off %}
+            <script type="text/javascript">
+                window.dataProduct = {
+                    "id": "{{ product.id }}",
+                    "skuId": "{{ product.get_sku_default.id }}",
+                    "salePrice": {{ product.price|default:0 }}
+                }
+            </script>
+        {% endlocalize %}
+{% endblock%}
+
+{% block meta_title %}{% if product.title and product.name != product.title %}{% trans product.title %}{% else %}{% trans product.name %} | {{ block.super }} {% endif %}{% endblock %}
+
+{% block meta_description %}{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}{% endblock %}
+{% block meta_keywords %}{% if product.keywords %}{{ product.keywords }}{% endif %}{% endblock %}
+{% block meta_robots %}{{ block.super }}<link rel="canonical" href="https://{{ request.get_host }}/{{ product.slug }}/p" />{% endblock %}
+
+{% block content %}
+{% get_data_json product.specifications as json_specifications %}
+            {% localize off %}
+			<div itemscope itemtype="http://schema.org/Product">
+				{% include 'shop/products/detail_ajax.html' %}
+				<div class="container">
+					{% if product.details %}
+						<div class="card mt-3">
+							<div class="card-body">
+								<div class="card-title mb-3">Descrição</div>
+								<div class="text-body" itemprop="description">
+									{{ product.details|safe }}
+								</div>
+							</div>
+						</div>
+					{% endif %}
+					{% with get_contents=product.get_contents %}
+						{% for c in get_contents %}
+							<div class="card mt-3">
+								<div class="card-body">
+									<div class="card-title mb-3">{{ c.title }}</div>
+									<div class="text-body">
+										{{ c.content|safe }}
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					{% endwith %}
+					{% if json_specifications %}
+						<div class="card mt-3">
+							<div class="card-body">
+								<div class="card-title mb-3">Especificações</div>
+								<table border="0" cellpadding="0" cellspacing="0" class="table" width="100%">
+									<tbody>
+										{% for s,v in json_specifications.items %} 
+										{% if v.value and s not in 'age_group,gender,adult,is_bundle,pattern'|split %}
+										<tr>
+											<td>{{ v.label }}</td>
+											<td class="{{ v.label|slugify }}">
+												{% if s == "bula" %}
+													<a href="{{ MEDIA_URL }}{{ v.value }}" class="btn btn-info btn-sm" target="_blank">Visualizar</a>
+												{% else %}
+													{{ v.value }}
+												{% endif %}
+											</td>
+										</tr>
+										{% endif %}
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					{% endif %}
+					</div>
+                <div class="container">
+                    {% if product.get_accessories %}
+                        <div class="title-showcase">
+                            <h2>{% trans 'Acessórios' %} </h2>
+                        </div>
+                        <ul class="list-products horizontal-scroll">
+                            {% for p in product.get_accessories %}
+                                <li>
+                                    {% include "shop/includes/product.html" %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if upsell_products %}
+                        <div class="title-showcase">
+                            <h2>{% trans 'Quem comprou, comprou também' %} </h2>
+                        </div>
+                        <ul class="list-products horizontal-scroll">
+                            {% for p in upsell_products %}
+                                <li>
+                                    {% include "shop/includes/product.html" %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="container">
+                    <div class="mt-3">
+                        {% include "shop/products/rating_details.html" %}
+                    </div>
+                </div>
+            {% endlocalize %}
+			</div>
+{% endblock %}
+
+{% block footer_script %}
+    {{ block.super }}
+    {% compress js %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/photoswipe.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/photoswipe-ui-default.min.js"></script>
+    {% endcompress %}
+    {% compress css %}
+        <link href="{{ STATIC_URL }}css/photoswipe/photoswipe.css" rel="stylesheet" type="text/css" />
+        <link href="{{ STATIC_URL }}css/photoswipe/default-skin/default-skin.css" rel="stylesheet" type="text/css" />
+    {% endcompress %}
+{% endblock %}

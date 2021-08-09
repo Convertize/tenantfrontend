@@ -1,0 +1,66 @@
+*{margin:0;padding:0;}
+	img{border:none; width: 100%;}
+	a{text-decoration:none;}
+	
+	#contener{width:1000px;margin:0 auto;}
+	
+	#contener_box{padding:0 25px; margin: 17px 0 0;}
+	
+	body{}
+	.bg2{}
+
+	
+	#bg {}
+	.bgwidth { width: 100%; }
+	.bgheight { height: auto; 	}
+	
+	.titulo_topo {background: #f18d09; font-size: 19px; color: #fff !important; padding: 10px 0; border-radius: 10px 10px 0px 0px; }
+	
+	p{text-align: center;font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, "sans-serif"; }
+	
+	.caixa_campanhas { float: left;  margin: 38px 0; }
+
+	.caixa_imagens_campanha { float: left; max-width: 49%; margin: 0px 3px;}
+	
+	#menu {width: 100%; background: #F9DB49; padding: 20px 0 6px; border-radius: 15px; display: table;}
+	
+	#menu ul { display: inline-flex; padding: 20px !important;}
+	
+	#menu ul li { padding: 3px; float: left; list-style:none;}
+	
+	#menu-2 {width: 100%; margin: 10px 0; text-align: center; background-color: #621910; border-radius: 8px;}
+	
+	#menu-2 ul { display: inline-flex; padding: 20px !important;}
+	
+	#menu-2 ul li { padding: 0 36px; float: left; list-style:none; border-right: 2px solid #fff; }
+	
+	#menu-2 ul li a {font-family: 'Nunito', sans-serif; font-weight: 900;color: #fff; font-size: 1.4em }
+	
+	#menu-2 ul li a:hover{color: #ffbb39;}
+	
+	a { text-decoration:none;}
+	
+	.cartao {margin:15px 0 50px 0;}
+	
+	.texto_fim{margin: 0 0 150px 0;font-size: 20px;}
+	
+	h1{text-align: center; text-transform: uppercase; font-family: 'Nunito', sans-serif; font-weight: 600;}
+	
+	.caixatem { padding: 35px;}
+	
+	.maisofertas-horizonte{width: 48%; float: left; padding:; margin:0px 0px 12px 12px;}
+	
+	.titulo_maisofertas{color: #fff; font-size: 55px;margin: 0 0 20px 0;letter-spacing: -3px;}
+	
+	.blink_me {
+  animation: blinker 0.4s step-start infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+  .covid-anuncio{float: left; margin: 30px 0 0;}
+

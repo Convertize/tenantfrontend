@@ -1,0 +1,63 @@
+{% extends 'shop/base.html' %}{% load i18n thumbnail shop_tags %}
+{% block body_class %}product{% endblock %}
+
+{% block meta_title %}{% if product.title %}{% trans product.title %}{% else %}{% trans product.name %} | {{ block.super }}{% endif %}{% endblock %}
+
+{% block meta_description %}{% if product.description %}{{ product.description }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block meta_keywords %}{% if product.keywords %}{{ product.keywords }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block content %}
+        <div class="container">
+            <div class="pt-4 pb-4">
+                <h1 class="h3">{% trans 'Avalie este produto' %}</h1>
+                <p>{% trans 'e compartilhe sua opinião com outros clientes' %}</p>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-2">
+                    <a href="{{ product.get_absolute_url }}" class="h4">
+                        <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ product.image_small }}" class="img-lazy img-thumbnail" alt="{{ product.name }}" title="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" />
+                    </a>
+                </div>
+                <div class="col-10">
+                    <a href="{{ product.get_absolute_url }}" class="h4">
+                        {{ product.name }}
+                    </a>
+                    <br />
+                    <br />
+                    <div>{{ product.details|striptags|safe|truncatewords:85 }}</div>
+                </div>
+            </div>
+            <div class="card mt-4 mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <form action="{% url 'product:add_rating' product.slug %}" method="POST">{% csrf_token %}
+                                {% include "includes/messages.html" %}
+                                {% for field in add_rating %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {% if field.field.choices %}
+                                            <select name="{{ field.html_name }}" class="form-control{% if field.errors %} is-invalid{% endif %}" id="{{ field.id_for_label }}">
+                                                <option value=""></option>
+                                                {% for value,label in field.field.choices %}
+                                                    <option value="{{ value }}">{{ label|default:value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% else %}
+                                            <input type="text" name="{{ field.html_name }}" class="form-control{% if field.errors %} is-invalid{% endif %}" id="{{ field.id_for_label }}" />
+                                        {% endif %}
+                                        {% if field.errors %}
+                                            <div class="invalid-feedback font-size-12">
+                                                {{ field.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                                <input type="submit" value="{% trans 'Publicar comentário'|upper %}" class="btn btn-success btn-block mt-4" style="margin-right: 6px;" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "shop/base.html" %}{% load i18n l10n shop_tags showcases_tags user_agents %}
+{% block body_id %}search{% endblock %}
+
+{% block meta_title %}{% if not object %}{% if query %}{{ query|title }}{% else %}Resultados da Busca{% endif %} | {{ block.super }}{% else %}{% if object.meta_title %}{% trans object.meta_title %}{% else %}{% trans object.name %} | {{ block.super }}{% endif %}{% endif %}{% endblock %}
+
+{% block meta_description %}
+    {% if object.meta_description %}
+        {{ object.meta_description }}
+    {% elif query and not object %}
+        {{ block.super }}
+    {% endif %}
+{% endblock %}
+
+{% block meta_keywords %}{% if object.meta_keywords %}{{ object.meta_keywords }}{% endif %}{% endblock %}
+
+{% block meta_robots %}
+        {{ block.super }}
+        {% if object and object.get_absolute_url %}
+        <link rel="canonical" href="https://{{ request.get_host }}{{ object.get_absolute_url }}" />
+        {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% localize off %}
+        <div class="search-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div id="breadcrumb">
+                            <ul class="d-flex">
+                                <li class="home">
+                                    <a href="{% url 'home' %}">
+                                        {% trans 'Início' %}
+                                    </a>
+                                </li>
+                                {% for bc in breadcrumb %}
+                                    <li{% if forloop.last and not query %} class="pr-0 mr-0"{% endif %}>
+                                        <a href="{{ bc.url }}">
+                                            {% trans bc.value|replace:"---,/" %}
+                                        </a>
+                                    </li>
+                                {% empty %}
+                                    {% if object.name %}
+                                        <li{% if not query %} class="pr-0 mr-0"{% endif %}>
+                                            <a href="/{{ object.slug }}/">
+                                                {{ object.name|replace:"---,/" }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if query %}
+                                    <li class="pr-0 mr-0">
+                                        <span>
+                                            {{ query }}
+                                        </span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 d-flex align-items-center justify-content-between">
+                        <h1 class="h3">
+                            {% if object.name %}
+                                {{ object.name }}
+                            {% else %}
+                                Você buscou por: “{{ query }}”
+                            {% endif %}
+                        </h1>
+                        <button type="button" class="bt-open-page d-block d-lg-none btn btn-sm btn-open-filters" data-target="#floating-sidebar" aria-label="Filtros">
+                            Filtros <span class="badge badge-pill badge-danger"></span>
+                        </button>
+                    </div>
+                    {% if object.details %}
+                        <div class="col-12">
+                            {{ object.details|safe }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if object.django_id and object.django_ct %}
+            <div class="container">{% showcase_widget "AreaTopBanner" object.django_id object.django_ct %}</div>
+        {% endif %}
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-3 d-none d-lg-block">
+                    {% if facets.fields.items or facet_ranges.fields.items %}
+                        <div id="formFilter" style="display: none;">
+                            <form action="{{ request.get_full_path }}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="map" id="id_map">
+                                <input type="hidden" name="fullmap" id="id_fullmap" value="{{ map }}">
+                            </form>
+                        </div>
+                    {% endif %}
+                    <div class="applied-filters">
+                        {% for item in map_list.items %}
+                            {% if item.0 != 'c' %}
+                                {% for v in item.1 %}
+                                    {% if v != object.name|slugify %}
+                                        <a data-rel="fq={{ item.0 }}:{{ v }}" class="filter">
+                                            {{ v|replace:'---,/' }} &nbsp; <i class="icon-close-radius"></i>
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% include "search/includes/sidebar.html" %}
+                </div>
+                <div class="col-12 col-lg-9 pl-lg-0">
+                    <div class="page-template">
+                        <ul class="list-products page-content">
+                            {% include page_template %}
+                        </ul>
+                        <div class="text-center pt-3">
+                            {{ products.paginator.count }} resultado{{ products.paginator.count|pluralize }}
+                        </div>
+                        {% pagination_for products %}
+                    </div>
+                    {% if object.django_id and object.django_ct %}
+                        {% showcase_widget "AreaContent" object.django_id object.django_ct %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endlocalize %}
+{% endblock %}
+
+{% block extra_footer %}
+    <div class="floating-page" id="floating-sidebar">
+        <div class="container-fluid">
+            <header>
+                <div class="close">
+                    <i class="icon-close"></i>
+                </div>
+                <span class="title">Filtros</span>
+            </header>
+            <div class="content-page bg-light"></div>
+            <footer class="p-3">
+                <button type="button" id="applyFilter" class="btn btn-success btn-block">Aplicar filtro</button>
+            </footer>
+        </div>
+    </div>
+{% endblock %}

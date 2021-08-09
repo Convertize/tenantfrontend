@@ -1,0 +1,89 @@
+*{margin:0;padding:0;}
+	img{border:none; width: 100%;}
+	a{text-decoration:none;}
+	
+	#contener{width:1000px;margin:0 auto;}
+	
+	#contener_box{padding: 25px; text-align: center;}
+	
+	body{}
+	.bg2{}
+
+	
+	#bg {}
+	.bgwidth { width: 100%; }
+	.bgheight { height: auto; 	}
+	
+	.titulo_topo {background: #f23838; color: #fff !important; padding: 10px 0;margin: 40px 0 0 0; border-radius: 10px 10px 0px 0px; }
+	
+	.titulo{color: #E8390C; margin: 30px 0 0;}
+
+	.caixa_campanhas { float: left;  margin: 38px 0; }
+
+	.caixa_imagens_campanha { float: left; max-width: 49%; margin: 0px 3px;}
+	
+	p{text-align: center;font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, "sans-serif"; }
+	
+	.bloco_produtos { float: left; }
+	
+	#menu {width: 100%; background: #F9DB49; padding: 20px 0 6px; border-radius: 15px; display: table;}
+	
+	#menu ul { display: inline-flex; padding: 20px !important;}
+	
+	#menu ul li { padding: 3px; float: left; list-style:none;}
+	
+	#menu-2 {width: 100%; margin: 10px 0; text-align: center; background-color: #621910; border-radius: 8px;}
+	
+	#menu-2 ul { display: inline-flex; padding: 20px !important;}
+	
+	#menu-2 ul li { padding: 0 36px; float: left; list-style:none; border-right: 2px solid #fff; }
+	
+	#menu-2 ul li a {font-family: 'Nunito', sans-serif; font-weight: 900;color: #fff; font-size: 1.4em }
+	
+	#menu-2 ul li a:hover{color: #ffbb39;}
+	
+	a { text-decoration:none;}
+	
+	.cartao {margin:15px 0 50px 0;}
+	
+	.texto_fim{margin: 0 0 150px 0;}
+	
+	h1{text-align: center; text-transform: uppercase; font-family: 'Secular One', sans-serif;font-weight: 600; font-size: 2.5em;  letter-spacing: -1px;}
+	
+	h2 { text-align: center; font-family: 'Secular One', sans-serif; font-weight: 900; letter-spacing: -1px; text-transform: uppercase;  font-size: 22px;line-height: 28px; color: #191919; }
+	
+	.caixatem { padding: 35px;}
+	
+	.maisofertas-horizonte{width: 48%; float: left; padding:; margin:0px 0px 12px 12px;}
+	
+	#produto { display: block; float: left; width: 33%; height: auto; text-align: center;}
+	
+	.discricao{font-family: 'Secular One', sans-serif; letter-spacing: -1px; font-size: 0.9em; margin: -5px 0 10px 0; color: #191919;}
+	
+	.preco{font-family: 'Secular One', sans-serif; letter-spacing: -1px; font-size: 40px; font-weight: 900;margin:19px 0 5px; color: #f28322;line-height: 30px;}
+
+	.cifrao, .cada { font-size: 18px;  color: #191919;}
+
+	h3 {
+    font-family: 'Secular One', sans-serif;
+    letter-spacing: -1px;
+    color: #f23838;
+    text-transform: uppercase;
+    line-height: 28px;
+    margin: -7px 0px 21px 41px;
+    font-size: 24px;
+    border: 2px solid #F28322;
+    padding: 13px;
+    width: 62%;
+    float: left;
+}
+	
+	.levando { font-size: 34px;color: #f28322;}
+	
+	#contener_box_produtos { margin-bottom: 60px; float: left; }
+	
+	.selo {width: 12%; height: auto; position: absolute;}
+
+.titulo_maisofertas{color: #fff; font-size: 55px;margin: 0 0 20px 0;letter-spacing: -3px;}
+
+ .covid-anuncio{float: left; margin: 30px 0 0;}

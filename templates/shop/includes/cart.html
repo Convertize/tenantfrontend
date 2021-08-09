@@ -1,0 +1,65 @@
+{% load l10n i18n user_agents shop_tags %}
+{% localize off %}
+    <div id="mini-cart" class="floating-page loading">
+        <div class="container-fluid">
+            <header>
+                <div class="close">
+                    <i class="icon-close"></i>
+                </div>
+                <a class="title" href="{% url 'shop_checkout' %}#/carrinho">
+                    <i class="icon-cart d-md-block d-none"></i> 
+                    Carrinho
+                    <i class="icon-angle-right d-md-block d-none"></i>
+                </a>
+            </header>
+            <div class="content-cart content-page">
+                <ul>
+                    {% comment %}
+                        <li class="b-0">
+                            <div class="empty-cart">
+                                <span class="face">:(</span>
+                                <span class="text">
+                                    <strong class="h3">Ops!</strong>
+                                    <br />
+                                    Seu carrinho está vazio
+                                </span>
+                            </div>
+                        </li>
+                    {% endcomment %}
+                </ul>
+            </div>
+            <footer style="display: none;">
+                <div class="info-prices">
+                    <div class="values_footer">
+                        <h3>Subtotal:</h3>
+                        <p><strong class="request__cart__total_price"></strong></p>
+                    </div>
+                    <div class="values_footer">
+                        <h3>Desconto:</h3>
+                        <p><strong class="request__cart__discount_value"></strong></p>
+                    </div>
+                    <div class="values_footer">
+                        <h3>Total:</h3>
+                        <p><strong class="request__cart__total"></strong></p>
+                    </div>
+                </div>
+                <div class="fields-cart">
+                    <form class="coupon mb-3">
+                        <div class="codes">
+                            {% comment %}
+                                {% for coupon in request.cart.coupons.all %}
+                                    <a>{{ coupon.code }}</a>
+                                {% endfor %}
+                            {% endcomment %}
+                        </div>
+                        <div class="box-coupon d-flex">
+                            <input type="text" name="coupon" class="form-control m-0 mr-2 form-control-sm" placeholder="Cupom de desconto" />
+                            <button id="coupon" type="submit" class="btn btn-info btn-sm" data-loading-text="Aplicando...">{% trans 'Aplicar' %} </button>
+                        </div>
+                    </form>
+                    <a href="{% url 'checkout_backend' 'carrinho' %}" class="btn btn-checkout btn-block">Finalizar compra</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+{% endlocalize %}

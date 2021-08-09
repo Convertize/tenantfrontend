@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-12">
+        <div class="showcase-shelf">
+            {% if object.shelf.title %}
+            <div class="title-showcase">
+                <h2>{{ object.shelf.title }} </h2>
+                {% if object.shelf.sub_title %}
+                    <h3>{{ object.shelf.sub_title }}</h3>
+                {% endif %}
+            </div>
+            {% endif %}
+            <ul class="list-products{% if 'pagination' in object.template %} horizontal-scroll{% else %} default{% endif %}">
+                {% for p in object.shelf.get_products %}
+                    {% ifchanged p.product_id %}
+                        <li>{% include "shop/includes/product.html" %}</li>
+                    {% endifchanged %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

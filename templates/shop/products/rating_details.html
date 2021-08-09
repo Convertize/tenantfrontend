@@ -1,0 +1,64 @@
+{% load i18n l10n thumbnail shop_tags user_agents %}
+<div id="product-ratings" class="card">
+    <div class="card-body">
+        <div class="card-title mb-3">{% trans "Avaliações de outros compradores" %}</div>
+        <div id="ratings">
+            <div id="tab-list">
+                <div id="ratings-tab-list">
+                    {% for rating in ratings.object_list %}
+                        <div class="box-ratings pt-3 pb-3{% if not forloop.last %} border-bottom{% endif %}">
+                            <div class="row">
+                                <div class="col-2 d-flex flex-column align-items-center justify-content-center">
+                                    <div class="avatar rounded-circle mb-1 d-flex align-items-center justify-content-center">
+                                        {{ rating.name|slice:"1"|upper }}{% if rating.name|split:" "|length > 1 %}{{ rating.name|split:" "|slice:"1:2"|join:""|slice:"1"|upper }}{% else %}{{ rating.name|slice:"1:2"|upper }}{% endif %}
+                                    </div>
+                                    <p class="text-center font-weight-bold">
+                                        {{ rating.name }}
+                                    </p>
+                                </div>
+                                <div class="col-9">
+                                    {% if rating.title %}
+                                        <p class="rating-title font-weight-bold font-size-14">{{ rating.title }}</p>
+                                    {% endif %}
+                                    <p class="rating-opinion mt-2">{{ rating.opinion|linebreaksbr }} </p>
+                                    {% if rating.why_site %}
+                                        <p class="mt-2">
+                                            <b>{% trans "Eu recomendo este site" %}:</b> {{ rating.why_site }}
+                                        </p>
+                                    {% endif %}
+                                    <div class="d-flex mt-2">
+                                        <p class="rating-date mr-3">
+                                            {{ rating.add_date|date:"d/m/Y" }}
+                                        </p>
+                                        <span class="rating-star">
+                                            <span class="star-{{ rating.vote }}"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="bg-gray ratings-item active">
+                            <div class="pd20 size14">
+                                {% if request.session.customer %}
+                                    <a href="#tab-add_rating" data-toggle="tab">{% trans 'Escrever a primeira avaliação' %} </a>
+                                {% else %}
+                                    <a href="{{ product.get_absolute_url }}" class="bt_login">{% trans 'Escrever a primeira avaliação' %} </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% pagination_for ratings %}
+                </div>
+            </div>
+            <div class="border-top mt-4 pt-4 pl-sm-4 pb-2">
+                <a href="{% url 'product:add_rating' product.slug %}" class="d-flex align-items-center font-size-16 font-weight-bold text-secondary{% if not request.session.customer %} bt_login{% endif %}">
+                    <span class="d-flex btn btn-success mr-3 rounded-circle align-items-center justify-content-center" style="width: 68px;min-width: 68px;height: 68px;min-height: 68px;">
+                        <i class="icon-plus font-size-22"></i>
+                    </span>
+                    Avalie esse produto e ajude outros compradores :)
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

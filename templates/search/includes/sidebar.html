@@ -1,0 +1,33 @@
+<div class="sidebar">
+    <div class="card">
+        <div class="card-title mt-0">Ordernar </div>
+        <form>
+            <select onchange="location.href = this[this.selectedIndex].value;" class="form-control form-control-sm">
+                {% for name, option in SHOP_PRODUCT_SORT_OPTIONS %}
+                    {% with name|slugify as option_slug %}
+                        <option value="?{% if map %}map={{ map }}&{% endif %}sort={{ option_slug }}"{% if option_slug == request.GET.sort or not request.GET.sort and option == shop_settings.SHOP_SEARCH_DEFAULT_SORT %} selected{% endif %} >
+                            {{ name }}
+                        </option>
+                    {% endwith %}
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    {% if facets and facets.fields.items %}
+        {% for k, v in facets.fields.items %}
+            {% if object.django_ct == "products.brand" and not term and v.title|cut:'---'|slugify == "marca" %}
+            {% else %}
+                {% if v.value %}
+                    {% include "search/includes/facet.html" %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if facet_ranges and facet_ranges.fields.items %}
+        {% for k, v in facet_ranges.fields.items %}
+            {% if v.value %}
+                {% include "search/includes/facet.html" %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

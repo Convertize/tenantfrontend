@@ -1,0 +1,34 @@
+*{margin:0;padding:0;}
+	img{border:none; width: 100%;}
+	a{text-decoration:none;}
+	
+	#contener{width:1000px;margin:0 auto;}
+	
+	#contener_box{padding:0 25px; margin: 17px 0 0;}
+
+#contener_logo {width: 250px;display: block;margin-left: auto;  margin-right: auto;  margin-top: 400px;  margin-bottom: 90px;}
+	
+	body{background: #F2F2F2}
+	.bg2{}
+
+	
+	#bg {}
+	.bgwidth { width: 100%; }
+	.bgheight { height: auto; 	}
+	
+	
+	
+p{font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, "sans-serif"; color: #000;}	
+h1{text-align: center;font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, "sans-serif"; color: #000;}
+h2{font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, "sans-serif"; font-weight: 500; color: #000; }
+h3{font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, "sans-serif"; font-weight: 500;  color: #000;}
+
+.chamada_numero {background: #000;border-radius: 50%;padding: 6px 9px;color: #FFFFFF;font-weight: 900;}
+
+.chamada_numero_sub {color: #1B1B1B;font-weight: 900; font-size: 20px;margin:0 0 0 42px}
+
+.box {float: left;text-align: center;width: 25%;border: 1px solid #000;border-radius: 8px;height: 23%;padding: 31px 0;margin: 0 15px; background: #fff;}
+.box h1 {margin: 0 0 41px 0; }
+
+.box:hover{background: #DD3335; color:#fff!important; }
+

@@ -1,0 +1,28 @@
+{% load search_tags user_agents %}
+<div class="card">
+    <div class="card-title">
+        {{ v.title }}
+    </div>
+    <ul id="nav-sidebar-{{ v.title|cut:'---'|slugify }}-{{ forloop.counter }}">
+        {% comment %}
+            {% if v.title|slugify == 'categoria' and object.parent %}
+                <li>
+                    <a href="{% for i in object.ancestors|slice:'-1' %}{% if forloop.first %}/{% endif %}{{ i|slugify }}/{% endfor %}" class="back">
+                        {{ object.ancestors|slice:'-1'|last }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endcomment %}
+        {% for item in v.value %}
+            {% if v.template_name %}
+                {% include v.template_name %}
+            {% else %}
+                <li{% if item.0|slugify in request.path and v.key in request.GET.map %} class="active"{% endif %}>
+                    <a href="#" data-rel="fq={{ v.key }}:{{ item.0 }}" class="filter">
+                        {{ item.0 }} <small>{{ item.2 }}</small>
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

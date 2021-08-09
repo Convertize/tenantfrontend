@@ -1,0 +1,119 @@
+{% load i18n fieldset_form %}
+<form id="form-contact" method="POST" action="{% url 'contacts:contact' %}" class="form-vertical">{% csrf_token %}
+    {% include 'includes/messages.html' %}
+    {% for field in forms %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {% if field.field.choices %}
+                <select name="{{ field.html_name }}" class="form-control{% if field.errors %} is-invalid{% endif %}" id="{{ field.id_for_label }}">
+                    <option value=""></option>
+                    {% for value,label in field.field.choices %}
+                        <option value="{{ value }}">{{ label|default:value }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <input type="text" name="{{ field.html_name }}" class="form-control{% if field.errors %} is-invalid{% endif %}" id="{{ field.id_for_label }}" />
+            {% endif %}
+            {% if field.errors %}
+                <div class="invalid-feedback font-size-12">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <div class="required form-group{% if form.subject.errors %} error{% endif %}" id="{{ form.subject.id_for_label }}">
+                <label class="required font-weight-bold" for="{{ form.subject.id_for_label }}">*{{ form.subject.label }} </label>
+                <select name="{{ form.subject.html_name }}" class="form-control{% if form.subject.errors %} is-invalid{% endif %}" id="{{ form.subject.id_for_label }}">
+                    <option value=""></option>
+                    {% for value,label in form.subject.field.choices %}
+                        <option value="{{ value }}">{{ label|default:value }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.subject.errors %}
+                    <div class="invalid-feedback font-size-12">
+                        {{ form.subject.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="required form-group{% if form.name.errors %} error{% endif %}" id="{{ form.name.id_for_label }}">
+                <label class="required font-weight-bold" for="{{ form.name.id_for_label }}">*{{ form.name.label }} </label>
+                <input type="text" name="{{ form.name.html_name }}" class="form-control{% if form.name.errors %} is-invalid{% endif %}" id="{{ form.name.id_for_label }}" />
+                {% if form.name.errors %}
+                    <div class="invalid-feedback font-size-12">
+                        {{ form.name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="required form-group{% if form.email.errors %} error{% endif %}" id="{{ form.email.id_for_label }}">
+                <label class="required font-weight-bold" for="{{ form.email.id_for_label }}">*{{ form.email.label }} </label>
+                <input type="email" name="{{ form.email.html_name }}" class="form-control{% if form.email.errors %} is-invalid{% endif %}" id="{{ form.email.id_for_label }}" />
+                {% if form.email.errors %}
+                    <div class="invalid-feedback font-size-12">
+                        {{ form.email.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-row">
+                <div class="required form-group col-12 col-sm-6{% if form.phone.errors %} error{% endif %}" id="{{ form.phone.id_for_label }}" style="width: 50%;">
+                    <label class="required font-weight-bold" for="{{ form.phone.id_for_label }}">*{{ form.phone.label }} </label>
+                    <input type="tel" name="{{ form.phone.html_name }}" class="form-control{% if form.phone.errors %} is-invalid{% endif %}" id="{{ form.phone.id_for_label }}" />
+                    {% if form.phone.errors %}
+                        <div class="invalid-feedback font-size-12">
+                            {{ form.phone.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group col-12 col-sm-6{% if form.phone2.errors %} error{% endif %}" id="{{ form.phone2.id_for_label }}" style="width: 50%;">
+                    <label class="required font-weight-bold" for="{{ form.phone2.id_for_label }}">*{{ form.phone2.label }} </label>
+                    <input type="text" name="{{ form.phone2.html_name }}" class="form-control{% if form.phone2.errors %} is-invalid{% endif %}" id="{{ form.phone2.id_for_label }}" />
+                    {% if form.phone2.errors %}
+                        <div class="invalid-feedback font-size-12">
+                            {{ form.phone2.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="required form-group{% if form.state.errors %} error{% endif %}" id="{{ form.state.id_for_label }}">
+                <label class="required font-weight-bold" for="{{ form.state.id_for_label }}">*{{ form.state.label }} </label>
+                <select name="{{ form.state.html_name }}" class="form-control{% if form.state.errors %} is-invalid{% endif %}" id="{{ form.state.id_for_label }}">
+                    <option value=""></option>
+                    {% for value,label in form.state.field.choices %}
+                        <option value="{{ value }}">{{ label|default:value }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.state.errors %}
+                    <div class="invalid-feedback font-size-12">
+                        {{ form.state.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="required form-group{% if form.city.errors %} error{% endif %}" id="{{ form.city.id_for_label }}">
+                <label class="required font-weight-bold" for="{{ form.city.id_for_label }}">*{{ form.city.label }} </label>
+                <input type="text" name="{{ form.city.html_name }}" class="form-control{% if form.city.errors %} is-invalid{% endif %}" id="{{ form.city.id_for_label }}" />
+                {% if form.city.errors %}
+                    <div class="invalid-feedback font-size-12">
+                        {{ form.city.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="required form-group{% if form.message.errors %} error{% endif %}" id="{{ form.message.id_for_label }}">                
+                <label class="required font-weight-bold" for="{{ form.message.id_for_label }}">*{{ form.message.label }} </label>
+                <textarea cols="40" name="{{ form.message.html_name }}" rows="5" class="form-control{% if form.message.errors %} is-invalid{% endif %}" id="{{ form.message.id_for_label }}"></textarea>
+                {% if form.message.errors %}
+                    <div class="invalid-feedback font-size-12">
+                        {{ form.message.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="{% trans 'Enviar'|upper %}" name="add_contact" class="btn btn-success btn-lg btn-block mb-3" />
+</form>

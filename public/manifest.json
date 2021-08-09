@@ -1,0 +1,24 @@
+{
+    "name": "Drogalider",
+    "short_name": "Drogalider",
+    "background_color": "#ffffff",
+    "theme_color": "#dd343a",
+    "start_url": "/?utm_source=pwa&utm_medium=none",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "lang": "pt-br",
+    "prefer_related_applications": true,
+    "icons": [
+        {
+            "src": "img/touch/homescreen144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "img/touch/homescreen512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{% extends "shop/base.html" %}{% load i18n cms_tags %}
+
+{% block meta_title %}{% if page.title %}{% trans page.title %} | {{ block.super }} {% else %}{% trans page.name %} | {{ block.super }} {% endif %}{% endblock %}
+
+{% block meta_description %}{% if page.description %}{{ page.description }}{% endif %}{% endblock %}
+{% block meta_keywords %}{% if page.keywords %}{{ page.keywords }}{% endif %}{% endblock %}
+
+{% block content %}
+                <div class="float">
+                    {% render page.html %}
+                </div>
+{% endblock %}

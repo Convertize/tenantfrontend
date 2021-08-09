@@ -1,0 +1,26 @@
+{% load l10n shop_tags user_agents %}
+{% localize off %}
+    <div class="row">
+        <div class="col-12">
+            {% if object.bannerdhtml.title %}
+                <div class="title-showcase">
+                    <h2>{{ object.bannerdhtml.title }} </h2>
+                    {% if object.bannerdhtml.sub_title %}
+                        <h3>{{ object.bannerdhtml.sub_title }}</h3>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="carousel carousel-default owl-theme owl-carousel banner" data-owl-carousel='{"items":1, "loop":true, "nav":false, "dots":true, "margin": 15}'>
+                {% for banner in object.bannerdhtml.get_images %}
+                    {% if object.extra_data.mobile and request|is_mobile %}
+                        {% if banner.classes == "m" %}
+                            {% include "shop/showcases/bannerdhtml/includes/item.html" %}
+                        {% endif %}
+                    {% elif banner.classes != "m" %}
+                        {% include "shop/showcases/bannerdhtml/includes/item.html" %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endlocalize %}

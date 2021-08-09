@@ -1,0 +1,6 @@
+{% load search_tags shop_tags %}
+<li{% if v.key in map and item.1 in v.key|facets_actives:map_list %} class="active"{% endif %}>
+    <a href="#" data-rel="fq={{ v.key }}:{{ item.1 }}" class="filter filter-check">
+        {{ item.0|title|replace:"---,/" }}
+    </a>
+</li>

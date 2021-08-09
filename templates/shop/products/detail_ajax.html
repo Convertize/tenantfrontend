@@ -1,0 +1,269 @@
+{% load i18n l10n thumbnail shop_tags user_agents %}
+
+<div id="content-product">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6 product-image">
+                {% if request|is_mobile or request|is_tablet %}
+                    <div class="carousel owl-theme owl-carousel banner mb-3" data-owl-carousel='{"items":1, "dots":true, "lazyLoad":true}'>
+                        {% for image in product.get_images %}
+                            {% if image.video %}
+                                <div class="item video" data-index="{{ forloop.counter0 }}">
+                                    <div class="embed-youtube video-container" data-code="{{ image.video }}" style="width:100%;height:315px;">
+                                        <img class="owl-lazy" src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_medium }}" title="{{ product.name }}" alt="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="item" data-index="{{ forloop.counter0 }}">
+                                    <span big_img="{{ MEDIA_URL }}{{ image.version_large }}" class="expand-image" data-index="{{ forloop.counter }}">
+                                        <img class="owl-lazy" src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_medium }}" title="{{ product.name }}" alt="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="d-flex">
+                        <ul class="thumbs">
+                            {% for image in product.get_images %}
+                                <li class="item{% if image.video %} video{% endif %}{% if image.version_small == product.image %} active{% endif %}"{% if image.video %} data-video="{{ image.video }}"{% endif %} data-index="{{ forloop.counter0 }}">
+                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_mini }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-lazy" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|last }}" />
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="big-image">
+                            {% if sku and sku.image_large %}
+                                <figure class="zoom">
+                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ sku.image_medium }}" class="img-lazy" alt="{{ product.name }}" title="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
+                                    <meta itemprop="image" content="{{ MEDIA_URL }}{{ sku.image_large }}" />
+                                </figure>
+                            {% elif product.image %}
+                                <figure class="zoom">
+                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ product.image_medium }}" class="img-lazy" alt="{{ product.name }}" title="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
+									<meta itemprop="image" content="{{ MEDIA_URL }}{{ product.image_large }}" />
+                                </figure>
+                            {% endif %}
+                            <span class="expand-image zoom-in">
+                                <i class="icon-zoom"></i>
+                            </span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-6 pl-md-0 product-detail">
+                {% if not request|is_mobile and product.category %}
+                    <div id="breadcrumb" class="mb-4">
+                        <ul class="d-flex align-items-center text-nowrap">
+                            <li class="home">
+                                <a href="{% url 'home' %}">
+                                    {% trans 'Início' %}
+                                </a>
+                            </li>
+                            {% for ancestor in product.get_category_ancestors %}
+                                <li>
+                                    <a href="{{ ancestor.get_absolute_url }}">
+                                        {% trans ancestor.title %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            <li class="pr-0 mr-0">
+                                <a href="{{ product.category.get_absolute_url }}">
+                                    {% trans product.category.title %}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+                <h1 class="name" itemprop="name">{{ product.name }}</h1>
+                <div class="d-flex flex-wrap text-secondary mb-3">
+                    {% if product.brand %}
+                        <a href="{% if product.category %}{{ product.category.get_absolute_url|slice:'0:-1' }}{% endif %}{{ product.get_brand.get_absolute_url }}" class="font-weight-bold mr-3 text-secondary" >{{ product.brand.title }}</a>
+						<meta itemprop="brand" content="{{ product.brand.title }}" />
+                    {% endif %}
+                    <span class="mr-3">
+						<meta itemprop="sku" content="{% if sku %}{{ sku.id }}{% else %}{{ product.get_sku_default.id }}{% endif %}" />
+						{% if product.get_sku_default.ean_13 %}
+						<meta itemprop="gtin13" content="{{ product.get_sku_default.ean_13 }}" />
+						{% endif %}
+                        Cód: {{ product.upc }}
+                    </span>
+                    <span class="rating-star">
+                        <span class="star-{{ product.rating|default:0 }}">{{ product.rating|default:0 }} avaliaç{{ product.rating|default:0|pluralize:"ão,ões" }}</span>
+                    </span>
+					{% if product.rating %}
+					<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+						<meta itemprop="ratingValue" content="{{ product.rating }}" />
+						<meta itemprop="reviewCount" content="{% if product.rating_total %}{{ product.rating_total }}{% else %}0{% endif %}" />
+						<meta itemprop="bestRating" content="5" />
+						<meta itemprop="worstRating" content="1" />
+                    </div>
+					{% endif %}
+                </div>
+                {% if product.get_seals %}
+                    <div class="seals">
+                        {% for seal in product.get_seals %}
+                            {{ seal|safe }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if json_specifications.venda_permitida_pela_internet and json_specifications.venda_permitida_pela_internet.value and json_specifications.venda_permitida_pela_internet.value|slugify == 'nao' %}
+                    <span class="seal venda_com_receita">Venda com receita</span>
+                {% endif %}
+                <form method="POST" action="{{ product.get_absolute_url }}" class="product-form pt-3">
+                    <div style="display:none;">
+                        <input type="hidden" value="{{ product.id }}" name="product"/>
+                    </div>
+                    {% with options=product.get_all_options %}
+                        {% regroup options by option_title as options %}
+                        {% if options %}
+                            <div class="variations">
+                                {% for option in options %}
+                                    <div class="required form-group form-group-{{ option.grouper|slugify }}">
+                                        {% if product.grid.display == "radio" %}
+                                            <div class="required form-group">
+                                                <legend>
+                                                    {{ option.grouper }}
+                                                </legend>
+                                                {% for value in option.list %}
+                                                    <label class="value{% if not value.available %} disabled{% endif %}">
+                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" />
+                                                        <span>{{ value.option__value }}</span>
+                                                    </label>
+                                                {% endfor %}
+                                                
+                                            </div>
+                                        {% else %}
+                                            <label>
+                                                {{ option.grouper }}
+                                            </label>
+                                            <select name="option_{{ option.list.0.option_id }}" class="form-control form-control-{{ option.list.0.option_title|slugify }}">
+                                                <option value="">-------------</option>
+                                                {% for value in option.list %}
+                                                    <option value="{{ value.option__value_id }}">{{ value.option__value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    {% if product.is_available %}
+                        <div class="row mt-sm-3">
+                            <div class="col-12 col-sm-6 mb-3 mb-sm-0">
+                                <div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+									<meta itemprop="url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}" />
+                                    <link itemprop="availability" href="http://schema.org/InStock" />
+                                    <meta itemprop="priceCurrency" content="BRL" />
+                                    {% if sku %}
+                                        <p class="unit-price"{% if sku.unit_price <= sku.price %} style="display:none;"{% endif %}>
+                                            {{ sku.unit_price|currency }}
+                                        </p>
+                                        <p class="sale-price" data-discount="{{ billet_discount|floatformat }}">
+											<meta itemprop="price" content="{{ sku.price|get_price_boleto }}" />
+                                            <strong>{{ sku.price|get_price_boleto|currency }}</strong>
+                                        </p>
+										<p>à vista no boleto</p>
+                                        <p class="card-installments font-weight-bold pt-2">
+                                            <strong class="get_min_installments">ou {{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }} no cartão</strong>
+                                        </p>
+                                    {% else %}
+                                        <p class="unit-price"{% if product.unit_price <= product.price %} style="display:none;"{% endif %}>
+                                            {{ product.unit_price|currency }}
+                                        </p>
+                                        <p class="sale-price" data-discount="{{ billet_discount|floatformat }}">
+											<meta itemprop="price" content="{{ product.price|get_price_boleto }}" />
+                                            <strong>{{ product.price|get_price_boleto|currency }}</strong>
+											<p>à vista no boleto</p>
+                                        </p>
+                                        <p class="card-installments font-weight-bold pt-2">
+                                            <strong class="get_min_installments">ou {{ product.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ product.price|get_card_price|currency }} no cartão</strong>
+                                        </p>
+                                    {% endif %}
+                                    <span class="descont" {% if not product.descont_percentage %} style="display:none"{% endif %}>{{ product.descont_percentage|default:"0"|floatformat }}%</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 d-flex align-items-center">
+                                <div class="purchase">
+                                    {% if p.product_type == '3' %}
+                                    {% else %}
+                                        <label aria-label="Quantidade" class="m-0">
+                                            <input type="tel" value="1" name="quantity" />
+                                        </label>
+                                        <button type="button" class="btn btn-checkout d-block" data-loading-text="Adicionando">Comprar</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+						<div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+							<h3>Produto Indisponível</h3>
+							<link itemprop="availability" href="http://schema.org/InStock" content="OutOfStock" />
+							<meta itemprop="priceCurrency" content="BRL" />
+                        	<meta itemprop="price" content="{{ product.price|get_price_boleto }}" />
+						</div>
+                        {% if json_specifications.venda_permitida_pela_internet and json_specifications.venda_permitida_pela_internet.value and json_specifications.venda_permitida_pela_internet.value|slugify == 'nao' %}
+                            <div class="text-center h4">
+                                <div class="mb-2">Ligue {{ settings_pote.SHOP_ADDRESS_PHONE|split:'/'|first }}</div>
+                                <div>
+                                    <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_ADDRESS_PHONE|split:'/'|last|mask_text }}" class="colorwhite" target="_blank">
+                                        WhatsApp {{ settings_pote.SHOP_ADDRESS_PHONE|split:'/'|last }}
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </form>
+                <div class="content-offers"></div>
+                {% if product.get_similars or product.get_suggestions %}
+                    <div class="mt-4">
+                        <ul class="nav nav-tabs border-0">
+                            {% if product.get_similars %}
+                                <li class="nav-item">
+                                    <a href="#buy-generic" data-toggle="tab" class="nav-link active">
+                                        Genéricos
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if product.get_suggestions %}
+                                <li class="nav-item">
+                                    <a href="#buy-suggestions" data-toggle="tab" class="nav-link{% if not product.get_similars %} active{% endif %}">
+                                        Similares
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content card p-3">
+                            <div class="tab-pane fade show active" id="buy-generic" role="tabpanel" aria-labelledby="Produtos genéricos">
+                                {% for p in product.get_suggestions %}
+                                    <div class="{% if not forloop.last %}border-bottom{% endif %}">
+                                        <a href="{{ p.get_absolute_url }}" class="d-flex align-items-center pt-1 pb-1">
+                                            {% if p.image %}
+                                                <img data-src="{{ MEDIA_URL }}{{ p.image|replace:'/small/,/mini/' }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ p.name }}" title="{{ p.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|last }}" class="img-lazy mr-3" />
+                                            {% endif %}
+                                            <span class="title mr-3">{{ p.name }}</span>
+                                            <span class="font-weight-bold font-size-16 text-nowrap ml-auto">{{ p.price|currency }}</span>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="tab-pane fade" id="buy-suggestions" role="tabpanel" aria-labelledby="Productos similares">
+                                {% for p in product.get_suggestions %}
+                                    <div class="{% if not forloop.last %}border-bottom{% endif %}">
+                                        <a href="{{ p.get_absolute_url }}" class="d-flex align-items-center pt-1 pb-1">
+                                            {% if p.image %}
+                                                <img data-src="{{ MEDIA_URL }}{{ p.image|replace:'/small/,/mini/' }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ p.name }}" title="{{ p.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|last }}" class="img-lazy mr-3" />
+                                            {% endif %}
+                                            <span class="title mr-3">{{ p.name }}</span>
+                                            <span class="font-weight-bold font-size-16 text-nowrap ml-auto">{{ p.price|currency }}</span>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

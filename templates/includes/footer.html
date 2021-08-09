@@ -1,0 +1,28 @@
+{% load i18n %}            
+<div class="f-f-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="footer-info text-center ">
+                    <p class="h5 mb-3 text-center">Informações</p>
+                    <p class="m-2">@ {{ settings_pote.SHOP_NOME_FANTASIA}} {% now "Y" %} - Todos direitos reservados | CNPJ: {{ settings_pote.SHOP_CNPJ }} | SAC: sac@drogalider.com.br</p>
+                    <p class="m-0">
+                        Horário de Atendimento: 08:00 as 18:30 seg a sex, sab 08:00 as 12:00 horas | 
+                        Endereço: {{ settings_pote.SHOP_ADDRESS }}, {{ settings_pote.SHOP_ADDRESS_NUMBER }} - {{ settings_pote.SHOP_ADDRESS_NEIGHBORHOOD }} - {{ settings_pote.SHOP_ADDRESS_CITY }}/{{ settings_pote.SHOP_ADDRESS_STATE }}, CEP: {{ settings_pote.SHOP_ADDRESS_CEP }} | 
+                        Farmacêutica Responsável : Josiane Cristina da Silva Fernandes - CRF: 15.703 MG |
+                        As informações contidas neste site, como promoções e ofertas de remédios e medicamentos, não devem ser usadas para automedicação e não substituem, em hipótese alguma, a medicação prescrita pelo profissional da área médica. Somente o médico está em condições de diagnosticar qualquer problema de saúde e prescrever o tratamento adequado. Os preços e as promoções são válidos apenas para compras via Internet. | As fotos contidas em nosso site são meramente ilustrativas. | * Preços e disponibilidade sujeitos a alterações no decorrer do dia. Os preços publicados no site são válidos apenas para compras on-line.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="d-flex align-items-end justify-content-center mt-5 w-100 text-center">
+                    <a href="https://www.convertize.com.br/" target="_blank" rel="noopener" class="mr-3">
+                        <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/convertize.png" class="full-img img-lazy" title="Convertize" alt="Convertize" width="116" height="29" />
+                    </a>
+                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/logo-etrio.png" class="full-img img-lazy" title="Etrio" alt="Etrio" width="96" height="33" />
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

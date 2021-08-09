@@ -1,0 +1,62 @@
+{% extends 'shop/customers/central/base.html' %}{% load i18n l10n shop_tags %}
+
+{% block body_id %}change_customer{% endblock %}
+
+{% block main %}
+                        <h4 class="h4 mb-4">{% trans "Meus cartões de crédito" %}</h4>
+                        <ul class="list-group">
+                            {% for card in cards %}
+                                <li class="list-group-item p-0">
+                                    <a class="d-block p-3" data-toggle="collapse" href="#{{ card.uuid }}">
+                                        <span class="flag flag-{{ card.flag|slugify }} dib mbz"></span>
+                                        Terminando em {{ card.card_mask|slice:'-4:' }}
+                                    </a>
+                                    <div class="collapse" id="{{ card.uuid }}">
+                                        <div class="p-3" style="margin-top: 10px;">
+                                            <div class="float data">
+                                                <div class="fl">
+                                                    <p>
+                                                        <span class="size11">{% trans 'Validade' %} </span>
+                                                        <br />
+                                                        {{ card.exp_date }}
+                                                    </p>
+                                                    <br />
+                                                    <p>
+                                                        <span class="size11">{% trans 'Nome impresso no cartão' %} </span>
+                                                        <br />
+                                                        {{ card.card_name }}
+                                                    </p>
+                                                </div>
+                                                <button type="button" class="pull-right btn btn-danger btn-sm toggle_card">{% trans 'Remover' %}</button>
+                                            </div>
+                                            <div class="clear"></div>
+                                            <div class="float form" style="display:none;">
+                                                <h3>{% trans 'Você deseja remover o cartão de crédito terminado em' %} {{ card.card_mask|slice:'-4:' }}?</h3>
+                                                <br />
+                                                <form method="POST">{% csrf_token %}
+                                                    <input type="hidden" value="{{ card.uuid }}" name="card" />
+                                                    <button type="button" class="btn btn-warning btn-sm toggle_card">{% trans 'Cancelar' %}</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm">{% trans 'Sim, desejo remover' %}</button>
+                                                </form>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% empty%}
+                                <li class="list-group-item">
+                                    Nenhum cartão encontrado
+                                </li>
+                            {% endfor %}
+                        </ul>
+{% endblock %}
+
+{% block extra_footer %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.toggle_card').unbind('click.convertize').bind('click.convertize', function(){
+                $(this).closest('.collapse').find('.data, .form').toggle();
+            });
+        });
+    </script>
+{% endblock %}

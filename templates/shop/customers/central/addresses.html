@@ -1,0 +1,70 @@
+{% extends "shop/customers/central/edit_form.html" %}{% load i18n fieldset_form %}
+{% block meta_title %}{% trans "Meus endereços" %} | {{ block.super }}{% endblock %}
+
+{% block main %}
+        <h4 class="h4 mb-4">{% trans "Endereços de Entrega" %}</h4>
+
+        <div class="card mb-3">
+            <div class="card-body line-height-21 d-flex align-items-center">
+                <div class="pr-3">
+                    <input type="hidden" value="P" name="address" />
+                    <b>{% trans "Endereço Principal"|upper %}</b>
+                    <br />
+                    {{ customer.address }}, {{ customer.number }}{% if customer.complement %} - {{ customer.complement }} {% endif %}
+                    {% if customer.neighborhood %}
+                        <br />
+                        {{ customer.neighborhood }}
+                    {% endif %}
+                    <br />
+                    {{ customer.city }} - {{ customer.state }}
+                    <br />
+                    CEP: {{ customer.zipcode }}
+                    <br />
+                </div>
+                <div class="ml-auto">
+                    <a href="{% url 'customers:edit_address_model' %}" class="btn btn-secondary btn-sm">{% trans 'Editar'|upper %}</a>
+                </div>
+            </div>
+        </div>
+
+        {% for e in customer.addresses.all %}
+            <div class="card mb-3">
+                <div class="card-body line-height-21 d-flex align-items-center">
+                    <div class="pr-3">
+                        <input type="hidden" value="{{ e.id }}" name="address" />
+                        <b>{{ e.title|upper }}</b>
+                        <br />
+                        {{ e.address }}, {{ e.number }}{% if e.complement %} - {{ e.complement }}{% endif %}
+                        <br />
+                        {% if e.neighborhood %}
+                            {{ e.neighborhood }}
+                            <br />
+                        {% endif %}
+                        {{ e.city }} - {{ e.state }}<br />
+                        <b>CEP:</b> {{ e.zipcode }}
+                    </div>
+                    <div class="ml-auto">
+                        <a href="{% url 'customers:edit_address' e.id %}" class="btn btn-secondary btn-sm mb-1 btn-block">{% trans 'Editar'|upper %}</a>
+                        <a onclick="return confirm('Tem certeza que deseja excluir este endereço?');" href="{% url 'customers:delete_address' e.id %}" class="btn btn-danger btn-sm btn-block">{% trans 'Apagar'|upper %}</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <a class="d-flex align-items-center font-size-16 font-weight-bold text-secondary" data-toggle="collapse" href="#form-address" role="button">
+                    <span class="d-flex btn btn-success mr-3 rounded-circle align-items-center justify-content-center" style="width: 38px;min-width: 38px;height: 38px;min-height: 38px;">
+                        <i class="icon-plus font-size-16"></i>
+                    </span>
+                    Cadastrar novo endereço
+                </a>
+                <div id="form-address" class="form-vertical collapse mt-3">
+                    <form action="" method="post" class="edit-form">{% csrf_token %}
+                        {% draw_form form form.fieldsets %}
+                        <input class="btn btn-success btn-block btn-lg" type="submit" value="{% trans 'Salvar novo Endereço'|upper %}" />
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

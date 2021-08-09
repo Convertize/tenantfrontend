@@ -1,0 +1,13 @@
+{% load cms_tags shop_tags %}
+<div class="row">
+    <div class="col-12">
+        {% if object.html.title %}
+            <div class="title-showcase">
+                <div class="false_bg">
+                    <h3>{{ object.html.title }} </h3>
+                </div>
+            </div>
+        {% endif %}
+        <div>{% render object.html.content %}</div>
+    </div>
+</div>

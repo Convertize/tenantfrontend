@@ -1,0 +1,47 @@
+{% load l10n i18n shop_tags %}
+{% localize off %}
+<div class="showcase-colors">
+    <div class="title-showcase">
+        <h2>{{ object.shelf.title }}{% if object.shelf.sub_title %} <span class="size14">{{ object.shelf.sub_title }}</span>{% endif %}</h2>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <ul class="list-products special{% if 'pagination' in object.template %} horizontal-scroll{% else %} default{% endif %}">
+                {% for p in object.shelf.get_products %}
+                    {% if p.has_stock %}
+                        <li>
+                            <div 
+                                class="item-product{% if not has_stock %} not_stock{% endif %}" 
+                                data-id="{{ p.id }}" 
+                                data-sku="{{ p.get_sku_not_variation }}" 
+                            >
+                                <a href="{{ p.get_absolute_url }}" class="item-image">
+                                    {% if p.image %}
+                                        <img data-src="{{ MEDIA_URL }}{{ p.image }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ p.name }}" title="{{ p.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" class="img-lazy" />
+                                    {% endif %}
+                                </a>
+                                <div class="desc">
+                                    <h2 class="title" title="{{ p.name }}">
+                                        <a href="{{ p.get_absolute_url }}">
+                                            {{ p.name }}
+                                        </a>
+                                    </h2>
+                                    {% if p.seals %}
+                                        <div class="seals">
+                                        </div>
+                                    {% elif p.descont_percentage %}
+                                        <span class="descont">{{ p.descont_percentage|floatformat|f_multiply:"-1" }}</span>
+                                    {% endif %}
+                                    <a href="{{ p.get_absolute_url }}" class="btn btn-block">
+                                        Aproveite!
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endlocalize %}

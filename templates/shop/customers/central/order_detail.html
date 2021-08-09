@@ -1,0 +1,255 @@
+{% extends 'shop/customers/central/base.html' %}{% load i18n l10n shop_tags thumbnail %}
+{% block meta_title %}{% trans "Meus pedidos" %} | {{ block.super }}{% endblock %}
+
+{% block main %}
+    {% localize off %}
+        <h3 class="h4 mb-0">{% trans 'Informações sobre seu pedido' %}</h3>
+        <small class="font-size-14">
+            {% trans "Data do Pedido" %}: {{ order.add_date|date:"d/m/Y" }}
+        </small>
+        <div class="card mt-4 mb-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm-5 text-sm-center align-items-sm-center justify-content-sm-center d-flex flex-column">
+                        <p class="font-size-14 mb-1">
+                            <strong>NÚMERO DO PEDIDO<span class="d-inline-block d-sm-none">:</span></strong>
+                            <br class="d-none d-sm-block" />
+                            {{ order.id }}
+                        </p>
+                        <p class="font-size-12 mb-2 mb-sm-0">
+                            A confirmação do pedido foi enviada para o e-mail
+                            <br />
+                            <b class="text-dark">{{ order.billing_detail_email }}</b>
+                        </p>
+                    </div>
+                    <div class="col-12 col-sm-7">
+                        <p class="mb-1">
+                            <b>Status do pedido:</b> {{ order.status|get_status_display }}
+                        </p>
+                        <p class="mb-1">
+                            <b class="d-inline-block align-middle mr-1">Forma de pagamento:</b>
+                            <span class="d-inline-block">
+                                {% for payment in order.payments.all %}
+                                    {% with transaction=payment.transaction %}
+                                        <span class="d-inline-block align-middle flag {% if transaction.group == 'Boleto' %}flag-boleto{% else %}flag-{{ transaction.payment_method|slugify }}{% endif %}" title="{{ transaction.get_payment_method_display }}"></span> {% if transaction.group == 'CartaoDeCredito' %} em {{ transaction.installments }}x {% endif %}
+                                    {% endwith %}
+                                {% endfor %}
+                            </span>
+                        </p>
+                        {% if order.days_to_shipping %}
+                            <p class="mb-2">
+                                Entrega em até <b>{{ order.days_to_shipping }}</b> dias úteis após o despacho
+                            </p>
+                        {% endif %}
+                        <p>
+                            {% with payment=order.payments.first %}
+                                {% if payment.transaction.group == 'Boleto' and order.status == 'PEN' %}
+                                    <a class="btn btn-md btn-success print-btn" href="{% url 'checkout_return' payment.transaction.uuid %}" target="_blank">{% trans 'Imprimir Boleto' %} </a>
+                                {% endif %}
+                            {% endwith %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h3 class="h4 mb-3 mt-3">{% trans 'Atualizações do pedido' %}</h3>
+        <div class="card p-3 mb-5">
+            <div class="row stages stage-{{ order.status|lower }} font-size-10">
+                <div class="col text-center current-1">
+                    <a>
+                        <span class="box-icon">
+                            <i class="icon-clock"></i>
+                        </span>
+                        Aguardando pagamento
+                    </a>
+                </div>
+                {% if order.status != 'CANM' %}
+                    <div class="col text-center current-2">
+                        <a>
+                            <span class="box-icon">
+                                <i class="icon-like"></i>
+                            </span>
+                            Pagamento confirmado
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="col text-center current-2">
+                        <a>
+                            <span class="box-icon">
+                                <i class="icon-close-radius"></i>
+                            </span>
+                            Cancelado
+                            <br />
+                            {{ order.get_all_status.CANM.add_date|date:'d/m/Y' }}
+                        </a>
+                    </div>
+                {% endif %}
+                <div class="col text-center current-3">
+                    <a>
+                        <span class="box-icon">
+                            <i class="icon-delivery-truck"></i>
+                        </span>
+                        Em separação
+                    </a>
+                </div>
+                <div class="col text-center current-4">
+                    <a>
+                        <span class="box-icon">
+                            <i class="icon-delivery"></i>
+                        </span>
+                        Em transporte{% if 'retirar' in order.shipping_type|slugify %} para loja escolhida {% endif %}
+                    </a>
+                </div>
+                <div class="col text-center current-5 current-last">
+                    <a>
+                        {% if 'retirar' in order.shipping_type|slugify %}
+                            <span class="box-icon">
+                                <i class="icon-box"></i>
+                            </span>
+                            Pronto para a retirada
+                        {% else %}
+                            <span class="box-icon">
+                                <i class="icon-check"></i>
+                            </span>
+                            Entregue
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% if order.trackers.exists %}
+            <table border="0" class="table table-simple" width="100%">
+                <tr>
+                    <th class="btz blz">{% trans "Código rastreador" %}</th>
+                    <th class="btz brz" width="40">{% trans "Rastrear" %}</th>
+                </tr>
+                {% for tracker in order.trackers.all %}
+                <tr>
+                    <td class="blz">&nbsp;&nbsp; {{ tracker.code }} </td>
+                    <td class="brz" align="center">
+                        {% if tracker.url %}
+                        <a href="{{ tracker.url }}" target="_blank" class="bt bt-mini bt-style-1 mz">RASTREAR</a>
+                        {% else %}
+                        <a href="{% url 'customers:order_tracking_code' order.id %}?code={{ tracker.code }}" target="_blank" class="bt bt-mini bt-style-1 tracking_code mz">RASTREAR</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        {% if order.items.exists %}
+            <h3 class="h4 mb-0 mt-4">{% trans 'Detalhes do pedido' %}</h3>
+            <small class="font-size-14">{% trans 'Segue abaixo a relação dos produtos comprados' %}</small>
+            <div class="card p-1 mt-3 mb-5">
+                <table border="0" class="table m-0 bg-white" width="100%">
+                    <tr class="font-weight-bold">
+                        <th class="border-top-0">{% trans "Itens do Pedido" %}</th>
+                        <th class="text-center border-top-0">{% trans "Qtd" %}</th>
+                        <th class="text-center border-top-0" width="150">{% trans "Valor Unitário" %}</th>
+                        <th class="text-center border-top-0" width="110">{% trans "Sub-total" %}</th>
+                    </tr>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td class="p-2">
+                            <a href="{{ item.sku.product.get_absolute_url }}" title="Clique aqui para ver produto" target="_blank">
+                                {% thumbnail item.sku.product.image "29x29" crop="center" as im %}
+                                    <img src="{{ im.url }}" width="{{ im.width }}" heigth="{{ im.height }}" alt="{{ item.sku }}" title="{{ item.sku }}" class="bz dib valign-m" />
+                                {% endthumbnail %}
+                                {{ item.sku }} {% if item.brinde_id %}<b>+</b><br />{{ item.brinde_nome }}{% endif %}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-center">{{ item.unit_price|currency }}</td>
+                        <td class="text-center">{{ item.total_price|currency }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
+
+        <h3 class="h4 mb-0 mt-4">{% trans 'Endereços' %} </h3>
+        <div class="card mt-3 mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-sm-8">
+                        <div class="row">
+                            <div class="col-12 col-sm-6">
+                                <ul>
+                                    <li class="h6 font-weight-bold">{% trans "Endereço de cobrança" %}</li>
+                                    <li>{{ order.billing_detail_name|upper }} </li>
+                                    <li>{{ order.billing_detail_address }}, {{ order.billing_detail_number }} - {{ order.billing_detail_complement }}</li>
+                                    <li>{{ order.billing_detail_neighborhood }}</li>
+                                    <li>{{ order.billing_detail_city }} - {{ order.billing_detail_state }}</li>
+                                    <li>{{ order.billing_detail_postcode }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <ul>
+                                    {% if 'retira' in order.shipping_type|slugify %}
+                                        {% open_url_json 'https://io.convertiez.com.br/m/lojasmel/uploads/json/data_store.js' as data_retira %}
+                                        {% for retira in data_retira %}
+                                            {% if order.shipping_type == retira.service %}
+                                                <li class="h6 font-weight-bold">{% trans "Endereço de retirada" %}</li>
+                                                <li>Retirar na Loja {{ retira.neighborhood }} </li>
+                                                <li>{{ retira.street }}, {{ retira.number }}</li>
+                                                <li>{{ retira.city }}</li>
+                                                <li>{{ retira.zipcode }}</li>
+                                                <li>TELEFONE: {{ retira.phone }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="h6 font-weight-bold">{% trans "Endereço de entrega" %}</li>
+                                        <li>{{ order.shipping_detail_name|upper }} </li>
+                                        <li>{{ order.shipping_detail_address }}, {{ order.shipping_detail_number }} - {{ order.shipping_detail_complement }}</li>
+                                        <li>{{ order.shipping_detail_neighborhood }}</li>
+                                        <li>{{ order.shipping_detail_city }} - {{ order.shipping_detail_state }}</li>
+                                        <li>{{ order.shipping_detail_postcode }}</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <p class="h6 font-weight-bold mb-3 text-center">{% trans 'Resumo do pedido' %} </p>
+                        <table class="table table-sm m-0" width="100%">
+                            <tr>
+                                <td align="right" class="bz"><b class="color4">{% trans 'Sub-total' %}:</b></td>
+                                <td align="left" class="bz"><b class="color1">{{ order.item_total|currency }}</b></td>
+                            </tr>
+                            <tr>
+                                <td align="right" class="bz"><b class="color4">Frete:</b></td>
+                                <td align="left" class="bz"><b class="color1">{{ order.shipping_total|currency }}</b></td>
+                            </tr>
+                            {% if order.discount_total > 0 %}
+                                <tr>
+                                    <td align="right" class="bz"><b class="color4">{% trans 'Desconto' %}:</b></td>
+                                    <td align="left" class="bz"><b class="color1">{{ order.discount_total|currency }}</b></td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td align="right" class="bz"><b class="color4">{% trans 'Total' %}:</b></td>
+                                <td align="left" class="bz"><b class="color1 size13">{{ order.total|currency }}</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if products %}
+            <div class="float">
+                <div class="title-box mbz float">{% trans 'Aproveite' %} </div>
+                <div class="float m-bot20">
+                    <div class="list-products">
+                        <div class="carousel owl-carousel" data-responsive="true" data-items="4" data-navigation="true" data-pagination="false" data-lazy-load="true">
+                            {% for p in products|slice:"4" %}
+                            <div class="item-grid">{% include 'shop/includes/product.html' %}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endlocalize %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% load l10n user_agents shop_tags %}
+{% localize off %}
+    <div class="row">
+        <div class="col-12">
+            <div class="bannerdhtml-showcase showcase-brands">
+                {% if object.bannerdhtml.title %}
+                    <div class="title-showcase">
+                        <h2>{{ object.bannerdhtml.title }} </h2>
+                        {% if object.bannerdhtml.sub_title %}
+                            <h3>{{ object.bannerdhtml.sub_title }}</h3>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <ul class="horizontal-scroll">
+                    {% for banner in object.bannerdhtml.get_images %}
+                        <li class="item" style="min-width: {{ banner.background_image.dimensions|first  }}px;">
+                            <a href="{{ banner.link|default:'/' }}"{% if banner.target %} target="_blank"{% endif %} aria-label="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" style="background-image:url({{ banner.background_image.url }});{% if banner.style %}{{ banner.style }}{% endif %}">
+                                <span class="brand">
+                                    <span>
+                                        {% with width=banner.image.dimensions|first height=banner.image.dimensions|last %}
+                                            <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title }}" class="img-lazy" width="{{ width|f_division:'2' }}" height="{{ height|f_division:'2' }}" style="aspect-ratio:{{ width }}/{{ height  }}" />
+                                        {% endwith %}
+                                    </span>
+                                </span>
+                                {% if banner.title %}
+                                    <span class="title">{{ banner.title }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endlocalize %}

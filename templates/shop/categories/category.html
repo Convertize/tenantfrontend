@@ -1,0 +1,11 @@
+{% extends "search/search.html" %}{% load i18n l10n shop_tags showcases_tags user_agents %}
+
+{% block meta_title %}{% if object.meta_title %}{% trans object.meta_title %}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+
+{% block meta_keywords %}{% if object.meta_keywords %}{{ object.meta_keywords }}{% endif %}{% endblock %}
+
+{% block meta_robots %}
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://{{ request.get_host }}{{ object.get_absolute_url }}" />
+{% endblock %}

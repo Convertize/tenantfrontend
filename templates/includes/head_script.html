@@ -1,0 +1,50 @@
+{% load l10n i18n %}
+{% localize off %}
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ shop_settings.GOOGLE_ANALYTICS }}"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', '{{ shop_settings.GOOGLE_ANALYTICS }}', {'link_attribution': true});
+
+	window.addEventListener("hashchange", function(event){
+	gtag('event', 'page_view', {
+		'page_path': location.pathname+location.search+location.hash
+	});
+});
+</script>
+<!-- FIM Global site tag (gtag.js) - Google Analytics -->
+
+<!-- ORDER - Google Analytics -->
+{% if '/checkout/sucesso/' in request.path %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/js.cookie.min.js"></script>
+<script type="text/javascript">
+	if(!Cookies.get("order-{{ order.id }}")){
+		gtag('event', 'purchase', {
+              "transaction_id": "{{ order.id }}",
+              "affiliation": "{{ settings_pote.SHOP_NOME_FANTASIA }}",
+              "value": {{ order.total }},
+              "currency": "BRL",
+              "shipping": {{ order.shipping_total }},
+              "items": [
+                {% for item in order.items.all %}
+                {
+                  "id": "{{ item.sku.id }}",
+                  "name": "{{ item.description|title }}",
+                  "category": "{{ item.sku.product.category.title|title }}",
+                  "quantity": {{ item.quantity }},
+                  "price": '{{ item.unit_price }}'
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+              ]
+        });
+    	Cookies.set("order-{{ order.id }}", true, {expires: 1, path: "/"});
+    }
+</script>
+{% endif %}
+<!-- FIM ORDER - Google Analytics -->
+
+{% endlocalize %}

@@ -1,0 +1,14 @@
+{% load cms_tags %}
+{% for object in plugins %}
+    {% if object %}
+        <div class="showcase-object showcase-{{ object.name|slugify }}">
+            {% if object.template_html %}
+                {% render object.template_html %}
+            {% elif object.extra_data and object.extra_data.template %}
+                {% include "shop/showcases/customs/"|add:object.extra_data.template|add:".html" %}
+            {% else %}
+                {% include object.template %}
+            {% endif %}
+        </div>
+    {% endif %}
+{% endfor %}

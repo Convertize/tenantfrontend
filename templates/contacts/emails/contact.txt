@@ -1,0 +1,7 @@
+﻿CONTATO » SITE
+
+Nome: {{ contato.name }}
+Email: {{ contato.email }}
+Telefone: {{ contato.phone }}
+Assunto: {{ contato.subject }}
+Mensagem: {{ contato.message }}
