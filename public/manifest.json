@@ -1,8 +1,8 @@
 {
-    "name": "Drogalider",
-    "short_name": "Drogalider",
+    "name": "Convertize",
+    "short_name": "Convertize",
     "background_color": "#ffffff",
-    "theme_color": "#dd343a",
+    "theme_color": "#fc7247",
     "start_url": "/?utm_source=pwa&utm_medium=none",
     "scope": "/",
     "display": "standalone",
