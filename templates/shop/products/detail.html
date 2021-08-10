@@ -3,7 +3,7 @@
 
 {% block extra_meta %}
         <meta property="og:locale" content="pt_BR" />
-        <meta property="og:site_name" content="{{ settings_pote.SEO_TITLE }}" />
+        <meta property="og:site_name" content="{{ shop_settings.SEO_TITLE }}" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="{{ product.name }}" />
         <meta property="og:url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}" />

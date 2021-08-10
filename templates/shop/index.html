@@ -1,10 +1,10 @@
 {% extends "base.html" %}{% load i18n showcases_tags cms_tags user_agents shop_tags %}
 {% block body_id %}home{% endblock %}
-{% block meta_title %}{{ settings_pote.SEO_TITLE_HOME }}{% endblock %}
+{% block meta_title %}{{ shop_settings.SEO_TITLE_HOME }}{% endblock %}
 
 {% block logo %}
 	<h1 class="logo m-0 text-center" itemscope="" itemtype="http://schema.org/Organization">
-        <a href="{% url 'home' %}" itemprop="name">{{ settings_pote.SEO_TITLE_HOME }}</a>
+        <a href="{% url 'home' %}" itemprop="name">{{ shop_settings.SEO_TITLE_HOME }}</a>
         <meta itemprop="url" content="https://{{ request.get_host }}" />
         <meta itemprop="logo" content="https://{{ request.get_host }}{{ STATIC_URL }}img/logo.png" />
     </h1>

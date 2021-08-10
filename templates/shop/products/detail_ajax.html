@@ -204,10 +204,10 @@
 						</div>
                         {% if json_specifications.venda_permitida_pela_internet and json_specifications.venda_permitida_pela_internet.value and json_specifications.venda_permitida_pela_internet.value|slugify == 'nao' %}
                             <div class="text-center h4">
-                                <div class="mb-2">Ligue {{ settings_pote.SHOP_ADDRESS_PHONE|split:'/'|first }}</div>
+                                <div class="mb-2">Ligue {{ shop_settings.SHOP_ADDRESS_PHONE|split:'/'|first }}</div>
                                 <div>
-                                    <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_ADDRESS_PHONE|split:'/'|last|mask_text }}" class="colorwhite" target="_blank">
-                                        WhatsApp {{ settings_pote.SHOP_ADDRESS_PHONE|split:'/'|last }}
+                                    <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ shop_settings.SHOP_ADDRESS_PHONE|split:'/'|last|mask_text }}" class="colorwhite" target="_blank">
+                                        WhatsApp {{ shop_settings.SHOP_ADDRESS_PHONE|split:'/'|last }}
                                     </a>
                                 </div>
                             </div>

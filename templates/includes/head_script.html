@@ -25,7 +25,7 @@
 	if(!Cookies.get("order-{{ order.id }}")){
 		gtag('event', 'purchase', {
               "transaction_id": "{{ order.id }}",
-              "affiliation": "{{ settings_pote.SHOP_NOME_FANTASIA }}",
+              "affiliation": "{{ shop_settings.SHOP_NOME_FANTASIA }}",
               "value": {{ order.total }},
               "currency": "BRL",
               "shipping": {{ order.shipping_total }},

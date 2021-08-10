@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-        <title>{% block meta_title %}{{ settings_pote.SEO_TITLE }}{% endblock %}</title>
-        <meta name="description" content="{% block meta_description %}{{ settings_pote.SEO_DESCRIPTION }}{% endblock %}" />
+        <title>{% block meta_title %}{{ shop_settings.SEO_TITLE }}{% endblock %}</title>
+        <meta name="description" content="{% block meta_description %}{{ shop_settings.SEO_DESCRIPTION }}{% endblock %}" />
         {% block meta_robots %}<meta name="robots" content="index, follow" />{% endblock %}
         {% compress css %}
             <link href="{{ STATIC_URL }}css/bootstrap.3-3-7.min.css" rel="stylesheet" type="text/css" />
@@ -26,7 +26,7 @@
                     <div class="col-brand pull-left">
                         {% block logo %}
                             <div class="logo m-0 text-center" itemscope="" itemtype="http://schema.org/Organization">
-                                <a href="{% url 'home' %}" itemprop="name">{{ settings_pote.SEO_TITLE_HOME }}</a>
+                                <a href="{% url 'home' %}" itemprop="name">{{ shop_settings.SEO_TITLE_HOME }}</a>
                                 <meta itemprop="url" content="https://{{ request.get_host }}" />
                                 <meta itemprop="logo" content="https://{{ request.get_host }}{{ STATIC_URL }}img/logo.png" />
                             </div>
