@@ -122,14 +122,17 @@
 	{% endif %}
 
 	{% if '/checkout/sucesso/' in request.path %}
+		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+
 		<script type="text/javascript">
-			if(!Cookies.get("orderADS-{{ order.id }}")){
+			if(!$.cookie("orderADS-{{ order.id }}")){
 				dataLayer.push({
 					event: "checkoutSuccess",
 					transactionId: "{{ order.id }}",
 					orderTotal: "{{ order.total|stringformat:'g' }}"
 				});
-				Cookies.set("orderADS-{{ order.id }}", true, {expires: 1});
+			$.cookie("orderADS-{{ order.id }}", true, {expires: 1});
 			}
 		</script>
 
@@ -139,7 +142,7 @@
 					'purchase': {
 						'actionField': {
 							'id': '{{ order.id }}',
-							'affiliation': 'Farma Ponte',
+							'affiliation': 'Casa Mix Utilidades',
 							'revenue': '{{ order.total }}',
 							'shipping': '{{ order.shipping_total }}'
 						},
