@@ -1,1 +1,21 @@
-{% extends "shop/showcases/shelf/default.html" %}
+<div class="row">
+    <div class="col-12">
+        <div class="showcase-shelf">
+            {% if object.shelf.title %}
+            <div class="title-showcase">
+                <h2>{{ object.shelf.title }} </h2>
+                {% if object.shelf.sub_title %}
+                    <h3>{{ object.shelf.sub_title }}</h3>
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="carousel owl-carousel list-products list-products-paginate{% if object.shelf.navigation and object.shelf.get_products|length > object.shelf.num_columns %} carousel-navigation{% endif %}" data-owl-carousel='{"nav":{{ object.shelf.navigation|lower }}, {% if object.shelf.num_columns %}"items":{{ object.shelf.num_columns }}, {% endif %}"dots":{{ object.shelf.pagination|lower }}, "autoplay":{{ object.shelf.autoplay|lower }}, "loop":{{ object.shelf.loop|lower }}{% if object.shelf.attr %}, {{ object.shelf.attr|safe }}{% endif %}}' {{ object.shelf.attr|safe }}>
+                {% for p in object.shelf.get_products %}
+                    {% ifchanged p.product_id %}
+                        <li>{% include "shop/includes/product.html" %}</li>
+                    {% endifchanged %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

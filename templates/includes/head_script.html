@@ -19,13 +19,13 @@
 
 <!-- ORDER - Google Analytics -->
 {% if '/checkout/sucesso/' in request.path %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/js.cookie.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
 <script type="text/javascript">
-	if(!Cookies.get("order-{{ order.id }}")){
+	if(!$.cookie("order-{{ order.id }}")){
 		gtag('event', 'purchase', {
               "transaction_id": "{{ order.id }}",
-              "affiliation": "{{ shop_settings.SHOP_NOME_FANTASIA }}",
+              "affiliation": "{{ settings_pote.SHOP_NOME_FANTASIA }}",
               "value": {{ order.total }},
               "currency": "BRL",
               "shipping": {{ order.shipping_total }},
@@ -41,7 +41,7 @@
                 {% endfor %}
               ]
         });
-    	Cookies.set("order-{{ order.id }}", true, {expires: 1, path: "/"});
+    	$.cookie("order-{{ order.id }}", true, {expires: 1});
     }
 </script>
 {% endif %}
