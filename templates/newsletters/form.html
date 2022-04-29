@@ -1,0 +1,18 @@
+{% load i18n %}
+<div>
+    <form method="POST" action="{% url 'plugin_newsletters:add' %}" class="form-newsletters-validate" id="form-newsletters" data-form-data="true">
+        {% if not success %}
+            <div class="field form-group required m-0">
+                <label aria-label="Digite aqui seu melhor e-mail">
+                    <input type="text" name="email" placeholder="Digite aqui seu melhor e-mail" value="{% if newsletterform.email.value %}{{ newsletterform.email.value }}{% endif %}" class="form-control{% if newsletterform.email.errors %} error{% endif %}" />
+                </label>
+                {{ newsletterform.email.errors }}
+            </div>
+            <button type="submit" class="btn add_newsletter">{% trans 'OK' %}</button>
+        {% else %}
+            <div class="message-success">
+                Olá, é um prazer ter você aqui, você receberá as melhores ofertas em seu email.<br>
+            </div>
+        {% endif %}
+    </form>
+</div>

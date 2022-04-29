@@ -22,9 +22,7 @@ bin/*
 include/*
 lib/*
 media/*
-public/*
 static/*
-templates/*
 *_BKP
 envdir
 *node_modules/
