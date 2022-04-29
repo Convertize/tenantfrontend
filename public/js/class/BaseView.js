@@ -69,6 +69,19 @@ const BaseView = $.Class.create({
     bind_events: function(){
         const self = this;
         this.baseFunctions();
+
+        $(".newsletter form").formValidation({
+            success: (form, response) => {
+                if(response.status == 200 && response.data){
+                    const html = $(response.data).find("form").html();
+                    form.html(html);
+                }
+            },
+            error: (form, error) => {
+                // log(error)
+            }
+        });
+
         $("body").off("click.convertize", ".bt-open-page");
         $("body").on("click.convertize", ".bt-open-page", function(e){
             e.preventDefault();
