@@ -10,7 +10,7 @@
                     {% endif %}
                 </div>
             {% endif %}
-            <div id="{{ object.bannerdhtml.name|slugify }}" class="carousel carousel-default owl-theme owl-carousel banner"{% if object.bannerdhtml.extra_data.carousel %} data-owl-carousel='{{ object.bannerdhtml.extra_data.carousel|return_json }}'{% else %} data-owl-carousel='{"items":{% if object.bannerdhtml.num_columns %}{{ object.bannerdhtml.num_columns }}{% else %}4{% endif %}, "nav":{{ object.bannerdhtml.navigation|lower }}, "dots":{{ object.bannerdhtml.pagination|lower }}}'{% endif %}>
+            <div id="{{ object.bannerdhtml.name|slugify }}" class="carousel carousel-default owl-theme owl-carousel banner"{% if object.bannerdhtml.extra_data.carousel %} data-owl-carousel='{{ object.bannerdhtml.extra_data.carousel|return_json }}'{% else %} data-owl-carousel='{"items":{% if object.bannerdhtml.num_columns %}{{ object.bannerdhtml.num_columns }}{% else %}4{% endif %}, "nav":{{ object.bannerdhtml.navigation|lower }}, "dots":{{ object.bannerdhtml.pagination|lower }}, "autoplay":{{ object.bannerdhtml.autoplay|lower }}, "loop":{{ object.bannerdhtml.loop|lower }}{% if object.bannerdhtml.attr %}, {{ object.bannerdhtml.attr|safe }}{% endif %}}'{% endif %}>
                 {% for banner in object.bannerdhtml.get_images %}
                     {% if object.extra_data.mobile and request|is_mobile %}
                         {% if banner.classes == "m" %}
