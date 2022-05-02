@@ -130,6 +130,9 @@
             </div>
             {% block footer %}
                 <footer class="footer">
+                    {% comment %}
+                    {% include 'newsletters/form.html' %}
+                    {% endif %}
                     <div class="f-f-1">
                         <div class="container">
                             <div{% if is_mobile %} class="accordion" id="accordionFooter"{% endif %}>
@@ -278,41 +281,113 @@
                                                 <div id="collapseSocial" class="collapse " aria-labelledby="headingSocial" data-parent="#accordionFooter">
                                                 {% endif %}
                                                 <ul class="d-flex align-items-center mb-md-0">
-                                                    {% if shop_settings.FACEBOOK %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ shop_settings.FACEBOOK}}" target="_blank" rel="noreferrer" title="Facebook">
-                                                                <span class="footer-networks">
-                                                                    <i class="icon-facebook"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
+                                                    {% if settings_pote.FACEBOOK %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.FACEBOOK }}" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook">
+                                                            <span class="footer-networks fb">
+                                                                <i class="icon-facebook"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
                                                     {% endif %}
-                                                    {% if shop_settings.INSTAGRAM %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ shop_settings.INSTAGRAM}}" target="_blank" rel="noreferrer" title="Instagram">
-                                                                <span class="footer-networks">
-                                                                    <i class="icon-instagram"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
+                                                    {% if settings_pote.TWITTER %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.TWITTER }}" rel="noopener" target="_blank" rel="nofollow" title="Twitter" aria-label="Twitter">
+                                                            <span class="footer-networks tt">
+                                                                <i class="icon-twitter"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
                                                     {% endif %}
-                                                    {% if shop_settings.GOOGLE_PLUS %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ shop_settings.GOOGLE_PLUS}}" target="_blank" rel="noreferrer" title="YouTube">
-                                                                <span class="footer-networks">
-                                                                    <i class="icon-youtube"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
+                                                    {% if settings_pote.GOOGLE_PLUS %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.GOOGLE_PLUS }}" rel="noopener" target="_blank" rel="nofollow" title="Google +">
+                                                            <span class="footer-networks gplus">
+                                                                <i class="icon-google"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
                                                     {% endif %}
-                                                    {% if shop_settings.TWITTER %}
-                                                        <li>
-                                                            <a href="{{ shop_settings.TWITTER}}" target="_blank" rel="noreferrer" title="Twitter">
-                                                                <span class="footer-networks">
-                                                                    <i class="icon-twitter"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
+                                                    {% if settings_pote.GOOGLE_YOUTUBE %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.GOOGLE_YOUTUBE }}" rel="noopener" target="_blank" rel="nofollow" title="YouTube" aria-label="YouTube">
+                                                            <span class="footer-networks youtube">
+                                                                <i class="icon-youtube"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.INSTAGRAM %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.INSTAGRAM }}" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+                                                            <span class="footer-networks instagram">
+                                                                <i class="icon-instagram"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.PINTEREST %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.PINTEREST }}" target="_blank" rel="noopener" title="Pinterest" aria-label="Pinterest">
+                                                            <span class="footer-networks pinterest">
+                                                                <i class="icon-pinterest"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.LINKEDIN %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.LINKEDIN }}" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
+                                                            <span class="footer-networks linkedin">
+                                                                <i class="icon-linkedin"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.SHOP_SOCIAL_NETWORKING_TIKTOK %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_TIKTOK }}" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
+                                                            <span class="footer-networks tiktok">
+                                                                <i class="icon-tiktok"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.SHOP_SOCIAL_NETWORKING_SNAPCHAT %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_SNAPCHAT }}" target="_blank" rel="noopener" title="Snapchat" aria-label="Snapchat">
+                                                            <span class="footer-networks snapchat">
+                                                                <i class="icon-snapchat"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.SHOP_SOCIAL_NETWORKING_BLOG %}
+                                                    <li class="mr-3">
+                                                        <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_BLOG }}" target="_blank" rel="noopener" title="Blog" aria-label="Blog">
+                                                            <span class="footer-networks blog">
+                                                                <i class="icon-blog"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.SHOP_CONTACTS_TELEGRAM %}
+                                                    <li class="mr-3">
+                                                        <a href="https://t.me{{ settings_pote.SHOP_CONTACTS_TELEGRAM }}" target="_blank" rel="noopener" title="Telegram" aria-label="Telegram">
+                                                            <span class="footer-networks telegram">
+                                                                <i class="icon-telegram"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    {% endif %}
+                                                    {% if settings_pote.SHOP_CONTACTS_WHATSAPP %}
+                                                    <li class="mr-3">
+                                                        <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_CONTACTS_WHATSAPP|mask_text }}" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp">
+                                                            <span class="footer-networks whatsapp">
+                                                                <i class="icon-whatsapp"></i>
+                                                            </span>
+                                                        </a>
+                                                    </li>
                                                     {% endif %}
                                                 </ul>
                                                 {% if is_mobile %}

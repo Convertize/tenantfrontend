@@ -45,18 +45,6 @@ function info(m){
 function error(m){
     if(RegExp(".convertize.com.br").test(window.location.host)) return console.error(m);
 }
-function fromCurrencyToFloat(value){
-    try{
-        value = value.toString().replace(/\./g, "").replace(",", ".").replace("R$ ", "");
-        return parseFloat(value);
-    }catch(e){}
-}
-function htmlDecode(value){
-  return $("<div/>").html(value).text();
-}
-function roundToTwo(num){
-    return +(Math.round(num + "e+2") + "e-2");
-}
 let nav;
 $(window).ready(function() {
     nav = new Nav();
@@ -76,14 +64,24 @@ Number.prototype.toCurrency = function () {
     return resultado;
 };
 
+function fromCurrencyToFloat(valor){
+    try{
+        valor = valor.toString().replace(/\./g, '').replace(',', '.').replace('R$ ', '');
+        return parseFloat(valor);
+    }catch(e){}
+};
+function htmlDecode(value){
+  return $('<div/>').html(value).text();
+};
+
 if($.widget && $.ui){
     $.widget("ui.spinner", $.ui.spinner, {
         _buttonHtml: function() {
             return `
-                <button type="button" class="ui-spinner-button ui-spinner-up border-0" aria-label="Mais">
+                <button type="button" class="ui-spinner-button ui-spinner-up" aria-label="Mais">
                     <i class="icon-plus"></i>
                 </button>
-                <button type="button" class="ui-spinner-button ui-spinner-down border-0" aria-label="Menos">
+                <button type="button" class="ui-spinner-button ui-spinner-down" aria-label="Menos">
                     <i class="icon-minus"></i>
                 </button>
             `;

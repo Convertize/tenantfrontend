@@ -6,41 +6,30 @@ const BaseView = $.Class.create({
     init: function(){
         log("Init BaseView");
         this.cart();
-        this.seals();
         this.carousel();
         this.addProduct();
         this.formSearch();
         this.bind_events();
         this.fixedHeader();
-        // this.horizontalScroll();
-        this.api.interceptors.request.use(request => {
-            // log('Starting Request')
-            // JSON.stringify(request, null, 2)
-            return request
-        })
+        this.horizontalScroll();
+        this.cookieLGPD();
     },
-    seals: function(){
-        // $(".item-product .buy_max_pay_low").each(function(){
-        //     if($(this).closest(".item-product").find(".box-seal-leve-pague").length || !$(this).closest(".item-product").find("input[name=price]").length) return;
-        //     const value = ($(this).closest(".item-product").find("input[name=price]").val() / $(this).attr("buy") * $(this).attr("pay")).toCurrency();
-        //     const $box = $(`<div class="float box-seal-leve-pague"><p>Leve ${$(this).attr("buy")} e pague <span>${value}</span> cada </p></div>`);
-        //     $(this).closest(".item-product").find(".box-prices").append($box);
-        // });
-        // $(".item-product .percent_off_second").each(function(){
-        //     if($(this).closest(".item-product").find(".box-seal-off-segunda-uni").length || !$(this).closest(".item-product").find("input[name=price]").length) return;
-        //     const value = (($(this).closest(".item-product").find("input[name=price]").val() * $(this).attr("qtd") - $(this).closest(".item-product").find("input[name=price]").val() * $(this).attr("percentage")) / $(this).attr("qtd")).toCurrency();
-        //     const $box = $(`<div class="float box-seal-off-segunda-uni"><p>Na compra da 2ª unidade sai por <br /><span>${value}</span> cada</p></div>`);
-        //     $(this).closest(".item-product").find(".box-prices").append($box);
-        // });
-        $(".item-product .seal-desconto-progressivo").each(function(){
-            if($(this).closest(".item-product").find(".box-seal-leve-pague").length || !$(this).closest(".item-product").find("input[name=price]").length) return;
-            // const price = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text());
-            // const value = roundToTwo(price - (price * $(this).attr("percentage"))).toCurrency();
-            // const quantity = $(this).attr("qtd");
-            // const $box = $(`<div class="float box-seal-leve-pague desconto-progressivo"><p>Na compra da ${quantity}ª unidade sai por <br /><span>${value}</span> cada</p></div>`);
-            // $(this).closest(".item-product").find(".box-prices").append($box);
-            $(this).closest(".item-product").find(".seals").append(`<span class="seal multipack_product"><span>Leve mais</span></span>`);
-        });
+    cookieLGPD: function(){
+        if(!Cookies.get("accept_cookie")){
+           $("body").append(`<div class="accept_cookie">
+                <div class="d-md-flex align-items-center">
+                    <p>Esta loja utiliza cookies para melhorar a sua experiência, recolher estatísticas, otimizar as funcionalidades do site e oferecer conteúdo adequado aos seus interesses. Acesse a nossa <a href="/politica-de-privacidade/s" class="font-weight-bold">Política de Privacidade</a></p>
+                    <div class="ml-md-2 mt-2 mt-md-0">
+                       <button class="btn btn-checkout close_accept_cookie w-100">Aceitar</button>
+                    </div>
+                </div>
+           </div>`);
+           $(".close_accept_cookie").unbind("click.convertize").bind("click.convertize", function(e){
+               e.preventDefault();
+               $(this).closest(".accept_cookie").remove();
+               Cookies.set("accept_cookie", true, {expires: 30, path: "/"});
+           });
+        };
     },
     fixedHeader: function(){
         $("body").addClass("fixed");
@@ -54,17 +43,6 @@ const BaseView = $.Class.create({
         $("input[name=quantity]").spinner({
             min: 1
         });
-        if($("body").hasClass("is_mobile")){
-            $("body").off("click.convertize", ".ui-spinner-input")
-            $("body").on("click.convertize", ".ui-spinner-input", function(e){
-                const val = $(this).val();
-                $(this).removeAttr("readonly").val("").val(val).focus();
-            });
-            $("body").off("blur.convertize", ".ui-spinner-input")
-            $("body").on("blur.convertize", ".ui-spinner-input", function(e){
-                $(this).attr("readonly", "readonly");
-            });
-        }
     },
     bind_events: function(){
         const self = this;
@@ -293,7 +271,7 @@ const BaseView = $.Class.create({
                     required: true
                 };
                 data_messages[name] = {
-                    required: "Selecione uma opção!"
+                    required: $(this).data("title") ? `Selecione a opção de <b>${$(this).data("title")}</b>`:"Selecione uma opção"
                 };
             });
 
@@ -303,9 +281,12 @@ const BaseView = $.Class.create({
                 errorElement: "p",
                 errorPlacement: function(error, element){
                     element.closest(".variations").addClass("error");
-                    var ul = $(`<div class="errorlist" />`).html(error);
+                    const ul = $(`<div class="errorlist" />`).html(error.addClass("text-danger mt-2"));
                     if(!error.html()) return;
-                    element.closest(".variations").append(ul);            
+                    element.closest(".form-group").append(ul);            
+                },
+                invalidHandler: function(event, validator){
+                    $bt.removeClass("loading").prop("disabled", false);
                 },
                 submitHandler: async function(form, event){
                     event.preventDefault();
@@ -495,9 +476,6 @@ const BaseView = $.Class.create({
         const uuid = Cookies.get("convertize_cart_id");
         if(!uuid){
             $("#mini-cart").removeClass("loading");
-			$("#mini-cart .content-cart ul").html(`<li class="empty">
-                <div class="empty-cart"><span class="face">:(</span><span class="text"><strong>Ops!</strong><br />Seu carrinho está vazio</span></div>
-            </li>`);
             return;
         }
         $("#mini-cart .content-cart ul").html("");
@@ -510,7 +488,7 @@ const BaseView = $.Class.create({
             log(err);
             if(err.response && err.response.status === 404){
                 $("#mini-cart .content-cart ul").html(`<li class="empty">
-                    <div class="empty-cart"><span class="face">:(</span><span class="text"><strong>Ops!</strong><br />Seu carrinho está vazio</span></div>
+                    <div class="empty-cart"><span class="face">:(</span><span class="text"><strong>Ops!</strong><br />Você está sem produtos</span></div>
                 </li>`);
                 Cookies.remove("convertize_cart_id")
             }
@@ -551,14 +529,15 @@ const BaseView = $.Class.create({
                 }
                 <div class="item-info">
                     <a href="${item.url}" class="item-title d-block">${item.sku_name}</a>
-                    <div class="mt-1">
-                        <span class="item-price">${price}</span>
-                        <div class="quantity mt-1">
+					<div class="quantity mt-1">
                             <input type="tel" value="${item.quantity}" name="quantity" class="input" />
                         </div>
+                    <div class="mt-1">
+                        <span class="item-price">${price}</span>
+                        
                     </div>
                 </div>
-                <a class="remove-item"><i class="icon-close-radius"></i></a>
+                <a class="remove-item" style="font-size:15px;"><i class="icon-close-radius"></i></a>
             </li>`);
         });
 
@@ -576,7 +555,7 @@ const BaseView = $.Class.create({
         }else{
             $("#mini-cart footer").hide();
             $("#mini-cart .content-cart ul").html(`<li class="empty">
-                <div class="empty-cart"><span class="face">:(</span><span class="text"><strong>Ops!</strong><br />Seu carrinho está vazio</span></div>
+                <div class="empty-cart"><span class="face">:(</span><span class="text"><strong>Ops!</strong><br />Você está sem produtos</span></div>
             </li>`);
         };
 
@@ -599,13 +578,12 @@ const BaseView = $.Class.create({
     },
     carousel: function(){
         const self = this;
-
+	
         if($(".carousel").length){
-
             $(".carousel").each(function(){
                 const $this = $(this);
                 const fixOwl = function(){
-                    log("onInitialized");
+                    console.log("onInitialized");
                     var $stage = this.$element.find(".owl-stage"),
                         stageW = $stage.outerWidth(),
                         $el = this.$element.find(".owl-item"),
@@ -624,20 +602,31 @@ const BaseView = $.Class.create({
                 try{
                     if(!$(this).hasClass("banner") && !options.hasOwnProperty("responsive")){
                         options["responsive"] = {
+                            "1180": {
+                                "items": options.hasOwnProperty("items") ? options["items"]:5
+                            },
+                            "990": {
+                                "items": 4
+                            },
                             "769": {
-                                "items": options.hasOwnProperty("items") ? options["items"]:2
+                                "items": 3
                             },
                             "0": {
-                                "items": 1
+                                "items": 2
                             }
                         };
                     };
                     if(options.hasOwnProperty("startPosition") && options["startPosition"] == "auto") options["startPosition"] = $item.find(".item.active").index();
                     if(options["autoWidth"]) options["onLoadedLazy"] = fixOwl;
-                    if(!$(this).hasClass("banner") && !$("body").hasClass("is_mobile")) options["margin"] = 15;
+                    if(!$(this).hasClass("banner") && !$("body").hasClass("is_mobile")) options["margin"] = 3;
                     $item.owlCarousel(options);
+					if(screen.width < 700){
+					 	$('.showcase-banners-menores ul').removeClass()
+						$('.showcase-banners-menores .item').css('min-width','390px').css('width','390px').css('padding-bottom','10px')
+						$('.showcase-banners-menores ul img').css('width','390px')
+					}
                 }catch(err){
-                    log(err);
+                    console.error(err);
                 };
             });
         };
@@ -670,7 +659,7 @@ const BaseView = $.Class.create({
                 width = $(this).data("width"),
                 height = $(this).data("height"),
                 code = $(this).data("code");
-            $(this).html(`<div class="cover"><img src="//i2.ytimg.com/vi/${code}/hqdefault.jpg" /></div>`);
+            $(this).html(`<div class="cover"><img src="//i2.ytimg.com/vi/${code}/hqdefault.jpg" alt="${$(this).data("title")}" title="${$(this).data("title")}" /></div>`);
             $(this).unbind("click.convertize").bind("click.convertize", function(e){
                 e.preventDefault();
                 $(this).addClass("played video-container");
@@ -737,3 +726,24 @@ const BaseView = $.Class.create({
         });
     }
 });
+
+function addCartNotification(){
+    if($('.jq-toast-wrap').length){
+        $('.jq-toast-wrap').remove()
+    } else {
+    	$('[data-toggle="popover"]').popover('show')
+        setTimeout(() => {
+            $('[data-toggle="popover"]').popover('hide')
+            },3000)}
+        }
+
+    $(document).ready(
+        function(){
+            var showPopover = function () {
+            $(this).popover('show');
+        }, 
+            hidePopover = function () {
+            $(this).popover('hide');
+        };
+        $('[data-toggle="popover"]').popover({trigger: 'manual'})
+    })

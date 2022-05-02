@@ -4,14 +4,39 @@ const ProductView = BaseView.extend({
         this._super();
     },
     bind_events: function(){
-        const self = this;
         this._super();
         this.zoom();
         this.embedYoutube();
-        setTimeout(function(){
-            self.loadOffers();    
-        }, 300)
         
+        // Desconto percentual no boleto
+        if($('.product-detail .descont').length){
+            var _unit_price = fromCurrencyToFloat($('.product-detail .unit-price > span').html());
+            var _price_boleto = fromCurrencyToFloat($('.product-detail .sale-price > strong').html());
+            var _discount = (((_price_boleto*100) / _unit_price - 100) * -1).toFixed(0);
+            $('.product-detail .descont > span').html(_discount+'%');
+        };
+
+        $(".box-calculate-shipping").formValidation({
+            success: (form,response) => {
+                if(response.status == 200 && response.data && response.data.length){
+                    const $list = $(`<ul class="list-group"></ul>`);
+                    response.data.map((item) => {
+                        $list.append(`<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-2">
+                            <span><b>${item.label}</b> - A partir de ${item.delivery_time} dia${item.delivery_time != 1 ? 's':''} út${item.delivery_time != 1 ? 'eis':'il'}*</span>
+                            <span class="price">${parseFloat(item.absolute_value.replace(".","").replace(",",".")).toCurrency()}</span>
+                        </li>`);
+                    });
+                    form.find(".form-return").html($list);
+                    form.find(".form-return").append("<small>*O prazo de entrega inicia-se no 1º dia útil após a confirmação do pagamento.</small>");
+                }else{
+                    form.find(".form-return").html(`<p class="text-danger">Ocorreu um erro na pesquisa. Verifique o seu CEP e tente novamente</p>`);
+                }
+            },
+            error: (form, error) => {
+                form.find(".form-return").html(`<p class="text-danger">Ocorreu um erro na pesquisa. Verifique o seu CEP e tente novamente</p>`);
+            }
+        });
+
         $("body").off("click.convertize", ".thumbs .item");
         $("body").on("click.convertize", ".thumbs .item:not(.video)", { self: this }, this.openImage);
         $("body").on("click.convertize", ".thumbs .item.video", { self: this }, this.openVideo);
@@ -112,53 +137,5 @@ const ProductView = BaseView.extend({
                 </div>
             </div>
         </div>`);
-    },
-    loadOffers: async function(){
-        try{
-            const response = await this.api.get(`/offers/search/?skus=${window.dataProduct.skuId}`);
-            const resp = response.data;
-            this.renderSeals(resp.results)
-        }catch(err){
-            log(err);
-        }
-    },
-    renderSeals: function(results){
-        results.map(function(offer){
-            const gifts = [];
-            if(offer.type_offer == 12){
-                offer.gifts.map(function(gift){
-                    gifts.push(gift);
-                });
-            }else if(offer.type_offer == 9){
-                offer.progressive_discount.map(function(item){
-                    if(!$(`.product-detail .seal-offer-${offer.id}-${item.quantity}`).length){
-                        if(item.discount){
-                            $(".product-detail .seals").append(`<div class="box-seal-off-segunda-uni desconto-progressivo seal-offer-${offer.id}-${item.quantity}">
-                                <p>Na compra da ${item.quantity}ª unidade sai por <span>${roundToTwo(Math.floor((window.dataProduct.salePrice - (window.dataProduct.salePrice * (item.discount/100))) * 100) / 100).toCurrency()}</span> cada</p>
-                            </div>`);
-                        }else if(item.unit_price){
-                            const discount = ((item.unit_price*100) / window.dataProduct.salePrice - 100) * -1;
-                            $(".product-detail .seals").append(`<div class="box-seal-off-segunda-uni desconto-progressivo seal-offer-${offer.id}-${item.quantity}">
-                                <p>Na compra da ${item.quantity}ª unidade sai por <span>${item.unit_price.toCurrency()}</span> cada</p>
-                            </div>`);
-                        };
-                    };
-                });
-            };
-            if(gifts.length && !$('.content-offers .offer-12').length){
-                $(".content-offers").append(`<div class="offer-12 brinde mt-5 mb-3">
-                    <h4 class="h6 mb-3">Na compra deste item você ganha:</h4>
-                    <div class="row"></div>
-                </div>`);
-                gifts.map(function(g){
-                    $(".content-offers .offer-12 .row").append(`<div class="col-12">
-                        <div class="brindeInfo d-flex bg-white p-3 rounded align-items-center">
-                            <img src="${g.images.mini}" alt="" class="mr-2" />
-                            <strong>${g.name}</strong>
-                        </div>
-                    </div>`);
-                });
-            }
-        })
     }
 });

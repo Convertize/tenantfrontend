@@ -142,6 +142,13 @@
         margin: 0;
         padding: 0px 15px 15px 15px;
     }
+    .form-newsletters-validate{
+        display: block;
+    }
+    .form-newsletters-validate .field{ 
+        padding: 0px;
+        margin-bottom: 10px;
+    }
 }
 
 @media(max-width: 650px){
