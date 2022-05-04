@@ -13,6 +13,35 @@ function add_message(messages, element){
     element.prepend($ul);
 };
 
+function showPassword(){
+    if(document.getElementById("password_input").type == "password"){
+        document.getElementById("password_input").type = "text"
+    	document.getElementById('password_eye').innerHTML = '<i class="icon-eye"></i>'
+    } else {
+    	document.getElementById("password_input").type = "password"
+   		document.getElementById('password_eye').innerHTML = '<i class="icon-eye-blocked"></i>'
+	}
+	return false
+}
+
+function hideInitialPage(bool){
+		if(bool)
+		$('.initial-page')[0].style = 'display:none;'
+		else
+		$('.initial-page')[0].style = ''
+}
+
+function showAccessKeyLogin(bool){
+		if(bool){
+		hideInitialPage(true);
+		setTimeout(() => {
+		$('.item-page.right').removeClass("inactive");},50)
+		} else {
+		hideInitialPage(false);
+		}
+
+}
+
 function Authetincator(){
     const bsModal = $.fn.modal.noConflict();
     $.fn.bsModal = bsModal;
@@ -21,46 +50,63 @@ function Authetincator(){
         let bt_close = `<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>`;
         if(_backdrop == "static") bt_close = "";
         $('body').append(`
-            <style type="text/css">#boxLogin .modal-body{min-height: 270px}#boxLogin .pages{ white-space: nowrap; overflow: hidden; width: 100%; font-size: 0px;}#boxLogin .pages .item-page{ display: inline-block; vertical-align: top; white-space: normal; width: 100%; font-size: 13px; -webkit-transition: all 0.3s;-moz-transition: all 0.3s;-o-transition: all 0.3s;transition: all 0.3s;}#boxLogin .pages .item-page.inactive{ margin-left: -100%;}</style>
-            <div class="modal fade" id="boxLogin">
+			<div class="modal fade" id="boxLogin">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="pages">
                             <div class="item-page left">
+								<div class="initial-page">
                                 <div class="modal-header">
                                     ${bt_close}
-                                    <h4 class="modal-title">Use uma das opções abaixo para fazer o login</h4>
+                                    <div class="modal-title">
+										<div class="container">
+											<center><p class="font-weight-bold">Olá!</p></center>
+											<p id="subtitle">como quer fazer o login?</p>
+										</div>
+									</div>
                                 </div>
                                 <div class="modal-body">
-                                    <ul class="list-buttons">
-                                        <li>
-                                            <button class="btn btn-block btn-lg btn-success btn-acess_key">
-                                                Receber um código de acesso no email
+								<form class="form-vertical form-password">
+										<li>
+                                            <button class="btn btn-block btn-lg btn-success btn-acess_key" onclick="showAccessKeyLogin(true)">
+                                                Chave de acesso por email
                                             </button>
+                                        </li>					
+										<div class="required form-group li-email">
+                                            <label class="required font-weight-bold">Entrar com E-mail e senha *</label>
+                                            <input type="email" name="email" placeholder="Digite o email" class="form-control"/>
+                                        </div>
+                                        <div class="required form-group li-password">
+											<div class="input-group">
+                                            <input type="password" name="password" autocomplete="new-password" placeholder="Digite sua senha" class="form-control" id="password_input"/>
+											<div class="input-group-append" id="button-addon4">
+											<a class="btn btn-outline-secondary border-left-0 type="button" id="password_eye" onclick="showPassword()"><i class="icon-eye-blocked"></i></a>
+										</div>
+											<button id="enter-button" class="btn btn-outline-secondary btn-login-password" data-loading-text="Entrar"><span>Entrar</span></button>
+                                        </div>
+										</form>
+										<div class="d-flex">
+										<a href="javascript:void(0)" class="btn btn-link btn-sm btn-block btn-set-password text-left pl-0" id="forgetpass" onclick="hideInitialPage(true)">Esqueci minha senha</a>
+                                        <a href="javascript:void(0)" class="btn btn-link btn-sm btn-block btn-set-password mt-0 text-left pl-0" onclick="hideInitialPage(true)">Não tem senha? <u>Cadastre-se</u></a>
+                                    	</div>
+										</br>
+										<div class="row d-flex justify-content-center h6">
+										<label class="font-weight-bold text-center">Ou use sua conta</label>
+										</div>
+									<ul class="list-buttons d-flex justify-content-center">
+                                        <li class="li-btncircle">
+                                            <button class="btn-default btn-provider-login btn-circle" data-provider="google"><i class="icon-google"></i></button>
                                         </li>
-                                        <li>
-                                            <button class="btn btn-block btn-lg btn-mercadolivre btn-provider-login" data-provider="mercadolivre">
-                                                Entrar com o Mercado Livre
-                                            </button>
+                                        <li class="li-btncircle">
+                                            <button class="btn-default btn-provider-login btn-circle" data-provider="facebook"><i class="icon-facebook"></i></button>
                                         </li>
-                                        <li>
-                                            <button class="btn btn-block btn-lg btn-fb btn-provider-login" data-provider="facebook">
-                                                Entrar com o Facebook
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-block btn-lg btn-google btn-provider-login" data-provider="google">
-                                                Entrar com o Google
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-block btn-lg btn-password" data-loading-text="Entrar com email e senha">
-                                                Entrar com email e senha
-                                            </button>
+										<li class="li-btncircle">
+                                            <button class="btn-default btn-provider-login btn-circle" data-provider="mercadolivre"><i class="icon-mercadolivre"></i></button>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
+							</div>
                             <div class="item-page right">
                                 <form class="form-vertical form-password" style="display:none;">
                                     <div class="modal-header">
@@ -70,7 +116,7 @@ function Authetincator(){
                                     <div class="modal-body">
                                         <div class="required form-group li-email">
                                             <label class="required font-weight-bold">Email </label>
-                                            <input type="email" name="email" class="form-control" />
+                                            <input type="email" name="email" class="form-control"/>
                                         </div>
                                         <div class="required form-group li-password">
                                             <label class="required font-weight-bold">Senha </label>
@@ -92,15 +138,15 @@ function Authetincator(){
                                     <div class="modal-body">
                                         <div class="required form-group li-email">
                                             <label class="required font-weight-bold">Email </label>
-                                            <input type="email" name="email" required class="form-control" />
+                                            <input type="email" name="email" required class="form-control" placeholder="Digite o email"/>
                                         </div>
                                         <div class="required form-group li-password">
                                             <label class="required font-weight-bold">Nova senha </label>
-                                            <input type="password" name="password" autocomplete="new-password" class="form-control" />
+                                            <input type="password" name="password" autocomplete="new-password" class="form-control" placeholder="Digite sua senha"/>
                                         </div>
                                         <div class="required form-group li-confirm-password">
                                             <label class="required font-weight-bold">Confirmar nova senha </label>
-                                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" />
+                                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirme sua senha"/>
                                         </div>
                                         <div class="required form-group li-acess_key" style="display:none;">
                                             <label class="required font-weight-bold">Código de verificação </label>
@@ -109,7 +155,7 @@ function Authetincator(){
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary btn-back2">Voltar</button>
+                                        <button type="button" class="btn btn-secondary btn-back" onclick="hideInitialPage(false)">Voltar</button>
                                         <button type="button" class="btn btn-success btn-save-password ml-auto">Cadastrar </button>
                                     </div>
                                 </form>
@@ -122,11 +168,11 @@ function Authetincator(){
                                         <div class="modal-body">
                                             <div class="required form-group li-email">
                                                 <label class="required font-weight-bold">Email </label>
-                                                <input type="email" name="email" required class="form-control" />
+                                                <input type="email" name="email" required class="form-control" placeholder="Digite o email"/>
                                             </div>
                                         </div>
-                                        <div class="float modal-footer">
-                                            <button type="button" class="btn btn-secondary btn-back">Voltar</button>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-back" onclick="showAccessKeyLogin(false)">Voltar</button>
                                             <button type="button" class="btn btn-success btn-key-email ml-auto" data-loading-text="Entrar">Entrar</button>
                                         </div>
                                     </div>
@@ -175,10 +221,10 @@ function Authetincator(){
                 $bt.prop("disabled",true);
 
                 try{
-                    const response = await api.post(URL_AUTHENTICATION_PROVIDER, {
-                        provider: provider,
-                        next: redirect_uri
-                    });
+                    const formData = new FormData();
+                    formData.append("provider", provider);
+                    formData.append("next", redirect_uri);
+                    const response = await api.post(URL_AUTHENTICATION_PROVIDER, formData);
                     const resp = response.data;
                     if(resp.redirect_uri){
                         window.location = resp.redirect_uri;
@@ -273,7 +319,7 @@ function Authetincator(){
                 e.preventDefault();
                 $this.find(".item-page.right form, .item-page.right .form-acess_key .step-2").hide();
                 $this.find(".item-page.right .form-acess_key, .item-page.right .form-acess_key .step-1").show();
-                $this.find(".item-page.left").addClass("inactive");
+                $this.find(".item-page.right").addClass("inactive");
                 $(".btn-key-email").unbind("click.convertize").bind("click.convertize", function(e){
                     e.preventDefault();
                     $(this).closest("form").submit();
@@ -302,7 +348,7 @@ function Authetincator(){
                 errorElement: "li",
                 errorPlacement: function(error, element){
                     element.addClass("is-invalid").closest(".required.form-group").addClass("error");
-                    const ul = $(`<ul class="invalid-feedback" />`).html(error);
+                    const ul = $(`<ul class="invalid-feedback order-last" />`).html(error);
                     if (element.prop("type") === "checkbox"){
                         ul.insertAfter(element.parent("label"));
                     } else {
@@ -324,7 +370,7 @@ function Authetincator(){
                         password: password
                     }).then(function(response){
                         const data = response.data;
-                        if(data.messages) add_message(data.messages, $(form).find(".modal-body"));
+                        if(data.messages) add_message(data.messages, $(form).find(".form-group"));
                         if(data.status == 200){
                             if(redirect_uri){
                                 window.location = redirect_uri;
@@ -342,8 +388,8 @@ function Authetincator(){
             });
             $this.find(".btn-password").unbind("click.convertize").bind("click.convertize", function(e){
                 e.preventDefault();
-                $this.find(".item-page.right form").hide();
-                $this.find(".item-page.right .form-password").show();
+                $this.find(".item-page.left form").hide();
+                $this.find(".item-page.left .form-password").show();
                 $this.find(".item-page.left").addClass("inactive");
                 $(".btn-login-password").unbind("click.convertize").bind("click.convertize", function(e){
                     e.preventDefault();
@@ -417,7 +463,7 @@ function Authetincator(){
                             };
                             $(".btn-save-password").button("reset");
                         }).catch((err) => {
-                            // console.error("ops! ocorreu um erro" + err);
+                             console.error("ops! ocorreu um erro" + err);
                         });
 
                     }else if(password && acess_key){
@@ -485,7 +531,6 @@ function Authetincator(){
         });
 
     };
-
     $("body").off("click.convertize", ".bt_login, .btn-login");
     $("body").on("click.convertize", ".bt_login, .btn-login", function(e){
         e.preventDefault();

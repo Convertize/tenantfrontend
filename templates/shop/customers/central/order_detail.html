@@ -46,6 +46,53 @@
                                 {% if payment.transaction.group == 'Boleto' and order.status == 'PEN' %}
                                     <a class="btn btn-md btn-success print-btn" href="{% url 'checkout_return' payment.transaction.uuid %}" target="_blank">{% trans 'Imprimir Boleto' %} </a>
                                 {% endif %}
+                                {% if payment.transaction.group == 'PIX' and order.status == "PEN" %}
+                                    <hr class="mb-4">
+                                    <div class="mb-3 text-center">
+                                        Para realizar o pagamento, abra o aplicativo da sua instituição financeira, vá até a seção <strong>Pix</strong> e escolha a opção de <strong>pagar com QR Code</strong>.
+                                        Depois é só apontar a câmera para o QR Code abaixo.
+                                    </div>
+                                    <hr class="mb-4">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3 text-center">
+                                            <img src="{{ payment.transaction.extra_data.qrcode_image }}" style="max-width: 100%">
+                                        </div>
+                                    </div>
+                                    <hr class="mb-3">
+                                    <div class="mb-3 text-center">
+                                        Se você vai pagar com este mesmo dispositivo <strong>clique no código abaixo</strong> para copiar.
+                                        Depois, na seção <strong>Pix</strong> do aplicativo da sua instituição financeira, procure a função <strong>Pix Copia e Cola</strong>.
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            &nbsp;<span id="pixcopied" class="text-center" style="display: none; color: blue">Código Pix Copiado!</span>
+                                        </div>
+                                        <div class="col-md-12 mb-3">
+                                            <input type="text" class="form-control" id="pixcode" name="pixcode" placeholder="" readonly="readonly" value="{{ payment.transaction.extra_data.qrcode }}" onclick="pixcopy();">
+                                        </div>
+                                    </div>
+                                    <hr class="mb-4">
+                                    <div class="share">
+                                        <h4 class="mb-3">
+                                            <span>Compartilhar fatura</span>
+                                            <span><i class="icon-share"></i></span>
+                                        </h4>
+                                        <div class="list-group-item text-center">
+                                            <a class="share_link bt-whatsapp" href="https://api.whatsapp.com/send?text=Fatura%20para%20{{ order.billing_detail_name }}%20%0A%0Ahttps://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar pelo WhatsApp">
+                                                <i class="icon-whatsapp2"></i>
+                                            </a>
+                                            <a class="share_link bt-telegram" href="https://telegram.me/share/url?url=Fatura%20para%20{{ order.billing_detail_name }}%20%0A%0Ahttps://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar pelo Telegram">
+                                                <i class="icon-telegram"></i>
+                                            </a>
+                                            <a class="share_link bt-twitter" href="https://twitter.com/intent/tweet?text=Fatura%20para%20{{ order.billing_detail_name }}%20%0A%0Ahttps://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar pelo Twitter">
+                                                <i class="icon-twitter"></i>
+                                            </a>
+                                            <a class="share_link bt-mail" href="mailto:?subject=Fatura%20para%20{{ order.billing_detail_name }}&amp;body=https://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar por e-mail">
+                                                <i class="icon-envelope"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             {% endwith %}
                         </p>
                     </div>
@@ -238,16 +285,16 @@
         </div>
 
         {% if products %}
-            <div class="float">
-                <div class="title-box mbz float">{% trans 'Aproveite' %} </div>
-                <div class="float m-bot20">
-                    <div class="list-products">
-                        <div class="carousel owl-carousel" data-responsive="true" data-items="4" data-navigation="true" data-pagination="false" data-lazy-load="true">
-                            {% for p in products|slice:"4" %}
-                            <div class="item-grid">{% include 'shop/includes/product.html' %}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
+            <div class="container">
+                <div class="title-showcase">
+                    <h2>{% trans 'Aproveite' %}</h2>
+                </div>
+                <div class="carousel owl-carousel list-products list-products-paginate" data-owl-carousel='{"nav":false, "items":4, "dots":true, "autoplay":true, "loop":true}'>
+                    {% for p in products|slice:"4" %}
+                        {% ifchanged p.product_id %}
+                            <li>{% include "shop/includes/product.html" %}</li>
+                        {% endifchanged %}
+                    {% endfor %}
                 </div>
             </div>
         {% endif %}

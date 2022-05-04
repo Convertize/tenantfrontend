@@ -529,15 +529,16 @@ const BaseView = $.Class.create({
                 }
                 <div class="item-info">
                     <a href="${item.url}" class="item-title d-block">${item.sku_name}</a>
-					<div class="quantity mt-1">
+                    <div class="d-flex align-items-center mt-2">
+                        <div>
+                            <span class="item-price">${price}</span>
+                        </div>
+				        <div class="quantity ml-3">
                             <input type="tel" value="${item.quantity}" name="quantity" class="input" />
                         </div>
-                    <div class="mt-1">
-                        <span class="item-price">${price}</span>
-                        
                     </div>
                 </div>
-                <a class="remove-item" style="font-size:15px;"><i class="icon-close-radius"></i></a>
+                <a class="remove-item"><i class="icon-close-radius"></i></a>
             </li>`);
         });
 
