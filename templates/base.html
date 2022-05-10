@@ -132,7 +132,7 @@
                 <footer class="footer">
                     {% comment %}
                     {% include 'newsletters/form.html' %}
-                    {% endif %}
+                    {% endcomment %}
                     <div class="f-f-1">
                         <div class="container">
                             <div{% if is_mobile %} class="accordion" id="accordionFooter"{% endif %}>
@@ -256,12 +256,10 @@
                                                 {% endif %}
                                                     <ul>
                                                         <li>
-                                                            {% comment %}
                                                             <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ shop_settings.SHOP_ADDRESS_PHONE|mask_text }}" target="_blank" rel="noopener" class="d-flex align-items-center">
                                                                 <i class="icon-whatsapp h5 mr-2 mb-0"></i>
                                                                 {{ shop_settings.SHOP_ADDRESS_PHONE }}
                                                             </a>
-                                                            {% endcomment %}
                                                             <i class="icon-envelope h5 mr-2 mb-0"></i><span class="footer-sac">{{ shop_settings.FROM_EMAIL_COMERCIAL }}</span>
                                                         </li>
                                                     </ul>
