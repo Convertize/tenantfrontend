@@ -223,13 +223,13 @@
                                                 {% endif %}
                                                     <ul class="d-flex align-items-center mb-md-0">
                                                         <li class="mr-3">
-                                                            <a href="https://safeweb.norton.com/report/show?url={{ request.get_host }}&amp;ulang=por_bra" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
-                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web" />
+                                                            <a href="http://www.google.com/safebrowsing/diagnostic?site={{ request.get_host }}" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
+                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png?v=2" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google" />
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="http://www.google.com/safebrowsing/diagnostic?site={{ request.get_host }}" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
-                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google" />
+                                                            <a href="https://safeweb.norton.com/report/show?url={{ request.get_host }}&amp;ulang=por_bra" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
+                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web" />
                                                             </a>
                                                         </li>
                                                     </ul>
