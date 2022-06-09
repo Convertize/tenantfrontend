@@ -1486,6 +1486,40 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
     color: #000;
     box-shadow: 0 4px 3px 0 rgb(0 0 0 / 12%);
 }
+#content-product .variations .value{
+    position: relative;
+    margin: 0px 8px 8px 0px;
+}
+#content-product .variations .value.disabled{
+    background: #c2c2c2;
+}
+#content-product .variations .value input{
+    position: absolute;
+    opacity: 0;
+    border: 0px;
+    outline: 0px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+#content-product .variations .value span{
+    display: block;
+    cursor: pointer;
+    background: #fff;
+    color: #666666;
+    padding: 5px 10px;
+    border: 1px solid #d5d5d5;
+    min-width: 33px;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 5px;
+}
+#content-product .variations .value input:checked + span{
+    color: #ffffff;
+    background: #288449;
+    border-color: #288449;
+}
 /* End Product Detail */
 
 /* Owl Carousel  */

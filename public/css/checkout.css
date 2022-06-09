@@ -688,6 +688,9 @@ form .group .group-input input, form .group .group-input textarea, .textarea, fo
 
 
 /* Forms */
+
+#checkout input[name=save], #checkout input[name=save]+label {display: block;}
+
 form input, form textarea, .input, .textarea, form select, .select{ color: #000000; font-size: 13px; border: 1px solid #d8d8d8; background: #ffffff;
     border-radius: 5px;
 }

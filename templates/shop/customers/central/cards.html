@@ -4,58 +4,63 @@
 
 {% block main %}
                         <h4 class="h4 mb-4">{% trans "Meus cartões de crédito" %}</h4>
-                        <ul class="list-group">
+                        <div class="accordion" id="accordionCards">
                             {% for card in cards %}
-                                <li class="list-group-item p-0">
-                                    <a class="d-block p-3" data-toggle="collapse" href="#{{ card.uuid }}">
-                                        <span class="flag flag-{{ card.flag|slugify }} dib mbz"></span>
-                                        Terminando em {{ card.card_mask|slice:'-4:' }}
-                                    </a>
-                                    <div class="collapse" id="{{ card.uuid }}">
-                                        <div class="p-3" style="margin-top: 10px;">
-                                            <div class="float data">
-                                                <div class="fl">
-                                                    <p>
-                                                        <span class="size11">{% trans 'Validade' %} </span>
-                                                        <br />
-                                                        {{ card.exp_date }}
-                                                    </p>
-                                                    <br />
-                                                    <p>
-                                                        <span class="size11">{% trans 'Nome impresso no cartão' %} </span>
-                                                        <br />
-                                                        {{ card.card_name }}
-                                                    </p>
+                                <div class="card rounded mb-3 border">
+                                    <div class="card-header m-0 p-0">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link btn-block d-flex p-3" type="button" data-toggle="collapse" data-target="#card-{{ card.id|slugify }}">
+                                                <span class="flag flag-{{ card.flag|slugify }} mr-2"></span>
+                                                Terminando em {{ card.card_mask|slice:'-4:' }}
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="card-{{ card.id|slugify }}" class="collapse" data-parent="#accordionCards">
+                                        <div class="card-body">
+                                            <div class="data">
+                                                <div class="d-flex flex-wrap w-100 align-items-center justify-content-between">
+                                                    <div>
+                                                        <p class="mb-2">
+                                                            <span class="font-size-11 font-weight-bold">{% trans 'Validade' %} </span>
+                                                            <br />
+                                                            {{ card.exp_date }}
+                                                        </p>
+                                                        {% if card.card_name %}
+                                                            <p>
+                                                                <span class="font-size-11 font-weight-bold">{% trans 'Nome impresso no cartão' %} </span>
+                                                                <br />
+                                                                {{ card.card_name }}
+                                                            </p>
+                                                        {% endif %}
+                                                    </div>
+                                                    <button type="button" class="float-right btn btn-danger btn-sm toggle_card">{% trans 'Remover' %}</button>
                                                 </div>
-                                                <button type="button" class="pull-right btn btn-danger btn-sm toggle_card">{% trans 'Remover' %}</button>
                                             </div>
-                                            <div class="clear"></div>
-                                            <div class="float form" style="display:none;">
+                                            <div class="form" style="display:none;">
                                                 <h3>{% trans 'Você deseja remover o cartão de crédito terminado em' %} {{ card.card_mask|slice:'-4:' }}?</h3>
                                                 <br />
                                                 <form method="POST">{% csrf_token %}
                                                     <input type="hidden" value="{{ card.uuid }}" name="card" />
-                                                    <button type="button" class="btn btn-warning btn-sm toggle_card">{% trans 'Cancelar' %}</button>
-                                                    <button type="submit" class="btn btn-danger btn-sm">{% trans 'Sim, desejo remover' %}</button>
+                                                    <button type="button" class="btn btn-warning btn-sm toggle_card mr-4 px-3">{% trans 'Cancelar' %}</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm px-3">{% trans 'Sim, desejo remover' %}</button>
                                                 </form>
                                             </div>
-                                            <div class="clear"></div>
                                         </div>
                                     </div>
-                                </li>
+                                </div>
                             {% empty%}
-                                <li class="list-group-item">
+                                <p class="list-group-item">
                                     Nenhum cartão encontrado
-                                </li>
+                                </p>
                             {% endfor %}
-                        </ul>
+                        </div>
 {% endblock %}
 
 {% block extra_footer %}
     <script type="text/javascript">
         $(document).ready(function(){
-            $('.toggle_card').unbind('click.convertize').bind('click.convertize', function(){
-                $(this).closest('.collapse').find('.data, .form').toggle();
+            $(".toggle_card").unbind("click.convertize").bind("click.convertize", function(){
+                $(this).closest(".collapse").find(".data, .form").toggle();
             });
         });
     </script>

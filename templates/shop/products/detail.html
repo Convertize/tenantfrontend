@@ -81,8 +81,32 @@
 							</div>
 						</div>
 					{% endif %}
-					</div>
+                </div>
                 <div class="container">
+                    {% if product.get_similars %}
+                        <div class="title-showcase">
+                            <h2>{% trans 'Produtos similares' %} </h2>
+                        </div>
+                        <ul class="list-products horizontal-scroll">
+                            {% for p in product.get_similars %}
+                                <li>
+                                    {% include "shop/includes/product.html" %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if product.get_suggestions %}
+                        <div class="title-showcase">
+                            <h2>{% trans 'Nossas sugestões' %} </h2>
+                        </div>
+                        <ul class="list-products horizontal-scroll">
+                            {% for p in product.get_suggestions %}
+                                <li>
+                                    {% include "shop/includes/product.html" %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     {% if product.get_accessories %}
                         <div class="title-showcase">
                             <h2>{% trans 'Acessórios' %} </h2>
