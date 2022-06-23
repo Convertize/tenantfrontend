@@ -174,9 +174,12 @@ const BaseView = $.Class.create({
             $(".popular-words").html(menuPopularWordsTemplate);
         };
 
+        let search_status;
+
         $(".form-search input").autocomplete({
             source: async function(request){
                 const response = await axios.get(`${window.__url_path__}busca/suggest/?query_term=${request.term}`);
+                search_status = response.status;
                 if(response.status == 200 && response.data && response.data.result_list){
                     const listItems = [];
                     response.data.result_list.map(function(item){
@@ -207,8 +210,8 @@ const BaseView = $.Class.create({
         $("body").on("submit.convertize", ".form-search form", function(e){
             const value = $(this).find("input[name=q]").val();
             const words = JSON.parse(self.storage.getItem("cvz_last_search") || "[]");
-            words.unshift(value)
-            self.storage.setItem("cvz_last_search", JSON.stringify(words.filter((v, i, a) => a.indexOf(v) === i)))
+            words.unshift(window.DOMPurify.sanitize(value));
+            if(search_status == 200) self.storage.setItem("cvz_last_search", JSON.stringify(words.filter((v, i, a) => a.indexOf(v) === i)))
         });
 
         $(document).on("click", function(e){
@@ -223,12 +226,13 @@ const BaseView = $.Class.create({
                 <ul class="last-search mb-3"></ul>
             `);
             words.slice(0,6).map(function(w){
+				const purifyw = window.DOMPurify.sanitize(w); 
                 $("#floating-search, .form-search .autocomplete").find("ul.last-search").append(`<li>
-                    <a href="#" data-word="${w}">
+                    <a href="#" data-word="${purifyw}">
                         <i class="icon-history mr-2"></i>
-                        ${w}
+                        ${purifyw}
                     </a>
-                    <i class="icon-trash remove" data-word="${w}"></i>
+                    <i class="icon-trash remove" data-word="${purifyw}"></i>
                 </li>`);
             });
             $("#floating-search, .form-search .autocomplete").find("ul.last-search a").on("click.convertize", function(e){

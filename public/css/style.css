@@ -473,22 +473,6 @@ body.fixed .header{
     font-size: 20px;
     color: #000;
 }
-
-#floating-search .form-search .form-control{
-    border-radius: 0;
-    border: 0;
-    box-shadow: none;
-}
-#floating-account li a {
-    display: block;
-    padding: 15px;
-    font-size: 13px;
-    position: relative;
-    color: #464646;
-    margin: 0px 10px;
-    border-bottom: 1px solid #e8e8e8;
-}
-
 ul.last-search > li{
     display: flex;
     align-items: center;
@@ -627,6 +611,20 @@ body.open-page .mask-floating-page{
 body.open-page .mask-floating-page{ 
     opacity: 1; 
     visibility: visible;
+}
+#floating-search .form-search .form-control{
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+}
+#floating-account li a {
+    display: block;
+    padding: 15px;
+    font-size: 13px;
+    position: relative;
+    color: #464646;
+    margin: 0px 10px;
+    border-bottom: 1px solid #e8e8e8;
 }
 #nav-inside .content-nav-inside{ position: relative; left: 0px;
     -webkit-transition: all 300ms ease-out; 
@@ -1050,7 +1048,6 @@ body.open-page .mask-floating-page{
     color: #fff;
     background-color: #000;
 }
-.footer-networks{ display: inline-block; vertical-align: middle; cursor: pointer; background: #f5f5f5; width: 32px; height: 32px; line-height: 36px; margin-right: 8px; text-align: center; font-size: 16px; color: #ffffff; border-radius: 50%;}
 .footer-networks.fb{ background: #3b589d;}
 .footer-networks.tt{ background: #3183c5;}
 .footer-networks.gplus{ background: #db4a38;}
@@ -1488,6 +1485,40 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
 #content-product .zoom-in:hover{
     color: #000;
     box-shadow: 0 4px 3px 0 rgb(0 0 0 / 12%);
+}
+#content-product .variations .value{
+    position: relative;
+    margin: 0px 8px 8px 0px;
+}
+#content-product .variations .value.disabled{
+    background: #c2c2c2;
+}
+#content-product .variations .value input{
+    position: absolute;
+    opacity: 0;
+    border: 0px;
+    outline: 0px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+#content-product .variations .value span{
+    display: block;
+    cursor: pointer;
+    background: #fff;
+    color: #666666;
+    padding: 5px 10px;
+    border: 1px solid #d5d5d5;
+    min-width: 33px;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 5px;
+}
+#content-product .variations .value input:checked + span{
+    color: #ffffff;
+    background: #288449;
+    border-color: #288449;
 }
 /* End Product Detail */
 

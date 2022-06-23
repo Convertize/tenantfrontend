@@ -126,13 +126,19 @@
                                                 </legend>
                                                 {% for value in option.list %}
                                                     <label class="value{% if not value.available %} disabled{% endif %}">
-                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" />
+                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
+                                                        {% if value.option__color %}
+                                                            <span class="color" style="background:{{ value.option__color.0 }}" title="{{ value.option__value|title }}">
+                                                                {% if value.option__color|length > 1 %}
+                                                                    <span style="border-bottom-color:{{ value.option__color.1 }}"></span>
+                                                                {% endif %}
+                                                            </span>
+                                                        {% endif %}
                                                         <span>{{ value.option__value }}</span>
                                                     </label>
                                                 {% endfor %}
-                                                
                                             </div>
-                                        {% else %}
+                                        {% elif product.grid.display == "select" %}
                                             <label>
                                                 {{ option.grouper }}
                                             </label>
@@ -142,6 +148,18 @@
                                                     <option value="{{ value.option__value_id }}">{{ value.option__value }}</option>
                                                 {% endfor %}
                                             </select>
+                                        {% elif product.grid.display == "custom" %}
+                                            <div class="required form-group">
+                                                <legend>
+                                                    {{ option.grouper }}
+                                                </legend>
+                                                {% for value in option.list %}
+                                                    <label class="value{% if not value.available %} disabled{% endif %}">
+                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
+                                                        <span>{{ value.option__value }}</span>
+                                                    </label>
+                                                {% endfor %}
+                                            </div>
                                         {% endif %}
                                     </div>
                                 {% endfor %}
@@ -215,54 +233,6 @@
                     {% endif %}
                 </form>
                 <div class="content-offers"></div>
-                {% if product.get_similars or product.get_suggestions %}
-                    <div class="mt-4">
-                        <ul class="nav nav-tabs border-0">
-                            {% if product.get_similars %}
-                                <li class="nav-item">
-                                    <a href="#buy-generic" data-toggle="tab" class="nav-link active">
-                                        Genéricos
-                                    </a>
-                                </li>
-                            {% endif %}
-                            {% if product.get_suggestions %}
-                                <li class="nav-item">
-                                    <a href="#buy-suggestions" data-toggle="tab" class="nav-link{% if not product.get_similars %} active{% endif %}">
-                                        Similares
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                        <div class="tab-content card p-3">
-                            <div class="tab-pane fade show active" id="buy-generic" role="tabpanel" aria-labelledby="Produtos genéricos">
-                                {% for p in product.get_suggestions %}
-                                    <div class="{% if not forloop.last %}border-bottom{% endif %}">
-                                        <a href="{{ p.get_absolute_url }}" class="d-flex align-items-center pt-1 pb-1">
-                                            {% if p.image %}
-                                                <img data-src="{{ MEDIA_URL }}{{ p.image|replace:'/small/,/mini/' }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ p.name }}" title="{{ p.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|last }}" class="img-lazy mr-3" />
-                                            {% endif %}
-                                            <span class="title mr-3">{{ p.name }}</span>
-                                            <span class="font-weight-bold font-size-16 text-nowrap ml-auto">{{ p.price|currency }}</span>
-                                        </a>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <div class="tab-pane fade" id="buy-suggestions" role="tabpanel" aria-labelledby="Productos similares">
-                                {% for p in product.get_suggestions %}
-                                    <div class="{% if not forloop.last %}border-bottom{% endif %}">
-                                        <a href="{{ p.get_absolute_url }}" class="d-flex align-items-center pt-1 pb-1">
-                                            {% if p.image %}
-                                                <img data-src="{{ MEDIA_URL }}{{ p.image|replace:'/small/,/mini/' }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ p.name }}" title="{{ p.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|last }}" class="img-lazy mr-3" />
-                                            {% endif %}
-                                            <span class="title mr-3">{{ p.name }}</span>
-                                            <span class="font-weight-bold font-size-16 text-nowrap ml-auto">{{ p.price|currency }}</span>
-                                        </a>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
             </div>
         </div>
     </div>

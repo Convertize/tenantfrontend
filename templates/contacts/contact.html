@@ -1,19 +1,18 @@
-{% extends "base.html" %}{% load i18n fieldset_form user_agents shop_tags %}
+{% extends "base.html" %}{% load i18n fieldset_form user_agents shop_tags cms_tags %}
 
 {% block meta_title %}{% trans 'Contato' %} {{ block.super }} {% endblock %}
 {% block body_id %}contact{% endblock %}
 
 {% block content %}
-    {% load cms_tags %}
     <div class="top-content">
         <div class="container">
-            <h1>Aqui tem tudo sobre a Convertize</h1>
+            <h1>Aqui tem tudo sobre a {{ shop_settings.SHOP_NOME_FANTASIA }}</h1>
             <h2 class="sub-title">Líder em preço e qualidade</h2>
         </div>
     </div>
     <div class="container">
         {% cms_menu "menu-institucional" %}
-        <div class="pl-md-5 pr-md-5">
+        <div class="mt-4">
             <h3 class="h4 mb-4 font-weight-bold">Atendimento</h3>
             {% include 'contacts/form.html' %}
         </div>

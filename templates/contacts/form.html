@@ -1,5 +1,5 @@
 {% load i18n fieldset_form %}
-<form id="form-contact" method="POST" action="{% url 'contacts:contact' %}" class="form-vertical">{% csrf_token %}
+<form id="form-contact" method="POST" action="" class="form-vertical">{% csrf_token %}
     {% include 'includes/messages.html' %}
     {% for field in forms %}
         <div class="form-group">
