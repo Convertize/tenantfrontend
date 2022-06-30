@@ -169,6 +169,14 @@ body{
     background: #797979!important;
     color: #fff!important;
 }
+.loader{ display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; background: rgba(0,0,0,0.2);}
+.loader .loading{ width: 64px; height: 65px; background: #ffffff; position: fixed; top: 50%; left: 50%; margin: -32px 0 0 -32px; z-index: 1100;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+}
+.loader .loading div{ width: 35px; height: 35px; background: url(../img/preloading.gif) center center no-repeat #ffffff; background-size: contain; position: absolute; top: 50%; left: 50%; margin: -17px 0 0 -17px;}
+.loader .mask{ width: 100%; height: 100%; position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 1099;}
 #checkout .btn-default{
     border: 0;
     background: none;
