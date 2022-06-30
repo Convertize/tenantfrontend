@@ -82,18 +82,17 @@
                 </footer>
             {% endblock %}
         </div>
-
+        <div class="loader"><div class="mask"></div><div class="loading"><div></div></div></div>
         {% block extra_footer %}{% endblock %}
+        {% if shop_settings.EXTRA_FOOTER %}{% render shop_settings.EXTRA_FOOTER|safe %}{% endif %}
         {% include "includes/gtm.html" %}
         {% if "/checkout/sucesso/" not in request.path %}
             {% compress js %}
-                <script type="text/javascript" src="{{ STATIC_URL }}js/class/Class.js" async></script>
-                <script type="text/javascript" src="{{ STATIC_URL }}js/events.js" async></script>
-                <script type="text/javascript" src="{{ STATIC_URL }}js/class/Nav.js" async></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap-select.js"></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/default-pt_br.min.js"></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/lazyload.min.js"></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/owl.carousel.min.js"></script>
+                <script type="text/javascript" src="{{ STATIC_URL }}js/class/Checkout.js" async></script>
             {% endcompress %}
         {% endif %} 
     </body>
