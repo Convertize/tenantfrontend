@@ -1,8 +1,8 @@
 {
-    "name": "Convertize",
-    "short_name": "Convertize",
+    "name": "",
+    "short_name": "",
     "background_color": "#ffffff",
-    "theme_color": "#fc7247",
+    "theme_color": "#000000",
     "start_url": "/?utm_source=pwa&utm_medium=none",
     "scope": "/",
     "display": "standalone",

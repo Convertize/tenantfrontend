@@ -647,6 +647,13 @@ form .group .group-input input, form .group .group-input textarea, .textarea, fo
     
 }
 
+@media(min-width: 1200px){
+    .header .container{
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
 @media(max-width: 1200px){
     .center, .center-2{
         padding-left: 15px;
