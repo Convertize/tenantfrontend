@@ -6,11 +6,12 @@
         <title>{% block meta_title %}{{ settings_pote.SEO_TITLE }}{% endblock %}</title>
         <meta name="description" content="{% block meta_description %}{{ settings_pote.SEO_DESCRIPTION }}{% endblock %}" />
         {% block meta_robots %}<meta name="robots" content="index, follow" />{% endblock %}
-        <link href="{{ STATIC_URL }}img/favicon.png" rel="shortcut icon" /> 
+        <link href="{{ STATIC_URL }}img/favicon.png" rel="shortcut icon" />
+        <link rel="stylesheet" href="https://i.icomoon.io/public/9a2a1e86fa/LojaPadro/style.css">
         {% compress css %}
             <link href="{{ STATIC_URL }}css/bootstrap.3-3-7.min.css" rel="stylesheet" type="text/css" />
             <link href="{{ STATIC_URL }}css/reset.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/fonts.css" rel="stylesheet" type="text/css" />
+            <!-- <link href="{{ STATIC_URL }}css/fonts.css" rel="stylesheet" type="text/css" /> -->
             <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css" />
             <link href="{{ STATIC_URL }}css/checkout.css" rel="stylesheet" type="text/css" />
         {% endcompress %}
@@ -70,10 +71,16 @@
                                             <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web" />
                                         </a>
                                     </li>
-                                    <li>
+                                    <li style="margin-right: 5px;">
                                         <a href="http://www.google.com/safebrowsing/diagnostic?site={{ request.get_host }}" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
                                             <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google" />
                                         </a>
+                                    </li>
+                                    <li>
+                                        <div>
+                                            <div id="convertize-pci-seal"></div>
+                                            <script type="text/javascript" src="https://secure.convertize.com.br/static/js/seal.js" schama_name="{{ request.tenant.schema_name }}" content="convertize-pci-seal" size="50"></script>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -88,11 +95,13 @@
         {% include "includes/gtm.html" %}
         {% if "/checkout/sucesso/" not in request.path %}
             {% compress js %}
+                <script type="text/javascript" src="{{ STATIC_URL }}js/class/Class.js" async></script>
+                <script type="text/javascript" src="{{ STATIC_URL }}js/class/Checkout.js" async></script>
+                <script type="text/javascript" src="{{ STATIC_URL }}js/class/Nav.js" async></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/bootstrap-select.js"></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/default-pt_br.min.js"></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/lazyload.min.js"></script>
                 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/owl.carousel.min.js"></script>
-                <script type="text/javascript" src="{{ STATIC_URL }}js/class/Checkout.js" async></script>
             {% endcompress %}
         {% endif %} 
     </body>

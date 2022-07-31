@@ -116,49 +116,34 @@
                     {% with options=product.get_all_options %}
                         {% regroup options by option_title as options %}
                         {% if options %}
-                            <div class="variations">
+                            <div class="variations mt-2">
                                 {% for option in options %}
-                                    <div class="required form-group form-group-{{ option.grouper|slugify }}">
-                                        {% if product.grid.display == "radio" %}
+                                    <div class="form-group-{{ option.grouper|slugify }}">
+                                        {% if product.grid.display == "select" %}
                                             <div class="required form-group">
-                                                <legend>
-                                                    {{ option.grouper }}
-                                                </legend>
-                                                {% for value in option.list %}
-                                                    <label class="value{% if not value.available %} disabled{% endif %}">
-                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
-                                                        {% if value.option__color %}
-                                                            <span class="color" style="background:{{ value.option__color.0 }}" title="{{ value.option__value|title }}">
-                                                                {% if value.option__color|length > 1 %}
-                                                                    <span style="border-bottom-color:{{ value.option__color.1 }}"></span>
-                                                                {% endif %}
-                                                            </span>
-                                                        {% endif %}
-                                                        <span>{{ value.option__value }}</span>
-                                                    </label>
-                                                {% endfor %}
+                                                <label class="font-weight-bold font-size-14">
+                                                    {{ option.grouper|title }}
+                                                </label>
+                                                <select name="option_{{ option.list.0.option_id }}" class="form-control form-control-{{ option.list.0.option_title|slugify }}" data-title="{{ option.grouper|title }}">
+                                                    <option value="">-------------</option>
+                                                    {% for value in option.list %}
+                                                        <option value="{{ value.option__value_id }}">{{ value.option__value }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
-                                        {% elif product.grid.display == "select" %}
-                                            <label>
-                                                {{ option.grouper }}
-                                            </label>
-                                            <select name="option_{{ option.list.0.option_id }}" class="form-control form-control-{{ option.list.0.option_title|slugify }}">
-                                                <option value="">-------------</option>
-                                                {% for value in option.list %}
-                                                    <option value="{{ value.option__value_id }}">{{ value.option__value }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        {% elif product.grid.display == "custom" %}
+                                        {% else %}
                                             <div class="required form-group">
-                                                <legend>
-                                                    {{ option.grouper }}
-                                                </legend>
-                                                {% for value in option.list %}
-                                                    <label class="value{% if not value.available %} disabled{% endif %}">
-                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
-                                                        <span>{{ value.option__value }}</span>
-                                                    </label>
-                                                {% endfor %}
+                                                <label class="font-weight-bold font-size-14">
+                                                    {{ option.grouper|title }}
+                                                </label>
+                                                <div>
+                                                    {% for value in option.list %}
+                                                        <label class="value{% if not value.available %} disabled{% endif %}">
+                                                            <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
+                                                            <span>{{ value.option__value }}</span>
+                                                        </label>
+                                                    {% endfor %}
+                                                </div>
                                             </div>
                                         {% endif %}
                                     </div>

@@ -1,5 +1,6 @@
 {% load l10n i18n cms_tags user_agents shop_tags showcases_tags compress admin_static %}{% spaceless %}<!doctype html>
 {% with is_mobile=request|is_mobile %}
+{% if shop_settings.CUSTOM_FIELDS %}{% get_data_json shop_settings.CUSTOM_FIELDS as custom_fields %}{% endif %}
 <html lang="{{ LANGUAGE_CODE }}">
     <head>
         <meta charset="utf-8">
@@ -227,10 +228,16 @@
                                                                 <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png?v=2" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google" />
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        <li class="mr-3">
                                                             <a href="https://safeweb.norton.com/report/show?url={{ request.get_host }}&amp;ulang=por_bra" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
                                                                 <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web" />
                                                             </a>
+                                                        </li>
+                                                        <li>
+                                                            <div>
+                                                                <div id="convertize-pci-seal"></div>
+                                                                <script type="text/javascript" src="https://secure.convertize.com.br/static/js/seal.js" schama_name="{{ request.tenant.schema_name }}" content="convertize-pci-seal" size="50"></script>
+                                                            </div>
                                                         </li>
                                                     </ul>
                                                 {% if is_mobile %}
