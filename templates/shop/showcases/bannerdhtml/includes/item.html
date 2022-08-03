@@ -1,9 +1,9 @@
-<div class="item" style="{% if banner.background_color %}background-color:{{ banner.background_color }};{% endif %}{% if banner.background_image %}background-image:url({{ banner.background_image.url }});{% endif %}{% if banner.background_repeat %}background-repeat: {{ banner.background_repeat }};{% endif %}{% if banner.style %}{{ banner.style }}{% endif %}">
+<div class="item" style="{% if banner.background_color %}background-color:{{ banner.background_color }};{% endif %}{% if banner.background_image %}background-image:url({{ banner.background_image.url }});{% endif %}{% if banner.background_repeat %}background-repeat: {{ banner.background_repeat }};{% endif %}background-position: center;{% if banner.style %}{{ banner.style }}{% endif %}">
     {% if banner.link %}
-        <a href="{{ banner.link }}"{% if banner.target %} target="_blank" rel="noreferrer"{% endif %} aria-label="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}">
+        <a href="{{ banner.link }}"{% if banner.target %} target="_blank" rel="noreferrer"{% endif %} aria-label="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" class="d-flex justify-content-center">
     {% endif %}
         {% with width=banner.image.dimensions|first height=banner.image.dimensions|last %}
-            <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title }}" class="owl-lazy" width="{{ width }}" height="{{ height }}" style="aspect-ratio:{{ width }}/{{ height  }}" />
+            <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title }}" class="owl-lazy w-auto" width="{{ width }}" height="{{ height }}" style="width:{{ width }}px;aspect-ratio:{{ width }}/{{ height  }}" />
         {% endwith %}
     {% if banner.link %}
         </a>

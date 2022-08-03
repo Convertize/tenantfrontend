@@ -14,10 +14,10 @@
                     <img alt="" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" />
                 {% endif %}
                 {% if p.descont_percentage %}
-                    <span class="descont"><span>{{ p.descont_percentage|floatformat }}%</span></span>
+                    <span class="descont"><span>{{ p.descont_percentage|floatformat|cut:'-' }}%</span></span>
                 {% endif %}
             </a>
-            <div class="desc">
+            <div class="desc position-relative">
                 <div>
                     {% if p.get_seals %}
                         <div class="seals position-relative">
@@ -34,15 +34,10 @@
                         </a>
                     </h2>
                     <div class="box-prices">
-                        {% if 'sim' in json_specifications.produto_controlado.value|lower and not p.has_stock %}
-                            <div class="clear pd10"></div>
-                            <p class="invalible">Venda não permitida</p>
-                        {% elif not has_stock %}
-                            <div class="clear pd10"></div>
-                            <p class="invalible">Avise-me</p>
+                        {% if not has_stock %}
+                            <p class="font-size-16 font-weight-bold text-dark">Avise-me</p>
                         {% elif not p.available %}
-                            <div class="clear pd10"></div>
-                            <p class="invalible">Avise-me</p>
+                            <p class="font-size-16 font-weight-bold text-dark">Avise-me</p>
                         {% elif p.price %}
                             <div class="prices">
                                 {% if p.price < p.unit_price %}
@@ -100,11 +95,6 @@
                             {% endif %}
                         </div>
                     </form>
-
-                {% elif 'sim' in json_specifications.produto_controlado.value|lower and not p.has_stock %}
-                    <div class="purchase">
-                        <a href="{% url 'product:detail' p.slug %}" class="bt bt-checkout">Saiba mais</a>
-                    </div>
                 {% endif %}
             </div>
         </div>

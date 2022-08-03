@@ -7,11 +7,11 @@
         {% endif %}
     </div>
     {% endif %}
-    <ul class="list-products{% if object.extra_data and object.extra_data.scroll == 'true' %} horizontal-scroll{% else %} default{% endif %}">
+    <div class="list-products{% if object.extra_data and object.extra_data.scroll == 'true' %} horizontal-scroll{% else %} default{% endif %}">
         {% for p in object.shelf.get_products %}
             {% ifchanged p.product_id %}
-                <li>{% include "shop/includes/product.html" %}</li>
+                <div class="li">{% include "shop/includes/product.html" %}</div>
             {% endifchanged %}
         {% endfor %}
-    </ul>
+    </div>
 </div>

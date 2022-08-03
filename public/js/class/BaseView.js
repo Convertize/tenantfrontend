@@ -32,8 +32,19 @@ const BaseView = $.Class.create({
         };
     },
     fixedHeader: function(){
-        $("body").addClass("fixed");
-        $("#main-wrapper").css("paddingTop", `${$("#main-wrapper > .header").height()}px`);
+        if($("body").hasClass("is_mobile")) return;
+        $(window).scroll(function(){
+            const scroll = $(window).scrollTop();
+            if(scroll >= 250){
+                if(!$("body").hasClass("fixed")){
+                    $("#main-wrapper").css("paddingTop", `${$("#main-wrapper > .header").height()}px`);
+                    $("body").addClass("fixed");
+                }
+            }else{
+                $("body").removeClass("fixed");
+                $("#main-wrapper").removeAttr("style");
+            }
+        }).trigger("scroll");
     },
     baseFunctions: function(){
         $(".img-lazy:not(.loaded)").show().lazyload({
