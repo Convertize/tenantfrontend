@@ -15,11 +15,8 @@
     </div>
     {% if facets and facets.fields.items %}
         {% for k, v in facets.fields.items %}
-            {% if object.django_ct == "products.brand" and not term and v.title|cut:'---'|slugify == "marca" %}
-            {% else %}
-                {% if v.value %}
-                    {% include "search/includes/facet.html" %}
-                {% endif %}
+            {% if v.value %}
+                {% include "search/includes/facet.html" %}
             {% endif %}
         {% endfor %}
     {% endif %}

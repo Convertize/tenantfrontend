@@ -44,6 +44,9 @@ const ProductView = BaseView.extend({
         $("body").off("click.convertize", ".expand-image");
         $("body").on("click.convertize", ".expand-image", ()=>this.openGallery());
 
+        $("body").off("click.convertize", ".btn-let-me-know");
+        $("body").on("click.convertize", ".btn-let-me-know", ()=>this.letMeKnow());
+
         if(window.location.search && this.searchToObject(window.location.search)["p"]){
             const position = $("#product-ratings").position();
             $("html, body").scrollTop(position.top - 10);
@@ -100,6 +103,52 @@ const ProductView = BaseView.extend({
             index: index
         });
         gallery.init();
+    },
+    letMeKnow: function(){
+        log("letMeKnow");
+
+        $("body").append(`<div id="modal-letMeKnow" class="modal fade">
+            <div id="modal-letMeKnow" class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title font-weight-bold">Receba uma notificação</h5>
+                    </div>
+                    <div class="modal-body">
+                        Carregando...
+                    </div>
+                </div>
+            </div>
+        </div>`);
+
+        const loadLetMeKnow = function(response){
+            if(response.status == 200){
+                $("#modal-letMeKnow .modal-body").html(response.data);
+                $("#modal-letMeKnow form").formValidation({
+                    success: (form, response) => {
+                        loadLetMeKnow(response)
+                    },
+                    error: (form, error) => {
+                        log(error)
+                    }
+                });
+            }
+        }
+
+        $("#modal-letMeKnow").on("show.bs.modal", function(event){
+            const url = `${window.location.pathname}/avise-me?sku=${window.dataProduct.sku}`;
+            log(url)
+            axios.get(url).then(function(response){
+                loadLetMeKnow(response)
+            });
+        });
+
+        $("#modal-letMeKnow").on("hidden.bs.modal", function (event){
+            $("#modal-letMeKnow").remove();
+        });
+
+        $("#modal-letMeKnow").modal("show");
+
     },
     loadGallery: function(){
         if($("body .pswp").length) return;

@@ -199,22 +199,17 @@
                             </div>
                         </div>
                     {% else %}
-						<div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-							<h3>Produto Indisponível</h3>
-							<link itemprop="availability" href="http://schema.org/InStock" content="OutOfStock" />
-							<meta itemprop="priceCurrency" content="BRL" />
-                        	<meta itemprop="price" content="{{ product.price|get_price_boleto }}" />
-						</div>
-                        {% if json_specifications.venda_permitida_pela_internet and json_specifications.venda_permitida_pela_internet.value and json_specifications.venda_permitida_pela_internet.value|slugify == 'nao' %}
-                            <div class="text-center h4">
-                                <div class="mb-2">Ligue {{ shop_settings.SHOP_ADDRESS_PHONE|split:'/'|first }}</div>
-                                <div>
-                                    <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ shop_settings.SHOP_ADDRESS_PHONE|split:'/'|last|mask_text }}" class="colorwhite" target="_blank">
-                                        WhatsApp {{ shop_settings.SHOP_ADDRESS_PHONE|split:'/'|last }}
-                                    </a>
-                                </div>
+                        <div>
+                            <div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                <h3>Produto Indisponível</h3>
+                                <link itemprop="availability" href="http://schema.org/InStock" content="OutOfStock" />
+                                <meta itemprop="priceCurrency" content="BRL" />
+                                <meta itemprop="price" content="{{ product.price|get_price_boleto }}" />
                             </div>
-                        {% endif %}
+                            <div class="purchase">
+                                <button type="button" class="btn btn-checkout d-block btn-let-me-know" data-loading-text="Adicionando">Avise-me</button>
+                            </div>
+                        </div>
                     {% endif %}
                 </form>
                 <div class="content-offers"></div>

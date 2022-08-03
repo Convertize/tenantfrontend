@@ -12,13 +12,17 @@
         <meta property="og:image:secure_url" content="https:{{ MEDIA_URL }}{{ product.image }}" />
         <meta property="og:image:type" content="image/jpeg" />
         {% localize off %}
-            <script type="text/javascript">
-                window.dataProduct = {
-                    "id": "{{ product.id }}",
-                    "skuId": "{{ product.get_sku_default.id }}",
-                    "salePrice": {{ product.price|default:0 }}
-                }
-            </script>
+        <script type="text/javascript">
+            window.dataProduct = {
+                "id": "{{ product.id }}",
+                "name": "{{ product.name }}",
+                "sku": "{{ product.get_sku_default.id }}",
+                "price": "{{ product.price|get_card_price }}",
+                "sale_price": "{{ product.price }}",
+                "url": "{{ product.get_absolute_url }}",
+                "options": {% if sku %}{{ sku.options|default:'""' }}{% else %}{{ product.get_sku_default.options|default:'""' }}{% endif %}
+            }
+        </script>
         {% endlocalize %}
 {% endblock%}
 
