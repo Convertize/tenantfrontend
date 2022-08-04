@@ -947,7 +947,7 @@ body.open-page .mask-floating-page{
     padding-right: 5px;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 262px;
+    max-height: 285px;
 }
 #search .sidebar .facet .scrollbar::-webkit-scrollbar{
     -webkit-appearance:none;
@@ -1971,11 +1971,10 @@ img.img-lazy:not([src*="/blank.png"]) {
 #boxLogin .item-page.left .modal-title #subtitle{
 	font-size: 16px;
 }
-#boxLogin .item-page.left .li-email > input{
-	border:solid #dadada;
-	border-width:1px;
-	height:50px;
-	border-radius:3px;
+#boxLogin .item-page.left input{
+	border: 1px solid #dadada;
+	height: 50px;
+	border-radius: 3px;
 }
 #boxLogin .item-page.left .li-password > input{
 	border-bottom-left-radius:3px;
@@ -2133,4 +2132,24 @@ img.img-lazy:not([src*="/blank.png"]) {
     .grid__institutional{ grid-template-columns: initial; padding: 0px;}
     .grid__institutional-item{ padding: 10px;}
     
+}
+
+.accessibility-font{
+    font-size: 14px;
+}
+.accessibility-font button{
+    line-height: 35px;
+    width: 60px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9e9e9;
+    border-radius: 5px;
+}
+.accessibility-font button:hover{
+    background-color: #eeeeee;
+}
+.accessibility-font button[data-action="minus"]{
+    font-size: 13px;
+}
+.accessibility-font button[data-action="plus"]{
+    font-size: 17px;
 }
