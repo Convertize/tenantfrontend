@@ -32,12 +32,12 @@
                         <h3>Subtotal:</h3>
                         <p><strong class="request__cart__total_price"></strong></p>
                     </div>
+                    <div class="codes">
+                        {% for coupon in request.cart.coupons.all %}
+                            <a>{{ coupon.code }}</a>
+                        {% endfor %}
+                    </div>
                     <form class="coupon d-flex align-items-center mb-3">
-                        <div class="codes">
-                            {% for coupon in request.cart.coupons.all %}
-                                <a>{{ coupon.code }}</a>
-                            {% endfor %}
-                        </div>
                         <div class="values_footer"><h3>Cupom de desconto:</h3></div>
                         <div class="box-coupon d-flex justify-content-end input-group">
                             <input type="text" name="coupon" class="border-0 rounded p-2 m-0" placeholder="Cupom de desconto" />

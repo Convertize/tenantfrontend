@@ -347,8 +347,6 @@ body{
 #checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-pix-"] a:before{ content: "\e911";}
 #checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-deliverypay-"] a:before{ content: "\e9a0";}
 
-#checkout .checkout-success .col-payment-details{ margin-bottom: 20px;}
-
 #checkout .checkout-success .col-payment-details .order_id{ color: #f33d75;}
 #checkout .list-products-horizontal li .custom_radiobox label{color: #f33d75; border: 2px solid #f33d75;}
 #checkout .list-products-horizontal li .custom_radiobox.checked label{color: #ffffff; border-color: #1da25e; background-color: #1da25e;}
@@ -386,8 +384,20 @@ form .group .group-input input, form .group .group-input textarea, .textarea, fo
 
 .table thead > tr > th, .table thead > tr > td, .table tbody > tr > th, .table tbody > tr > td, .table tfoot > tr > th, .table tfoot > tr > td{ border-top: 1px solid #fff; background: #fff;}
 
-#checkout .checkout-success .col-payment-details .col-1 > div{ background: #f6f6f6; border: 1px solid #e2e2e2; border-radius: 5px;}
-#checkout .checkout-success .col-payment-details .col-2 > div{ background: rgba(29,162,94,0.27); color: #116d3e; border: 1px solid #1da25e; border-radius: 5px;}
+/* TELA DE SUCESSO */
+#checkout .checkout-success .col-payment-details .order_id{ color: #000;}
+#checkout .checkout-success .col-payment-details .col-1 > div{ background: #f0f0f0; border: 1px solid #dedede; border-radius: 0;}
+#checkout .checkout-success .col-payment-details .col-2 > div{ border-radius: 0;}
+#checkout .checkout-success .title-box{ font-size: 18px; font-weight: bold; margin: 20px 0;}
+#checkout .checkout-success .list-dotted{ max-height: 500px; overflow-y: scroll; padding: 0;}
+#checkout .checkout-success .list-dotted > li{ margin-bottom: 10px;}
+#checkout .checkout-success .list-dotted .cart-thumb-description{ width: 100%; display: flex; align-items: center; background: #fff; border: 1px solid #f0f0f0; padding: 15px; margin-bottom: 15px;}
+#checkout .checkout-success .list-dotted .cart-thumb-description .thumb{ margin-right: 15px;}
+#checkout .checkout-success .table-order-total{ width: 100%; max-width: 100%;}
+#checkout .checkout-success .table-order-total > tbody >tr > th{ font-size: 18px;}
+#checkout .checkout-success .table-order-total > tbody > tr > td,
+#checkout .checkout-success .table-order-total > tbody >tr > th{ padding: 4px;}
+/* END TELA DE SUCESSO */
 
 .clean-base .top-content .alert-warning{ font-size: 12px; background: #f7f7f7; border-color: #e2e2e2; max-width: 445px;}
 .clean-base .top-content .alert-warning small{ font-size: 12px; margin-left: 5px;}

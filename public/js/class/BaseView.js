@@ -427,7 +427,9 @@ const BaseView = $.Class.create({
 
             try{
                 const response = await self.api.delete(url, {
-                    code: $this.text()
+                    data:{
+                        code: $this.text()
+                    }
                 });
                 const resp = response.data;
                 self.renderCart(resp);
