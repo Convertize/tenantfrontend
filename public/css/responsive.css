@@ -119,14 +119,42 @@
     #content-product{
         padding-top: 10px;
     }
+    #search .search-header{
+        padding: 15px 0px;
+    }
+    #search #breadcrumb{
+        margin-bottom: 10px;
+    }
+    #product.is_mobile #breadcrumb{
+        background-color: #fff;
+        margin: 0px -15px;
+        padding: 10px 10px;
+    }
     #breadcrumb li{ display: none; }
     #breadcrumb li:nth-last-child(2){
         display: block;
         padding-right: 0px;
         padding-left: 25px;
     }
+    #breadcrumb li:nth-last-child(2) a{
+        font-size: 14px;
+    }
     #breadcrumb li:nth-last-child(2):not(:last-child):after{
-        content: "\e91d";
+        content: "\e919";
+        right: auto;
+        left: 0px;
+        font-size: 18px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-family: "icon-convertize"!important;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+    }
+    #breadcrumb li:nth-last-child(2):not(:last-child):after{
         right: auto;
         left: 0px;
     }
@@ -150,6 +178,9 @@
     .form-newsletters-validate .field{ 
         padding: 0px;
         margin-bottom: 10px;
+    }
+    .pagination .number:not(.active) {
+        display: none;
     }
 }
 

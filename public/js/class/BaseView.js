@@ -138,6 +138,24 @@ const BaseView = $.Class.create({
             $("#menuDepartament, .bt-menu-navbar").removeClass("active");
         });
 
+        $("body").off("click.convertize", ".accessibility-font button");
+        $("body").on("click.convertize", ".accessibility-font button", function(e){
+            e.preventDefault();
+            const action = $(this).data("action");
+            const max = 28;
+            const min = 14;
+            const $box = $(this).closest("div[class*=font-size]");
+            let actual = parseInt($box.attr("class").replace(/\D/g, ""));
+
+            if(action == "plus") actual += 2;
+            else if(action == "minus") actual -= 2;
+
+            if(actual > max) actual = 28;
+            if(actual < min) actual = min;
+
+            $box.attr("class", `font-size-${actual}`);
+        });
+
         // Close elements by ESC
         $(document).keyup(function(e){
             if(e.key === "Escape"){
@@ -409,7 +427,9 @@ const BaseView = $.Class.create({
 
             try{
                 const response = await self.api.delete(url, {
-                    code: $this.text()
+                    data:{
+                        code: $this.text()
+                    }
                 });
                 const resp = response.data;
                 self.renderCart(resp);
