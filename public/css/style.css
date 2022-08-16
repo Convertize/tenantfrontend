@@ -972,6 +972,10 @@ body.open-page .mask-floating-page{
     padding: 30px 0px;
     margin-bottom: 15px;
 }
+.page-item.active .page-link {
+    background-color: #ff7a4a;
+    border-color: #ff7a4a;
+}
 #breadcrumb{
     margin-bottom: 15px;
 }

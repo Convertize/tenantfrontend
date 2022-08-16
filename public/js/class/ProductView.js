@@ -51,7 +51,56 @@ const ProductView = BaseView.extend({
             const position = $("#product-ratings").position();
             $("html, body").scrollTop(position.top - 10);
         }
+
+        $("body").on("click.convertize", ".get_installments", { self: self }, function(e, self){
+			e.data.self.get_installments(this);
+		});
+
     },
+    updateImages: function(sku){
+        if(sku.images){
+            $(".product-image .thumbs li").hide().removeClass("show-more").find(".counter").remove();
+            sku.images.sort(function(a,b){
+                if(a.position > b.position) return 1;
+                if(a.position < b.position) return -1;
+                return 0;
+            }).map(function(item, index){
+                const srcMini = `${window.__media_prefix__}${item.image.replace("/small/", "/mini/")}`;
+                $(`.product-image .thumbs img[data-src*="${srcMini}"]`).closest("li").show();
+            });
+            const cover = `${window.__media_prefix__}${sku.cover.replace("/small/", "/mini/")}`;
+            $(`.product-image .thumbs img[src*="${cover}"]`).closest("li").trigger("click.convertize");
+
+
+            if($(".product-image .thumbs li:visible").length > 6){
+                let visibleCount = 0;
+                $(".product-image .thumbs li:visible:eq(5)").addClass("show-more");
+                $(".product-image .thumbs li:visible").map(function(i){
+                    if(i > 5){
+                        visibleCount += 1;
+                        $(this).hide();
+                    };
+                });
+                $(".thumbs .item.show-more").append(`<span class="counter d-none">+ ${visibleCount+1}</span>`);
+            }
+        }
+    },
+    get_installments: function(element){
+		var self = $(element);
+
+		if(!$('.all_installments').find('li').length){
+			$('.all_installments ul').html('<li>carregando...</li>');
+
+			axios.get(window.location.pathname + '/installments/?price='+parseFloat(self.data('price'))).then(function(response){
+				$('.all_installments ul').html('');
+				if(response.status == 200){
+					$.each(response.data, function(i, v){
+						$('.all_installments ul').append('<li>'+v.msg+'</li>');
+					});
+				}
+			});
+		}
+	},
     zoom: function(){
         if(!$(".zoom").length) return;
         $(".zoom").zoom({
