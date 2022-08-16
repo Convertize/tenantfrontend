@@ -153,50 +153,41 @@
                     {% endwith %}
                     {% if product.is_available %}
                         <div class="row mt-sm-3">
-                            <div class="col-12 col-sm-6 mb-3 mb-sm-0">
-                                <div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-									<meta itemprop="url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}" />
-                                    <link itemprop="availability" href="http://schema.org/InStock" />
-                                    <meta itemprop="priceCurrency" content="BRL" />
-                                    {% if sku %}
+                            {% with sku=sku|default:product %}
+                                <div class="col-12 col-sm-6 mb-3 mb-sm-0">
+                                    <div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                        <meta itemprop="url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}" />
+                                        <link itemprop="availability" href="http://schema.org/InStock" />
+                                        <meta itemprop="priceCurrency" content="BRL" />
                                         <p class="unit-price"{% if sku.unit_price <= sku.price %} style="display:none;"{% endif %}>
                                             {{ sku.unit_price|currency }}
                                         </p>
-                                        <p class="sale-price" data-discount="{{ billet_discount|floatformat }}">
-											<meta itemprop="price" content="{{ sku.price|get_price_boleto }}" />
+                                        <p class="spot-price" data-discount="{{ billet_discount|floatformat }}">
+                                            <meta itemprop="price" content="{{ sku.price|get_price_boleto }}" />
                                             <strong>{{ sku.price|get_price_boleto|currency }}</strong>
                                         </p>
-										<p>à vista no boleto</p>
-                                        <p class="card-installments font-weight-bold pt-2">
-                                            <strong class="get_min_installments">ou {{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }} no cartão</strong>
+                                        {% payment_price sku.price "pix" as pix_discount %}
+                                        <p class="sale-price " data-discount="{{ pix_discount.discount|floatformat }}">
+                                            <strong>{{ pix_discount.value|currency }}</strong>
                                         </p>
-                                    {% else %}
-                                        <p class="unit-price"{% if product.unit_price <= product.price %} style="display:none;"{% endif %}>
-                                            {{ product.unit_price|currency }}
+                                        <p class="card-installments">
+                                            <a href="#" data-toggle="modal" data-target="#all_installments" class="font-size-12 text-success get_installments" data-price="{{ sku.price }}">em até <strong class="get_min_installments">{{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }}</strong></a>
                                         </p>
-                                        <p class="sale-price" data-discount="{{ billet_discount|floatformat }}">
-											<meta itemprop="price" content="{{ product.price|get_price_boleto }}" />
-                                            <strong>{{ product.price|get_price_boleto|currency }}</strong>
-											<p>à vista no boleto</p>
-                                        </p>
-                                        <p class="card-installments font-weight-bold pt-2">
-                                            <strong class="get_min_installments">ou {{ product.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ product.price|get_card_price|currency }} no cartão</strong>
-                                        </p>
-                                    {% endif %}
-                                    <span class="descont" {% if not product.descont_percentage %} style="display:none"{% endif %}>{{ product.descont_percentage|default:"0"|floatformat }}%</span>
+                                        <span class="descont" {% if not product.descont_percentage %} style="display:none"{% endif %}>{{ product.descont_percentage|default:"0"|floatformat }}%</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-12 col-sm-6 d-flex align-items-center">
-                                <div class="purchase">
-                                    {% if p.product_type == '3' %}
-                                    {% else %}
-                                        <label aria-label="Quantidade" class="m-0">
-                                            <input type="tel" value="1" name="quantity" />
-                                        </label>
-                                        <button type="button" class="btn btn-checkout d-block" data-loading-text="Adicionando">Comprar</button>
-                                    {% endif %}
+                                <div class="col-12 col-sm-6 d-flex align-items-center">
+                                    <div class="purchase">
+                                        {% if p.product_type == '3' %}
+                                        {% else %}
+                                            <label aria-label="Quantidade" class="m-0">
+                                                <input type="tel" value="1" name="quantity" />
+                                            </label>
+                                            <button type="button" class="btn btn-checkout d-block" data-loading-text="Adicionando">Comprar</button>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            </div>
+                            {% endwith %}
                         </div>
                     {% else %}
                         <div>
@@ -213,6 +204,25 @@
                     {% endif %}
                 </form>
                 <div class="content-offers"></div>
+                <div class="mt-4">
+                    <form class="box-calculate-shipping position-relative" action="/freight/shipping-simulation/" method="GET" data-content-type="text/javascript">
+                        <input type="hidden" value="1" name="quantity" />
+                        <input type="hidden" value="{{ product.get_sku_default.id }}" name="sku" />
+                        <div class="p-3 border rounded">
+                            <div class="d-flex flex-wrap align-items-center justify-content-center">
+                                <span class="font-size-14 font-weight-bold text-nowrap mb-2 mb-lg-0 mr-lg-2">Simule seu frete:</span>
+                                <div class="d-flex flex-nowrap align-items-start">
+                                    <div class="form-group m-0 font-size-12">
+                                        <input type="tel" name="zipcode" class="form-control form-control-lg" placeholder="Digite seu CEP" required maxlength="9" data-mask="00000-000" style="width: 150px;height: 35px;" aria-label="Consulte o frete" />
+                                    </div>
+                                    <button class="ml-2 p-0 px-3 btn btn-primary font-weight-bold" style="height: 35px;">Calcular</button>
+                                </div>
+                                <a href="http://www.buscacep.correios.com.br/servicos/dnec/index.do" target="_blank" class="btn btn-link font-size-13 text-primary ml-lg-2">Não sei meu CEP</a>
+                            </div>
+                        </div>
+                        <div class="form-return w-100 mt-2"></div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

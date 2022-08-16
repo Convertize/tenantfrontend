@@ -51,7 +51,7 @@ const BaseView = $.Class.create({
             data_attribute:"src",
             effect: "show"
         });
-        $("input[name=quantity]").spinner({
+        $("input[name=quantity]:not([type=hidden])").spinner({
             min: 1
         });
     },
@@ -136,6 +136,18 @@ const BaseView = $.Class.create({
         $("body").on("click.convertize", "#menuDepartament .mask", function(e){
             e.preventDefault();
             $("#menuDepartament, .bt-menu-navbar").removeClass("active");
+        });
+
+        $("body").off("click.convertize", ".scrollTop");
+        $("body").on("click.convertize", ".scrollTop", function(e){
+            e.preventDefault();
+            const target = $($(this).attr("href"));
+            if(target.length && window.scrollTo){
+                window.scrollTo({
+                    top: target.offset().top -130,
+                    behavior: "smooth"
+                });
+            }
         });
 
         $("body").off("click.convertize", ".accessibility-font button");
@@ -281,6 +293,67 @@ const BaseView = $.Class.create({
     addProduct: function(){
         const self = this;
 
+        $("body").off("change.convertize", ".product-form .variations input[type=radio], .product-form .variations select");
+        $("body").on("change.convertize", ".product-form .variations input[type=radio], .product-form .variations select", async function(e){
+            e.preventDefault();
+            const $boxProduct = $(this).closest(".product-detail, .item-product");
+            const $form = $(this).closest(".product-form");
+            const list_values = $form.find(".form-group input[type=radio]:checked, .form-group select").map(function(){
+                return `option=${$(this).val()}`
+            });
+            const url = `/products/${$form.find("input[name=slug]").val()}/skus/?${[...list_values].join("&")}`;
+
+            try{
+                const response = await self.api.get(url);
+                const resp = response.data;
+                let sku;
+                if(resp.count===1){
+                    sku = resp.results[0];
+                }else if(resp.count && $form.find("input[name=default]").val()){
+                    sku = resp.results.find(function(item){
+                        return item.id === parseInt($form.find("input[name=default]").val());
+                    })
+                }
+                if(sku){
+                    const price = parseFloat(sku.sale_price || sku.unit_price);
+
+                    const discountPix = $boxProduct.find(".sale-price").data("discount");
+                    if(discountPix){
+                        const pricePix = price - (price * (discountPix/100))
+                        $boxProduct.find(".sale-price strong").html(pricePix.toCurrency());
+                    }else{
+                        $boxProduct.find(".sale-price strong").html(price.toCurrency());
+                    };
+                    $boxProduct.find(".spot-price strong").html(sku.get_price_boleto.toCurrency());
+                    $boxProduct.find(".get_min_installments").html(`${parseInt(price / parseFloat(sku.get_card_price))}x`);
+                    $boxProduct.find(".get_card_price").html(parseFloat(sku.get_card_price).toCurrency());
+                    if(sku.sale_price){
+                        $boxProduct.find(".unit-price").removeClass("hide").show().find("span").html(parseFloat(sku.unit_price).toCurrency());
+                        const discount =+ (Math.round(((parseFloat(sku.sale_price) * 100) / parseFloat(sku.unit_price) - 100)*-1 + "e+2") + "e-2");
+                        $boxProduct.find(".discount").removeClass("d-none").addClass("d-inline-block").html(`${parseInt(discount)}%`);
+                    }else{
+                        $boxProduct.find(".unit-price").addClass("hide").hide().find("span").html("");
+                        $boxProduct.find(".discount").removeClass("d-inline-block").addClass("d-none").find("span").html
+                    }
+
+                    if(sku.has_stock){
+                        $boxProduct.find(".show-available").show();
+                        $boxProduct.find(".hide-available").hide();
+                    }else{
+                        $boxProduct.find(".show-available").hide();
+                        $boxProduct.find(".hide-available").show();
+                    }
+
+                    if(window.dataProduct && window.dataProduct.sku) window.dataProduct.sku = sku.id;
+
+                    if(self.updateImages) self.updateImages(sku, $boxProduct);
+                }
+            }catch(err){
+
+            }
+
+        });
+
         $("body").off("click.convertize", ".product-form .btn-checkout");
         $("body").on("click.convertize", ".product-form .btn-checkout", function(e){
             e.preventDefault();
@@ -342,7 +415,15 @@ const BaseView = $.Class.create({
                         });
                         const resp = response.data;
                         self.renderCart(resp);
+                        if(window.events && window.events.loadCart) window.events.loadCart();
+
+                        // Open mini cart
+                        $("body").addClass("open-page");
+                        $("#mini-cart").addClass("active").removeClass("loading");
+                        // Open mini cart
+
                         $bt.addClass("added");
+						window.location = "/checkout/#/carrinho"
                         setTimeout(function(){
                             $bt.removeClass("added");
                         }, 5000);

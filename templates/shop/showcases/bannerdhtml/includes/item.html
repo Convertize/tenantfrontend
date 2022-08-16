@@ -2,9 +2,13 @@
     {% if banner.link %}
         <a href="{{ banner.link }}"{% if banner.target %} target="_blank" rel="noreferrer"{% endif %} aria-label="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" class="d-flex justify-content-center">
     {% endif %}
-        {% with width=banner.image.dimensions|first height=banner.image.dimensions|last %}
-            <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title }}" class="owl-lazy w-auto" width="{{ width }}" height="{{ height }}" style="width:{{ width }}px;aspect-ratio:{{ width }}/{{ height  }}" />
-        {% endwith %}
+        {% if banner.image.dimensions %}
+            {% with width=banner.image.dimensions|first height=banner.image.dimensions|last %}
+                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title }}" class="owl-lazy" width="{{ width }}" height="{{ height }}" style="width:{{ width }}px;aspect-ratio:{{ width }}/{{ height  }}" />
+            {% endwith %}
+        {% else %}
+            <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title }}" class="owl-lazy" />
+        {% endif %}
     {% if banner.link %}
         </a>
     {% endif %}

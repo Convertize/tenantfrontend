@@ -155,3 +155,22 @@
         <link href="{{ STATIC_URL }}css/photoswipe/default-skin/default-skin.css" rel="stylesheet" type="text/css" />
     {% endcompress %}
 {% endblock %}
+
+{% block extra_footer %}
+    {{ block.super }}
+    <div class="modal fade" id="all_installments" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title fw600">Parcelamento no cartão de crédito</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="all_installments">
+                        <ul></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
