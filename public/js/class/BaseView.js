@@ -422,11 +422,11 @@ const BaseView = $.Class.create({
                         $("#mini-cart").addClass("active").removeClass("loading");
                         // Open mini cart
 
-                        $bt.addClass("added");
-						window.location = "/checkout/#/carrinho"
-                        setTimeout(function(){
-                            $bt.removeClass("added");
-                        }, 5000);
+                        // $bt.addClass("added");
+						// window.location = "/checkout/#/carrinho"
+                        // setTimeout(function(){
+                        //     $bt.removeClass("added");
+                        // }, 5000);
                     }catch(err){
                         if(err.response && err.response.data && err.response.data.messages){
                             err.response.data.messages.map(function(message){
