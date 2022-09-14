@@ -13,18 +13,13 @@
         {% block head_script %}{% include 'includes/head_script.html' %}{% endblock %}
         {% block extra_head %}{% endblock %}
     </head>
-    <body id="{% block body_id %}internal{% endblock %}" class="{{ LANGUAGE_CODE }}{% if is_mobile or request|is_tablet %} is_mobile{% endif %} {% block body_class %}farmacia{% endblock %} {% block attr_class %}{% endblock %}">
+    <body id="{% block body_id %}internal{% endblock %}" class="{{ LANGUAGE_CODE }}{% if is_mobile or request|is_tablet %} is_mobile{% endif %} {% block body_class %}{% endblock %} {% block attr_class %}{% endblock %}">
         {% if shop_settings.EXTRA_BODY %}{% render shop_settings.EXTRA_BODY|safe %}{% endif %}
         {% include "shop/sellers/seller/toolbar.html" %}
         <div id="main-wrapper">
             <header class="header">
                 {% showcase_widget 'AreaTopHeader' object.django_id object.django_ct %}
                 <div class="container">
-                    <div class="row align-items-center justify-content-between">
-                        <div class="col-3"></div>
-                        <div class="col-6"></div>
-                        <div class="col-3"></div>
-                    </div>
                     <div class="row align-items-center justify-content-between">
                         <div class="col-6 col-sm-6 col-lg-2 col-brand">
                             {% block logo %}
