@@ -211,9 +211,10 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     background: #dcdcdc;
+    border: 0;
 }
 .ui-spinner-button:hover{
     background: #cecdcd;
@@ -231,7 +232,7 @@ textarea {
     margin: 0 2px;
     width: 40px;
     text-align: center;
-    font-size: 14px;
+    font-size: 14px !important;
     border: 0;
     background: none;
 }
@@ -1001,9 +1002,25 @@ body.open-page .mask-floating-page{
     text-transform: none;
     line-height: 1;
 }
-
 #breadcrumb li a{
     font-size: 12px;
+}
+.bar-information{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 70px;
+}
+.bar-information [class^="icon-"], .bar-information [class*=" icon-"]{
+    display: block;
+    font-size: 28px;
+    color: #256abe;
+    margin-bottom: 5px;
+}
+.bar-information span{
+    font-size: 13px;
+    line-height: 18px;
+    color: #3d464d;
+    text-transform: uppercase;
 }
 /* End Content */
 
@@ -1016,8 +1033,7 @@ body.open-page .mask-floating-page{
     padding: 0px 15px;
     letter-spacing: -0.1px;
 }
-.footer .f-f-1, 
-.footer .f-f-2{
+.footer div[class*="f-f-"]{
     padding: 40px 0px;
 }
 .footer .f-f-1{ 
@@ -1026,12 +1042,12 @@ body.open-page .mask-floating-page{
 .footer .f-f-2{ 
     background: #ffffff;
 }
-.footer .f-f-1 h3{
+.footer div[class*="f-f-"] h3{
     font-weight: 600;
     font-size: 18px;
     margin-bottom: 10px;
 }
-.footer .f-f-1 .accordion h3 > .btn-link{
+.footer div[class*="f-f-"] .accordion h3 > .btn-link{
     position: relative;
     display: flex;
     width: 100%;
@@ -1041,10 +1057,10 @@ body.open-page .mask-floating-page{
     border-top: 1px solid #dcdcdc;
     color: #000;
 }
-.footer .f-f-1 .accordion h3 > .btn-link.collapsed:after{
+.footer div[class*="f-f-"] .accordion h3 > .btn-link.collapsed:after{
     content: "\e91c";
 }
-.footer .f-f-1 .accordion h3 > .btn-link:after{
+.footer div[class*="f-f-"] .accordion h3 > .btn-link:after{
     content: "\e91e";
     right: 15px;
     top: 50%;
@@ -1060,24 +1076,25 @@ body.open-page .mask-floating-page{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-.footer .f-f-1 ul{ 
+.footer div[class*="f-f-"] ul{ 
     margin-bottom: 20px; 
 }
-.footer .f-f-1 ul li > a{
+.footer div[class*="f-f-"] ul li > a{
     font-size: 14px;
     line-height: 15px;
     padding: 5px 0px;
     display: block;
 }
 .footer-networks{
-    width: 44px;
-    height: 44px;
-    border: 0;
-    font-size: 18px;
-    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #256abe;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    font-size: 18px;
+    color: #fff;
     border-radius: 50%;
     transition: all 0.3s ease;
 }

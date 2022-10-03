@@ -90,49 +90,49 @@
                         <div class="title-showcase">
                             <h2>{% trans 'Produtos similares' %} </h2>
                         </div>
-                        <ul class="list-products horizontal-scroll">
+                        <div class="carousel owl-carousel list-products list-products-paginate">
                             {% for p in product.get_similars %}
-                                <li>
+                                <div class="li">
                                     {% include "shop/includes/product.html" %}
-                                </li>
+                                </div>
                             {% endfor %}
-                        </ul>
+                        </div>
                     {% endif %}
                     {% if product.get_suggestions %}
                         <div class="title-showcase">
                             <h2>{% trans 'Nossas sugestões' %} </h2>
                         </div>
-                        <ul class="list-products horizontal-scroll">
+                        <div class="carousel owl-carousel list-products list-products-paginate">
                             {% for p in product.get_suggestions %}
-                                <li>
+                                <div class="li">
                                     {% include "shop/includes/product.html" %}
-                                </li>
+                                </div>
                             {% endfor %}
-                        </ul>
+                        </div>
                     {% endif %}
                     {% if product.get_accessories %}
                         <div class="title-showcase">
                             <h2>{% trans 'Acessórios' %} </h2>
                         </div>
-                        <ul class="list-products horizontal-scroll">
+                        <div class="carousel owl-carousel list-products list-products-paginate">
                             {% for p in product.get_accessories %}
-                                <li>
+                                <div class="li">
                                     {% include "shop/includes/product.html" %}
-                                </li>
+                                </div>
                             {% endfor %}
-                        </ul>
+                        </div>
                     {% endif %}
                     {% if upsell_products %}
                         <div class="title-showcase">
                             <h2>{% trans 'Quem comprou, comprou também' %} </h2>
                         </div>
-                        <ul class="list-products horizontal-scroll">
+                        <div class="carousel owl-carousel list-products list-products-paginate">
                             {% for p in upsell_products %}
-                                <li>
+                                <div class="li">
                                     {% include "shop/includes/product.html" %}
-                                </li>
+                                </div>
                             {% endfor %}
-                        </ul>
+                        </div>
                     {% endif %}
                 </div>
                 <div class="container">
