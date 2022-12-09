@@ -7,6 +7,8 @@ const ProductView = BaseView.extend({
         this._super();
         this.zoom();
         this.embedYoutube();
+
+        const self = this;
         
         // Desconto percentual no boleto
         if($('.product-detail .descont').length){

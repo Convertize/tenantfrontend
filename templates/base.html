@@ -4,10 +4,10 @@
 <html lang="{{ LANGUAGE_CODE }}">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
         <title>{% block meta_title %}{{ shop_settings.SEO_TITLE }}{% endblock %}</title>
-        <meta name="description" content="{% block meta_description %}{{ shop_settings.SEO_DESCRIPTION }}{% endblock %}" />
-        {% block meta_robots %}<meta name="robots" content="index, follow" />{% endblock %}
+        <meta name="description" content="{% block meta_description %}{{ shop_settings.SEO_DESCRIPTION }}{% endblock %}">
+        {% block meta_robots %}<meta name="robots" content="index, follow">{% endblock %}
         {% include "includes/head.html" %}
         {% block extra_meta %}{% endblock %}
         {% block head_script %}{% include 'includes/head_script.html' %}{% endblock %}
@@ -23,12 +23,11 @@
                     <div class="row align-items-center justify-content-between">
                         <div class="col-6 col-sm-6 col-lg-2 col-brand">
                             {% block logo %}
-                                <div class="logo m-0 text-center" itemscope="" itemtype="http://schema.org/Organization">
-                                    <a href="{% url 'home' %}"></a>
-									<meta itemprop="name" content="Convertize" />
-                                    <meta itemprop="url" content="https://{{ request.get_host }}" />
-                                    <meta itemprop="logo" content="{{ STATIC_URL }}img/logo.png" />
-                                </div>
+                                <h1 class="logo m-0 text-center" itemscope="" itemtype="http://schema.org/Organization">
+                                    <a href="{% url 'home' %}" itemprop="name">{{ shop_settings.SEO_TITLE_HOME }}</a>
+                                    <meta itemprop="url" content="https://{{ request.get_host }}">
+                                    <meta itemprop="logo" content="https://{{ request.get_host }}{{ STATIC_URL }}img/logo.png">
+                                </h1>
                             {% endblock %}
                         </div>
                         <div class="col-3 col-lg-2 d-flex align-items-center col-menu">
@@ -434,24 +433,24 @@
         </div>
 
         {% block nav_inside %}
-        <div class="floating-page" id="floating-menu">
-            <div class="container-fluid">
-                <header>
-                    <div class="close">
-                        <i class="icon-close"></i>
-                    </div>
-                    <span class="title">Categorias						
-                        <a href="{% url 'home' %}" class="d-flex align-items-center ml-auto d-lg-none my-acount{% if not request.customer %} bt_login{% else %} bt-open-page{% endif %}" data-target="#floating-account" aria-label="Categorias">
-                            <i class="icon-user text-primary font-size-20 mr-1"></i><span class="font-size-14">{% if request.customer %}Olá, {{ request.customer.name|split:" "|slice:"1"|join:"" }}{% else %}Minha conta{% endif %}</span>
-                        </a>
-                    </span>	
-                </header>
-                <div class="content-page" id="nav-inside">
-                    <div class="content-nav-inside" id="menuMobile">
+            <div class="floating-page" id="floating-menu">
+                <div class="container-fluid">
+                    <header>
+                        <div class="close">
+                            <i class="icon-close"></i>
+                        </div>
+                        <span class="title">Categorias						
+                            <a href="{% url 'home' %}" class="d-flex align-items-center ml-auto d-lg-none my-acount{% if not request.customer %} bt_login{% else %} bt-open-page{% endif %}" data-target="#floating-account" aria-label="Categorias">
+                                <i class="icon-user text-primary font-size-20 mr-1"></i><span class="font-size-14">{% if request.customer %}Olá, {{ request.customer.name|split:" "|slice:"1"|join:"" }}{% else %}Minha conta{% endif %}</span>
+                            </a>
+                        </span>	
+                    </header>
+                    <div class="content-page" id="nav-inside">
+                        <div class="content-nav-inside" id="menuMobile">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         {% endblock %}
 
         <div class="floating-page" id="floating-account">
@@ -473,40 +472,6 @@
         </div>
 
         <div class="mask-floating-page"></div>
-
-        {% comment %}
-        <div class="navbar-mobile d-lg-none">
-            <ul>
-                <li class="li-home">
-                    <a href="{% url 'home' %}">
-                        <i class="icon-shop"></i>
-                        <span>Início</span>
-                    </a>
-                </li>
-                <li class="li-menu">
-                    <a href="{% url 'home' %}" class="bt-open-page" data-target="#floating-menu">
-                        <i class="icon-menu"></i>
-                        <span>Categorias</span>
-                    </a>
-                </li>
-                <li class="li-user">
-                    <a href="{% url 'home' %}" class="bt_login {% if request.customer %}bt-open-page{% else %}bt_login{% endif %}" data-target="#floating-account">
-                        <i class="icon-user"></i>
-                        <span>Conta</span>
-                    </a>
-                </li>
-                <li class="li-cart">
-                    <a href="{% url 'shop_checkout' %}" class="bt-open-page" data-target="#mini-cart">
-                        <i class="icon-cart"></i>
-                        <span>Carrinho</span>
-                        <span class="badge quantity">
-                            <span class="request__cart__total_quantity">{{ request.cart.total_quantity|default:0 }}</span>
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        {% endcomment %}
 
         <script type="text/javascript">
             const menuMobileTemplate = `{% spaceless %}{% cms_menu "navbar-mobile" %}{% endspaceless %}`;

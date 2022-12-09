@@ -2,17 +2,17 @@
 {% block body_id %}product{% endblock %}
 
 {% block extra_meta %}
-        <meta property="og:locale" content="pt_BR" />
-        <meta property="og:site_name" content="{{ shop_settings.SEO_TITLE }}" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="{{ product.name }}" />
-        <meta property="og:url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}" />
-        <meta property="og:description" content="{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}" />
-        <meta property="og:image" content="http:{{ MEDIA_URL|cut:'https://' }}{{ product.image }}" />
-        <meta property="og:image:secure_url" content="https:{{ MEDIA_URL }}{{ product.image }}" />
-        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:locale" content="pt_BR">
+        <meta property="og:site_name" content="{{ shop_settings.SEO_TITLE }}">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ product.name }}">
+        <meta property="og:url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}">
+        <meta property="og:description" content="{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}">
+        <meta property="og:image" content="http:{{ MEDIA_URL|cut:'https://' }}{{ product.image }}">
+        <meta property="og:image:secure_url" content="https:{{ MEDIA_URL }}{{ product.image }}">
+        <meta property="og:image:type" content="image/jpeg">
         {% localize off %}
-        <script type="text/javascript">
+        <script>
             window.dataProduct = {
                 "id": "{{ product.id }}",
                 "name": "{{ product.name }}",
@@ -30,7 +30,7 @@
 
 {% block meta_description %}{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}{% endblock %}
 {% block meta_keywords %}{% if product.keywords %}{{ product.keywords }}{% endif %}{% endblock %}
-{% block meta_robots %}{{ block.super }}<link rel="canonical" href="https://{{ request.get_host }}/{{ product.slug }}/p" />{% endblock %}
+{% block meta_robots %}{{ block.super }}<link rel="canonical" href="https://{{ request.get_host }}/{{ product.slug }}/p">{% endblock %}
 
 {% block content %}
 {% get_data_json product.specifications as json_specifications %}
@@ -147,12 +147,12 @@
 {% block footer_script %}
     {{ block.super }}
     {% compress js %}
-        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/photoswipe.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/photoswipe-ui-default.min.js"></script>
+        <script src="{{ STATIC_URL }}js/libs/photoswipe.min.js"></script>
+        <script src="{{ STATIC_URL }}js/libs/photoswipe-ui-default.min.js"></script>
     {% endcompress %}
     {% compress css %}
-        <link href="{{ STATIC_URL }}css/photoswipe/photoswipe.css" rel="stylesheet" type="text/css" />
-        <link href="{{ STATIC_URL }}css/photoswipe/default-skin/default-skin.css" rel="stylesheet" type="text/css" />
+        <link href="{{ STATIC_URL }}css/photoswipe/photoswipe.css" rel="stylesheet" type="text/css">
+        <link href="{{ STATIC_URL }}css/photoswipe/default-skin/default-skin.css" rel="stylesheet" type="text/css">
     {% endcompress %}
 {% endblock %}
 
