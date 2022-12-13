@@ -13,6 +13,7 @@ const BaseView = $.Class.create({
         this.fixedHeader();
         this.horizontalScroll();
         this.cookieLGPD();
+        this.maskForm();
     },
     cookieLGPD: function(){
         if(!Cookies.get("accept_cookie")){
@@ -841,6 +842,83 @@ const BaseView = $.Class.create({
                 slider.scrollLeft = scrollLeft - walk;
             });
         });
+    },
+    maskForm: function(){
+        if($("#checkout").length) return;
+
+        $("input[name=corporate_document]").unmask().mask("00.000.000/0000-00");
+        $("input[name=document]").unmask().mask("000.000.000-00");
+
+        const maskBehavior = function(val){
+            return val.replace(/\D/g, '').length === 11 ? "(00) 00000-0000" : "(00) 0000-00009";
+        },
+        options = {onKeyPress: function(val, e, field, options){
+                field.mask(maskBehavior.apply({}, arguments), options);
+            }
+        };
+        $("input[name*=phone]").unmask().mask(maskBehavior, options);
+
+        $("#profile input[name=zipcode]").unmask().mask("00000-000", {onChange : function(zipcode, event, currentField, options){
+            if(zipcode.length < 9){
+                currentField.removeAttr("readonly").removeClass("loading");
+                return;
+            };
+        }, onComplete : function(zipcode, event, currentField, options){
+            currentField.closest("form").addClass("loading");
+            currentField.attr("readonly",true);
+            loadZipcode(zipcode,currentField)
+        }}).unbind("keypress.convertize").bind("keypress.convertize", function(e){
+            if(e.keyCode == 13) return false;
+        });
+
+        const loadZipcode = async function(zipcode, currentField){
+            const $form = currentField.closest("form")
+            $form.find("[name$=code_ibge],[name$=city_id]").remove();
+
+            try{
+                const response = await axios.get(`/ws/zipcode/?zipcode=${zipcode}`);
+                const resp = response.data;
+                if(response.status == 200 && resp.success){
+                    log(resp);
+                    $form.append(`<input type="hidden" name="code_ibge" value="${resp.codigo_ibge || ""}" />`);
+                    $form.append(`<input type="hidden" name="city_id" value="${resp.localidade_id || ""}" />`);
+
+                    $form.find("input[name$=address]").val(resp.endereco || "");
+                    $form.find("input[name$=city]").val(resp.cidade || "").attr("readonly", !!resp.cidade);
+
+                    if(resp.bairros && resp.bairros.length == 1){
+                        $form.find("[name$=neighborhood]").replaceWith(`<input class="form-control" type="text" name="${$form.find("[name$=neighborhood]").attr("name")}" id="${$form.find("[name$=neighborhood]").attr("id")}" value="${resp.bairros[0]}" required maxlength="100" />`);
+                    }else if(resp.bairros && resp.bairros.length > 1){
+                        const options = resp.bairros.map(function(b){
+                            return `<option value="${b}">${b}</option>`
+                        });
+                        $form.find("[name$=neighborhood]").replaceWith(`<select class="form-control" name="${$form.find("[name$=neighborhood]").attr("name")}" id="${$form.find("[name$=neighborhood]").attr("id")}" required><option value="">---------</option>${options.join("")}</select>`);
+                    }else{
+                        $form.find("[name$=neighborhood]").replaceWith(`<input class="form-control" type="text" name="${$form.find("[name$=neighborhood]").attr("name")}" id="${$form.find("[name$=neighborhood]").attr("id")}" value="" required maxlength="100" />`);
+                    }
+
+                    if(resp.uf){
+                        $form.find("[name$=state]").val(resp.uf).attr("disabled","disabled");
+                        $form.find("[name$=state]").parent().append(`<input type="hidden" name="${$form.find("[name$=state]").attr("name")}" value="${resp.uf}" />`);
+                    }else{
+                        $form.find("[name$=state][type=hidden]").remove();
+                        $form.find("[name$=state]").removeAttr("disabled");
+                    }
+
+                }else{
+                    $form.find("[name$=neighborhood]").replaceWith(`<input class="form-control" type="text" name="${$form.find("[name$=neighborhood]").attr("name")}" id="${$form.find("[name$=neighborhood]").attr("id")}" value="" required maxlength="100" />`);
+                    $form.find("[name$=state][type=hidden]").remove();
+                    $form.find("[name$=state]").removeAttr("disabled");
+                }
+            }catch(err){
+                $form.find("[name$=neighborhood]").replaceWith(`<input class="form-control" type="text" name="${$form.find("[name$=neighborhood]").attr("name")}" id="${$form.find("[name$=neighborhood]").attr("id")}" value="" required maxlength="100" />`);
+                $form.find("[name$=state][type=hidden]").remove();
+                $form.find("[name$=state]").removeAttr("disabled");
+            }
+
+            currentField.closest("form").removeClass("loading");
+            currentField.removeAttr("readonly");
+        }
     }
 });
 

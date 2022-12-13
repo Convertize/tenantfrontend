@@ -1,12 +1,12 @@
 {% load shop_tags user_agents compress l10n %}
 {% compress js inline %}
 {% localize off %}
-	<script type="text/javascript">
+	<script>
 		var dataLayer = dataLayer || [];
 	</script>
 
 	{% if request.cart.customer %}
-		<script type="text/javascript">
+		<script>
 		dataLayer.push({
 			clientEmail: "{{ request.cart.customer.email }}",
 			{% if request.session.customer == request.cart.customer %}
@@ -16,7 +16,7 @@
 		});
 		</script>
 		{% elif order.customer %}
-		<script type="text/javascript">
+		<script>
 		dataLayer.push({
 			clientEmail: "{{ order.customer.email }}",
 			{% if request.session.customer == order.customer %}
@@ -28,7 +28,7 @@
 	{% endif %}
 
 	{% if products %}
-		<script type="text/javascript">
+		<script>
 			var lista = [];
 			{% for p in products|slice:"30" %}
 			lista.push({{ p.django_id }})
@@ -40,7 +40,7 @@
 	{% endif %}
 
 	{% if product %}
-	<script type="text/javascript">
+	<script>
 		dataLayer.push({
 			event: "viewProduct",
 			pageName: "product",
@@ -72,7 +72,7 @@
 	</script>
 
 	{% elif request.path == '/' %}
-		<script type="text/javascript">
+		<script>
 			dataLayer.push({
 				event: "viewHome",
 				pageName: "home"
@@ -80,7 +80,7 @@
 		</script>
 
 	{% elif object.django_ct == 'categories.category' %}
-		<script type="text/javascript">
+		<script>
 			dataLayer.push({
 				event: "viewCategory",
 				pageName: "category",
@@ -90,7 +90,7 @@
 		</script>
 
 	{% elif object.django_ct == 'products.brand' %}
-		<script type="text/javascript">
+		<script>
 			dataLayer.push({
 				event: "viewBrand",
 				pageName: "brand",
@@ -100,7 +100,7 @@
 		</script>
 
 	{% elif object.django_ct == 'products.collection' %}
-		<script type="text/javascript">
+		<script>
 			dataLayer.push({
 				event: "viewCollection",
 				pageName: "collection",
@@ -110,7 +110,7 @@
 		</script>
 
 	{% elif not '/checkout/' in request.path %}
-		<script type="text/javascript">
+		<script>
 			if($('body').attr('id') == 'category'){
 				dataLayer.push({
 					event: "search",
@@ -122,10 +122,10 @@
 	{% endif %}
 
 	{% if '/checkout/sucesso/' in request.path %}
-		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
-		<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+		<script src="{{ STATIC_URL }}js/jquery.js"></script>
+		<script src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
 
-		<script type="text/javascript">
+		<script>
 			if(!$.cookie("orderADS-{{ order.id }}")){
 				dataLayer.push({
 					event: "checkoutSuccess",
@@ -136,7 +136,7 @@
 			}
 		</script>
 
-		<script type="text/javascript">
+		<script>
 			dataLayer.push({
 				'ecommerce': {
 					'purchase': {
@@ -161,7 +161,7 @@
 	{% endif %}
 
 	{% if request.path == '/checkout/' %}
-	<script type="text/javascript">
+	<script>
 	  var dataLayer = dataLayer || [];
 		var CheckoutItems = [];
 		var CartItems = [];

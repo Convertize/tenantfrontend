@@ -1,28 +1,28 @@
 {% load compress cms_tags shop_tags %}
-        <meta name="theme-color" content="#ffffff" />
-        <link href="{{ STATIC_URL }}manifest.json" rel="manifest" />
-        <link href="{{ STATIC_URL }}img/favicon.ico" rel="shortcut icon" /> 
-        <link href="{{ STATIC_URL }}img/touch/homescreen192.png" rel="apple-touch-icon" sizes="192x192" />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" />
-        <link rel="stylesheet" href="https://i.icomoon.io/public/9a2a1e86fa/LojaPadro/style.css">
-        {% compress css %}
-            <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/reset.css" rel="stylesheet" type="text/css" />
-            <!-- <link href="{{ STATIC_URL }}css/fonts.css" rel="stylesheet" type="text/css" /> -->
-            <link href="{{ STATIC_URL }}css/owl.carousel.min.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/jquery-ui.structure.min.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/jquery.toast.min.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/menu.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/seals.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/showcases.css" rel="stylesheet" type="text/css" />
-            <link href="{{ STATIC_URL }}css/responsive.css" rel="stylesheet" type="text/css" />
-        {% endcompress %}
-        {% if shop_settings.EXTRA_HEAD %}{% render shop_settings.EXTRA_HEAD|safe %}{% endif %}
-        <script type="text/javascript">
-            window.__url_path__ = '{% url "home" %}';
-            window.__static_prefix__ = "{{ STATIC_URL }}";
-            window.__media_prefix__ = "{{ MEDIA_URL }}";
-        </script>
+<meta name="theme-color" content="#ffffff">
+<link href="{{ STATIC_URL }}manifest.json" rel="manifest">
+<link href="{{ STATIC_URL }}img/favicon.ico" rel="shortcut icon"> 
+<link href="{{ STATIC_URL }}img/touch/homescreen192.png" rel="apple-touch-icon" sizes="192x192">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap"></noscript>
+{% compress css %}
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/reset.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/fonts.css" rel="stylesheet"> 
+    <link href="{{ STATIC_URL }}css/owl.carousel.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/jquery.toast.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/menu.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/seals.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/showcases.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/responsive.css" rel="stylesheet">
+{% endcompress %}
+{% if shop_settings.EXTRA_HEAD %}{% render shop_settings.EXTRA_HEAD|safe %}{% endif %}
+<script>
+    window.__url_path__ = '{% url "home" %}';
+    window.__static_prefix__ = "{{ STATIC_URL }}";
+    window.__media_prefix__ = "{{ MEDIA_URL }}";
+</script>
