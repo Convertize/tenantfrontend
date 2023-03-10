@@ -1,6 +1,5 @@
 {% load i18n l10n thumbnail shop_tags user_agents %}
 {% with p.has_stock as has_stock %}
-    {% get_data_json p.specifications as json_specifications %}
     {% localize off %}
         <div 
             class="item-product{% if not has_stock %} not_stock{% endif %}" 
@@ -14,7 +13,7 @@
                     <img alt="" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" />
                 {% endif %}
                 {% if p.descont_percentage %}
-                    <span class="descont"><span>{{ p.descont_percentage|floatformat|cut:'-' }}%</span></span>
+                    <span class="discount"><span>{{ p.descont_percentage|floatformat|cut:'-' }}%</span></span>
                 {% endif %}
             </a>
             <div class="desc position-relative">

@@ -9,13 +9,13 @@
                             {% if image.video %}
                                 <div class="item video" data-index="{{ forloop.counter0 }}">
                                     <div class="embed-youtube video-container" data-code="{{ image.video }}" style="width:100%;height:315px;">
-                                        <img class="owl-lazy" src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_medium }}" title="{{ product.name }}" alt="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
+                                        <img class="owl-lazy" src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_medium }}" title="{{ product.name }}" alt="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}">
                                     </div>
                                 </div>
                             {% else %}
                                 <div class="item" data-index="{{ forloop.counter0 }}">
                                     <span big_img="{{ MEDIA_URL }}{{ image.version_large }}" class="expand-image" data-index="{{ forloop.counter }}">
-                                        <img class="owl-lazy" src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_medium }}" title="{{ product.name }}" alt="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
+                                        <img class="owl-lazy" src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_medium }}" title="{{ product.name }}" alt="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}">
                                     </span>
                                 </div>
                             {% endif %}
@@ -26,20 +26,20 @@
                         <ul class="thumbs">
                             {% for image in product.get_images %}
                                 <li class="item{% if image.video %} video{% endif %}{% if image.version_small == product.image %} active{% endif %}"{% if image.video %} data-video="{{ image.video }}"{% endif %} data-index="{{ forloop.counter0 }}">
-                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_mini }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-lazy" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|last }}" />
+                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ image.version_mini }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-lazy" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MINI|split:'x'|last }}">
                                 </li>
                             {% endfor %}
                         </ul>
                         <div class="big-image">
                             {% if sku and sku.image_large %}
                                 <figure class="zoom">
-                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ sku.image_medium }}" class="img-lazy" alt="{{ product.name }}" title="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
-                                    <meta itemprop="image" content="{{ MEDIA_URL }}{{ sku.image_large }}" />
+                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ sku.image_medium }}" class="img-lazy" alt="{{ product.name }}" title="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}">
+                                    <meta itemprop="image" content="{{ MEDIA_URL }}{{ sku.image_large }}">
                                 </figure>
                             {% elif product.image %}
                                 <figure class="zoom">
-                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ product.image_medium }}" class="img-lazy" alt="{{ product.name }}" title="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}" />
-									<meta itemprop="image" content="{{ MEDIA_URL }}{{ product.image_large }}" />
+                                    <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ MEDIA_URL }}{{ product.image_medium }}" class="img-lazy" alt="{{ product.name }}" title="{{ product.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_MEDIUM|split:'x'|last }}">
+									<meta itemprop="image" content="{{ MEDIA_URL }}{{ product.image_large }}">
                                 </figure>
                             {% endif %}
                             <span class="expand-image zoom-in">
@@ -77,12 +77,12 @@
                 <div class="d-flex flex-wrap text-secondary mb-3">
                     {% if product.brand %}
                         <a href="{% if product.category %}{{ product.category.get_absolute_url|slice:'0:-1' }}{% endif %}{{ product.get_brand.get_absolute_url }}" class="font-weight-bold mr-3 text-secondary" >{{ product.brand.title }}</a>
-						<meta itemprop="brand" content="{{ product.brand.title }}" />
+						<meta itemprop="brand" content="{{ product.brand.title }}">
                     {% endif %}
                     <span class="mr-3">
-						<meta itemprop="sku" content="{% if sku %}{{ sku.id }}{% else %}{{ product.get_sku_default.id }}{% endif %}" />
+						<meta itemprop="sku" content="{% if sku %}{{ sku.id }}{% else %}{{ product.get_sku_default.id }}{% endif %}">
 						{% if product.get_sku_default.ean_13 %}
-						<meta itemprop="gtin13" content="{{ product.get_sku_default.ean_13 }}" />
+						<meta itemprop="gtin13" content="{{ product.get_sku_default.ean_13 }}">
 						{% endif %}
                         Cód: {{ product.upc }}
                     </span>
@@ -91,10 +91,10 @@
                     </span>
 					{% if product.rating %}
 					<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-						<meta itemprop="ratingValue" content="{{ product.rating }}" />
-						<meta itemprop="reviewCount" content="{% if product.rating_total %}{{ product.rating_total }}{% else %}0{% endif %}" />
-						<meta itemprop="bestRating" content="5" />
-						<meta itemprop="worstRating" content="1" />
+						<meta itemprop="ratingValue" content="{{ product.rating }}">
+						<meta itemprop="reviewCount" content="{% if product.rating_total %}{{ product.rating_total }}{% else %}0{% endif %}">
+						<meta itemprop="bestRating" content="5">
+						<meta itemprop="worstRating" content="1">
                     </div>
 					{% endif %}
                 </div>
@@ -104,9 +104,6 @@
                             {{ seal|safe }}
                         {% endfor %}
                     </div>
-                {% endif %}
-                {% if json_specifications.venda_permitida_pela_internet and json_specifications.venda_permitida_pela_internet.value and json_specifications.venda_permitida_pela_internet.value|slugify == 'nao' %}
-                    <span class="seal venda_com_receita">Venda com receita</span>
                 {% endif %}
                 <form method="POST" action="{{ product.get_absolute_url }}" class="product-form pt-3">
                     <div style="display:none;">
@@ -138,7 +135,7 @@
                                                 <div>
                                                     {% for value in option.list %}
                                                         <label class="value{% if not value.available %} disabled{% endif %}">
-                                                            <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
+                                                            <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}">
                                                             <span>{{ value.option__value }}</span>
                                                         </label>
                                                     {% endfor %}
@@ -150,19 +147,39 @@
                             </div>
                         {% endif %}
                     {% endwith %}
+                    {% if product.product_type == 3 %}
+                        <div class="bundles">
+                            <div class="option size14 fw600 pd plz prz color2">Selecione uma opção abaixo:</div>
+                            {% for name,bundle in product.get_bundles.items %}
+                                <div class="form-group{% if bundle.required %} required{% endif %}">
+                                    <div class="values">
+                                        <span class="number">{{ forloop.counter }}</span>
+                                        <select name="{{ name }}" {% if bundle.required %} required{% endif %}>
+                                            {% for name_item,option in bundle.options.items %}
+                                                {% if forloop.first %}
+                                                    <option value="" data-sale-price="0" selected="selected" data-cover="{{ MEDIA_URL }}{{ option.cover }}">------</option>
+                                                {% endif %}
+                                                <option value="{{ name_item }}" data-sale-price="{{ option.sale_price }}" data-cover="{{ MEDIA_URL }}{{ option.cover }}">{{ option.name|replace:'/,' }} {{ option.quantity }} unidade{{ option.quantity|pluralize:'s' }} por {{ option.sale_price|currency }} cada</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     {% if product.is_available %}
                         <div class="row mt-sm-3">
                             {% with sku=sku|default:product %}
                                 <div class="col-12 col-sm-6 mb-3 mb-sm-0">
                                     <div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                                        <meta itemprop="url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}" />
-                                        <link itemprop="availability" href="http://schema.org/InStock" />
-                                        <meta itemprop="priceCurrency" content="BRL" />
+                                        <meta itemprop="url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}">
+                                        <link itemprop="availability" href="http://schema.org/InStock">
+                                        <meta itemprop="priceCurrency" content="BRL">
                                         <p class="unit-price"{% if sku.unit_price <= sku.price %} style="display:none;"{% endif %}>
                                             {{ sku.unit_price|currency }}
                                         </p>
                                         <p class="spot-price" data-discount="{{ billet_discount|floatformat }}">
-                                            <meta itemprop="price" content="{{ sku.price|get_price_boleto }}" />
+                                            <meta itemprop="price" content="{{ sku.price|get_price_boleto }}">
                                             <strong>{{ sku.price|get_price_boleto|currency }}</strong>
                                         </p>
                                         {% payment_price sku.price "pix" as pix_discount %}
@@ -172,7 +189,7 @@
                                         <p class="card-installments">
                                             <a href="#" data-toggle="modal" data-target="#all_installments" class="font-size-12 text-success get_installments" data-price="{{ sku.price }}">em até <strong class="get_min_installments">{{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }}</strong></a>
                                         </p>
-                                        <span class="descont" {% if not product.descont_percentage %} style="display:none"{% endif %}>{{ product.descont_percentage|default:"0"|floatformat }}%</span>
+                                        <span class="discount"{% if not product.descont_percentage %} style="display:none"{% endif %}>{{ product.descont_percentage|default:"0"|floatformat }}%</span>
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-6 d-flex align-items-center">
@@ -180,7 +197,7 @@
                                         {% if p.product_type == '3' %}
                                         {% else %}
                                             <label aria-label="Quantidade" class="m-0">
-                                                <input type="tel" value="1" name="quantity" />
+                                                <input type="tel" value="1" name="quantity">
                                             </label>
                                             <button type="button" class="btn btn-checkout d-block" data-loading-text="Adicionando">Comprar</button>
                                         {% endif %}
@@ -192,9 +209,9 @@
                         <div>
                             <div class="position-relative" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                 <h3>Produto Indisponível</h3>
-                                <link itemprop="availability" href="http://schema.org/InStock" content="OutOfStock" />
-                                <meta itemprop="priceCurrency" content="BRL" />
-                                <meta itemprop="price" content="{{ product.price|get_price_boleto }}" />
+                                <link itemprop="availability" href="http://schema.org/InStock" content="OutOfStock">
+                                <meta itemprop="priceCurrency" content="BRL">
+                                <meta itemprop="price" content="{{ product.price|get_price_boleto }}">
                             </div>
                             <div class="purchase">
                                 <button type="button" class="btn btn-checkout d-block btn-let-me-know" data-loading-text="Adicionando">Avise-me</button>
@@ -205,14 +222,14 @@
                 <div class="content-offers"></div>
                 <div class="mt-4">
                     <form class="box-calculate-shipping position-relative" action="/freight/shipping-simulation/" method="GET" data-content-type="text/javascript">
-                        <input type="hidden" value="1" name="quantity" />
-                        <input type="hidden" value="{{ product.get_sku_default.id }}" name="sku" />
+                        <input type="hidden" value="1" name="quantity">
+                        <input type="hidden" value="{{ product.get_sku_default.id }}" name="sku">
                         <div class="p-3 border rounded">
                             <div class="d-flex flex-wrap align-items-center justify-content-center">
                                 <span class="font-size-14 font-weight-bold text-nowrap mb-2 mb-lg-0 mr-lg-2">Simule seu frete:</span>
                                 <div class="d-flex flex-nowrap align-items-start">
                                     <div class="form-group m-0 font-size-12">
-                                        <input type="tel" name="zipcode" class="form-control form-control-lg" placeholder="Digite seu CEP" required maxlength="9" data-mask="00000-000" style="width: 150px;height: 35px;" aria-label="Consulte o frete" />
+                                        <input type="tel" name="zipcode" class="form-control form-control-lg" placeholder="Digite seu CEP" required maxlength="9" data-mask="00000-000" style="width: 150px;height: 35px;" aria-label="Consulte o frete">
                                     </div>
                                     <button class="ml-2 p-0 px-3 btn btn-primary font-weight-bold" style="height: 35px;">Calcular</button>
                                 </div>

@@ -8,6 +8,8 @@ const ProductView = BaseView.extend({
         this.zoom();
         this.embedYoutube();
 
+        if($(".bundles").length) this.bundles();
+
         const self = this;
         
         // Desconto percentual no boleto
@@ -57,6 +59,166 @@ const ProductView = BaseView.extend({
         $("body").on("click.convertize", ".get_installments", { self: self }, function(e, self){
 			e.data.self.get_installments(this);
 		});
+
+    },bundles: function(){
+        const self = this;
+
+        $(".bundles select[name*=bundle_]").each(function(){
+            $(this).hide();
+
+            const selected = $(this).find("option[selected]"),
+                  options = [];
+
+            $(this).find("option").each(function(){
+                options.push(`<li class="${$(this).attr("selected") ? "active":""}">
+                    <a class="dropdown-item" data-id="${$(this).val()}"><i class="icon-circle-line"></i> ${$(this).text()}</a>
+                </li>`);
+            });
+
+            $(`<div class="dropdown">
+                <button id="${$(this).attr("name")}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="${selected.data("cover").replace("/small/","/mini/")}" />
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="${$(this).attr("name")}">
+                    ${options.join("")}
+                </ul>
+            </div>`).insertBefore(this);
+
+            $(this).appendTo($(this).closest(".form-group").find(".dropdown"));
+        });
+
+        $("body").off("change.convertize", ".bundles [name*=bundle_]");
+        $("body").on("change.convertize", ".bundles [name*=bundle_]", function(){
+            const selected = $(this).find(`option[selected="selected"]`);
+
+            $(this).parent().find("img").attr("src", selected.data("cover").replace("/small/","/mini/"));
+
+            if($(this).parent().hasClass("dropdown")){
+                $(this).parent().find(".dropdown-menu li").removeClass("active");
+                $(this).parent().find(`.dropdown-menu a[data-id="${$(this).val()}"]`).parent().addClass("active");
+                if($(this).val()) $(this).parent().find("button").addClass("active");
+                else $(this).parent().find("button").removeClass("active");
+            };
+
+            const list_selected = [];
+            $(this).closest(".bundles").find("select option[selected=selected]").each(function(){
+                list_selected.push($(this).data("sale-price"))
+            });
+
+            const total_bundle = list_selected.reduce(function(a,b){
+                return parseFloat(a) + parseFloat(b)
+            });
+
+            if(total_bundle){
+                $(".product-detail").find(".sale-price").html(total_bundle.toCurrency());
+                // if($('.product .get_price_boleto').length) $('.product .get_price_boleto').html((total_bundle - total_bundle*$('.get_discount_boleto').html()/100).toCurrency());
+                // if($('.product .get_card_price').length){
+                //     $('.product .get_installments').data('price', total_bundle.toCurrency());
+                //     $('.product .get_card_price, .product-inline .get_card_price').html((total_bundle / parseFloat($(".product .get_min_installments").html().replace(/\D/g, ''))).toCurrency());
+                // };
+                // $('.all_installments ul').html('');
+            };
+
+        });
+
+        $("body").off("click.convertize", ".bundles .dropdown a");
+        $("body").on("click.convertize", ".bundles .dropdown a", function(){
+            $(this).closest(".dropdown").find("select option").removeAttr("selected");
+            $(this).closest(".dropdown").find(`select option[value="${$(this).data('id')}"]`).attr("selected", "selected");
+            $(this).closest(".dropdown").find("select").val($(this).data("id")).trigger("change");
+        });
+
+        $("body").off("click.convertize", ".product-detail .product-form .btn-checkout");
+        $("body").on("click.convertize", ".product-detail .product-form .btn-checkout", function(e){
+            e.preventDefault();
+
+            const $bt = $(this);
+            const $form = $(this).closest(".product-form");
+
+            $bt.addClass("loading").prop("disabled", true);
+
+            if($form.data("validator")){
+                $form.submit();
+                return true;
+            };
+
+            const data_rules = {};
+            const data_messages = {};
+
+            $form.find(".form-group.required select, .form-group.required input[type=radio]").each(function(){
+                const name = $(this).attr("name");
+                data_rules[name] = {
+                    required: true
+                };
+                data_messages[name] = {
+                    required: $(this).data("title") ? `Selecione a opção de <b>${$(this).data("title")}</b>`:"Selecione uma opção"
+                };
+            });
+
+            $form.validate({
+                rules: data_rules,
+                messages: data_messages,
+                errorElement: "p",
+                ignore: [],
+                errorPlacement: function(error, element){
+                    element.closest(".variations").addClass("error");
+                    const ul = $(`<div class="errorlist" />`).html(error.addClass("text-danger mt-2"));
+                    if(!error.html()) return;
+                    element.closest(".form-group").append(ul);            
+                },
+                invalidHandler: function(event, validator){
+                    $bt.removeClass("loading").prop("disabled", false);
+                },
+                submitHandler: async function(form, event){
+                    event.preventDefault();
+
+                    const body = new FormData();
+
+                    body.append("add_cart", true);
+
+                    $(form).serializeArray().map(function(item){
+                        if(item.name.indexOf("bundle_") >= 0 || item.name == "quantity"){
+                            body.append(item.name, item.value);
+                        };
+                    });
+
+                    axios({
+                        url: $(form).attr("action"),
+                        method: $(form).attr("method"),
+                        data: body,
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    }).then(async function(response){
+                        if(response.status == 200 && response.data && !response.data.error){
+                            await self.loadCart();
+                            $("body").addClass("open-page");
+                            $("#mini-cart").addClass("active").removeClass("loading");
+                        }else{
+                            $.toast({
+                                hideAfter: 7000,
+                                icon: "error",
+                                text: response.data.error,
+                                position: "bottom-center",
+                                showHideTransition: "plain",
+                                beforeShow: function(){
+                                    $(".jq-toast-loader").addClass("jq-toast-loaded")
+                                }
+                            });
+                        }
+                        $bt.removeClass("loading").prop("disabled", false);
+                    })
+                    .catch(function(error){
+                        $bt.removeClass("loading").prop("disabled", false);
+                    });
+
+
+                    return false;
+                }
+            });
+            $form.trigger("submit.validate");
+
+        });
 
     },
     updateImages: function(sku){
