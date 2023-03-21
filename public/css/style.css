@@ -1561,10 +1561,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
 #content-product .bundles .form-group{ display: inline-block; vertical-align: middle; position: relative; float: none; margin: 0; border: 0; width: 25%; padding: 2px;}
 #content-product .bundles .form-group:nth-of-type(4) .dropdown-menu{ left: auto; right: 0;}
 #content-product .bundles .form-group:nth-of-type(4) .dropdown-menu:before{ left: auto; right: 15px;}
-#content-product .bundles .form-group .number{ font-size: 12px; font-weight: 600; color: #222222; position: absolute; left: 10px; top: 5px; z-index: 1;}
+#content-product .bundles .form-group .number{ font-size: 12px; font-weight: 600; color: #333; position: absolute; left: 10px; top: 5px; z-index: 1;}
 #content-product .bundles .form-group button{ position: relative; border: 1px solid #e5e5e5; border-radius: 5px; outline: none;}
-#content-product .bundles .form-group button:focus, #content-product .bundles .form-group button:hover{ border-color: #249858;}
-#content-product .bundles .form-group button.active:before{ content: "\e939"; font-family: "icon-convertize"; position: absolute; top: -4px; right: -4px; background: #249858; font-size: 14px; line-height: 21px; color: #ffffff; width: 20px; height: 20px; text-align: center; border-radius: 50%;}
+#content-product .bundles .form-group button:focus, #content-product .bundles .form-group button:hover{ border-color: #50a42d;}
+#content-product .bundles .form-group button.active:before{ content: "\e939"; font-family: "icon-convertize"; position: absolute; top: -4px; right: -4px; background: #50a42d; font-size: 14px; line-height: 21px; color: #ffffff; width: 20px; height: 20px; text-align: center; border-radius: 50%;}
 #content-product .bundles .form-group button img{ border-radius: 5px;}
 #content-product .bundles .form-group .errorlist{ font-size: 12px;}
 #content-product .bundles .dropdown-menu{ margin: 4px 0px; border: 1px solid #e5e5e5; min-width: 400px; padding: 10px; border-radius: 5px; -webkit-box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.1); box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.1);}
@@ -1572,7 +1572,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
 #content-product .bundles .dropdown-menu li{ border-bottom: 1px solid #e5e5e5;}
 #content-product .bundles .dropdown-menu li:last-child{ border-bottom: 0;}
 #content-product .bundles .dropdown-menu li a{ position: relative; padding: 5px 0px 5px 30px; background: none; white-space: normal;}
-#content-product .bundles .dropdown-menu li.active a, #content-product .bundles .dropdown-menu li.active a:focus, #content-product .bundles .dropdown-menu li.active a:hover{ color: #259857 !important; background-color: none;}
+#content-product .bundles .dropdown-menu li.active a, #content-product .bundles .dropdown-menu li.active a:focus, #content-product .bundles .dropdown-menu li.active a:hover{ color: #50a42d !important; background-color: none;}
 #content-product .bundles .dropdown-menu li a i{ font-size: 16px; position: absolute; top: 50%; left: 5px; margin-top: -8px;}
 #content-product .bundles .dropdown-menu li.active a i:before{ content: "\e925"; font-family: "icon-convertize";}
 /* End Product Detail */

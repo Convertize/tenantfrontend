@@ -1,0 +1,43 @@
+{% load i18n l10n %}
+{% localize off %}
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-3 col-sm-5">
+                {% if sku.get_image %}
+                    <img src="{{ MEDIA_URL }}{{ sku.image_medium }}" alt="{{ sku.name }}" title="{{ sku.name }}" class="image img-full" />
+                {% endif %}
+            </div>
+            <div class="col-9 col-sm-7">
+                <h4 class="h4">{{ product.name }}</h4>
+                {% for o in sku.get_options %}
+                    <p class="mb-1"><b>{{ o.title }}: </b> {{ o.value }}{% if not forloop.last %}&nbsp;,{% endif %}</p>
+                {% endfor %}
+                {% if product.details %}
+                    <div class="text-secondary text-justify font-size-14 line-height-21">
+                        {{ product.details|safe }}
+                    </div>
+                {% endif %}
+
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mb-0 mt-4">
+                        {{ message|safe }} 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+
+                <form action="{% url 'product:let_me_know' product.slug %}" method="GET" class="form-vertical my-5" data-content-type="text/javascript">
+                    <input type="hidden" name="sku" value="{{ sku.id }}" />
+                    <div class="form-group">
+                        <input value="{{ request.session.customer.customer.full_name|default:'' }}" name="name" placeholder="Nome" data-title="Nome" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <input value="{{ request.session.customer.email|default:'' }}" name="email"  placeholder="E-mail" data-title="E-mail" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-success">Cadastre-se</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endlocalize %}

@@ -60,7 +60,8 @@ const ProductView = BaseView.extend({
 			e.data.self.get_installments(this);
 		});
 
-    },bundles: function(){
+    },
+    bundles: function(){
         const self = this;
 
         $(".bundles select[name*=bundle_]").each(function(){
@@ -76,10 +77,10 @@ const ProductView = BaseView.extend({
             });
 
             $(`<div class="dropdown">
-                <button id="${$(this).attr("name")}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="${$(this).attr("name")}" type="button" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
                     <img src="${selected.data("cover").replace("/small/","/mini/")}" />
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="${$(this).attr("name")}">
+                <ul class="dropdown-menu" aria-labelledby="${$(this).attr("name")}" style="max-height: 300px;overflow-y: scroll;">
                     ${options.join("")}
                 </ul>
             </div>`).insertBefore(this);
@@ -111,7 +112,10 @@ const ProductView = BaseView.extend({
 
             if(total_bundle){
                 $(".product-detail").find(".sale-price").html(total_bundle.toCurrency());
-                // if($('.product .get_price_boleto').length) $('.product .get_price_boleto').html((total_bundle - total_bundle*$('.get_discount_boleto').html()/100).toCurrency());
+                if($(".product-detail .boleto-price").length){
+                    $(".product-detail .boleto-price strong").html((total_bundle - (total_bundle * ($(".product-detail .boleto-price").data("discount")/100))).toCurrency());
+                }
+
                 // if($('.product .get_card_price').length){
                 //     $('.product .get_installments').data('price', total_bundle.toCurrency());
                 //     $('.product .get_card_price, .product-inline .get_card_price').html((total_bundle / parseFloat($(".product .get_min_installments").html().replace(/\D/g, ''))).toCurrency());
@@ -125,7 +129,8 @@ const ProductView = BaseView.extend({
         $("body").on("click.convertize", ".bundles .dropdown a", function(){
             $(this).closest(".dropdown").find("select option").removeAttr("selected");
             $(this).closest(".dropdown").find(`select option[value="${$(this).data('id')}"]`).attr("selected", "selected");
-            $(this).closest(".dropdown").find("select").val($(this).data("id")).trigger("change");
+            $(this).closest(".dropdown").find("select").val($(this).data("id")).trigger("change.convertize");
+            if($(this).closest(".product-form").attr("novalidate")) $(this).closest(".dropdown").find("select").valid();
         });
 
         $("body").off("click.convertize", ".product-detail .product-form .btn-checkout");
@@ -250,21 +255,19 @@ const ProductView = BaseView.extend({
         }
     },
     get_installments: function(element){
-		var self = $(element);
+        var self = $(element);
 
-		if(!$('.all_installments').find('li').length){
-			$('.all_installments ul').html('<li>carregando...</li>');
+        $('.all_installments ul').html('<li>carregando...</li>');
 
-			axios.get(window.location.pathname + '/installments/?price='+parseFloat(self.data('price'))).then(function(response){
-				$('.all_installments ul').html('');
-				if(response.status == 200){
-					$.each(response.data, function(i, v){
-						$('.all_installments ul').append('<li>'+v.msg+'</li>');
-					});
-				}
-			});
-		}
-	},
+        axios.get(window.location.pathname + '/installments/?price='+parseFloat(self.data('price'))).then(function(response){
+            $('.all_installments ul').html('');
+            if(response.status == 200){
+                $.each(response.data, function(i, v){
+                    $('.all_installments ul').append('<li>'+v.msg+'</li>');
+                });
+            }
+        });
+    },
     zoom: function(){
         if(!$(".zoom").length) return;
         $(".zoom").zoom({

@@ -41,12 +41,21 @@
                             <div class="prices">
                                 {% if p.price < p.unit_price %}
                                     <p class="unit-price">
-                                        {{ p.unit_price|currency }}
+                                        <span>{{ p.unit_price|currency }}</span>
                                     </p>
                                 {% endif %}
-                                <p class="sale-price" data-discount="{{ billet_discount|floatformat }}">
-                                    <strong>{{ p.price|get_price_boleto|currency }}</strong><small> no boleto</small>
+                                <p class="sale-price">
+                                    <strong>{{ p.price|currency }}</strong>
                                 </p>
+                                {% comment %}
+                                <p class="boleto-price" data-discount="{{ billet_discount|floatformat }}">
+                                    <strong>{{ p.price|get_price_boleto|currency }}</strong> o boleto
+                                </p>
+                                {% payment_price p.price "pix" as pix_discount %}
+                                <p class="pix-price">
+                                    <strong>{{ pix_discount.value|currency }}</strong> no pix
+                                </p>
+                                {% endcoment %}
                                 <p class="card-installments">
                                     <span class="parcel">ou <strong class="get_min_installments">{{ p.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ p.price|get_card_price|currency }}</strong> no cartão</span>
                                 </p>

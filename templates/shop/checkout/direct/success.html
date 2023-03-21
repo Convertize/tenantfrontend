@@ -1,0 +1,285 @@
+{% extends 'shop/checkout/direct/checkout.html' %}{% load i18n l10n shop_tags thumbnail cms_tags %}
+{% block meta_title %}{% trans 'Compra feita com Sucesso' %} | {{ block.super }}{% endblock %}
+
+{% block content %}
+    <style>
+        .checkout-success{
+            font-size: 14px;
+        }
+        .checkout-success p{
+            padding: 2px 0px;
+        }
+        .info-payment{
+            display: block;
+            background-color: #fff;
+            border: 1px solid #ececec;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        #checkout .checkout-success .title-box{ font-size: 18px; font-weight: bold; margin: 20px 0;}
+        #checkout .checkout-success .title-box:before,
+        #checkout .checkout-success .title-box:after{ display: none;}
+        #checkout .checkout-success .list-dotted{ background: #fff; border: 1px solid #ececec; padding: 0px 15px; max-height: 500px; overflow-y: scroll;}
+        #checkout .checkout-success .list-dotted > li .cart-thumb-description{ width: 100%; display: flex; align-items: center; padding: 15px 0px; border-bottom: 1px solid #ececec;}
+        #checkout .checkout-success .list-dotted > li:last-child .cart-thumb-description{ margin: 0; border-bottom: 0;}
+        #checkout .checkout-success .list-dotted .cart-thumb-description .thumb{ margin-right: 15px;}
+        #countdown .clock-single .count{
+            display: inline-block;
+            margin: 0px 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #countdown .clock-single .count.expired{
+            background-color: #f6c4c4;
+            border-color: #e99393;
+            color: #ce4a4a;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+    </style>
+    {% localize off %}
+        <div class="checkout-success">
+            <div class="top-content">
+                <div class="center">
+                    <h1>{% trans 'Pedido Realizado' %} </h1>
+                </div>
+            </div>
+            <div class="float">
+                <div class="center">
+                    {% include 'includes/messages.html' %}
+                </div>
+            </div>
+            <div class="float">
+                <div class="center-2">
+                    <div class="payment-details">
+                        <div class="info-payment">
+                            <p>
+                                {% trans 'Número do Pedido' %}: <b class="order_id">{{ order.id }}</b>
+                            </p>
+                            <p>A confirmação do pedido foi enviada para o e-mail: <b>{{ order.billing_detail_email }}</b></p>
+                        </div>  
+                        <div class="info-payment">
+                            <div>
+                                {% with payment=order.payments.first %}
+                                    {% if payment.transaction.group == 'Boleto' and order.status == 'PEN' %}
+                                        <div class="payment-boleto">
+                                            <p>{% trans 'Para realizar o pagamento, imprima o boleto no valor de' %} <b>{{ payment.transaction.total|currency }}</b></p>
+                                            <a class="btn btn-lg btn-success print-btn" href="{% url 'checkout_return' payment.transaction.uuid %}" target="_blank">{% trans 'Imprimir Boleto' %} </a>
+                                        </div>
+                                    {% elif payment.transaction.group == 'PIX' %}
+                                        <div class="payment-pix" style="text-align: center;max-width: 600px; margin: 0 auto;">
+                                            <div class="description-pix" style="min-height: inherit;">
+                                                <div class="image-pix" style="margin: 15px auto;"></div>
+                                            </div>
+                                            <p class="size18 fw600">Pedido aguardando pagamento via Pix</p>
+                                            <div class="pix-countdown" style="margin: 30px 0px;">
+                                                <div id="countdown"></div>
+                                            </div>		
+                                            <div class="pix-code" style="margin: 30px 0px;">
+                                                <input type="text" class="form-control bz bsz" id="pixcode" name="pixcode" placeholder="" readonly="readonly" value="{{ payment.transaction.extra_data.qrcode }}">
+                                                <div style="margin: 20px 0px;">
+                                                    <a class="btn btn-lg btn-info btn-code" onclick="pixcopy();"><i class="icon-copy"></i> Copiar código</a>
+                                                </div>
+                                            </div>
+                                            <p class="size18 fw600">Copie o código de pagamento</p>
+                                            <p>Abra o app do seu banco na opção Pix, em seguida, vá para <b>Pix Copia e Cola</b>, cole o código e confira os dados.</p>
+                                            <div class="pix-qr" style="margin: 30px 0px;">
+                                                <p>
+                                                    Pagar usando QR Code
+                                                </p>
+                                                <div>
+                                                    <img src="{{ payment.transaction.extra_data.qrcode_image }}" style="max-width: 100%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% elif payment.transaction.group == 'CartaoDeCredito' %}
+                                        <div class="payment-card">
+                                            {% for payment in order.payments.all %}
+                                                {% with transaction=payment.transaction %}
+                                                    <p>
+                                                        <span class="db valign-m flag flag-{{ transaction.payment_method|slugify }}" title="{{ transaction.get_payment_method_display }}"></span>
+                                                    </p>
+                                                    <p>
+                                                        <b>{{ transaction.get_payment_method_display }} {% if transaction.group == 'CartaoDeCredito' %} em {{ transaction.installments }}x {% endif %}</b>
+                                                        {% if transaction.card_mask %}
+                                                            <br />com final {{ transaction.card_mask|slice:'-4:' }}
+                                                        {% endif %}
+                                                    </p>
+                                                {% endwith %}
+                                            {% endfor %}
+                                        </div>
+                                    {% elif payment.transaction.group == 'Deliverypay' %}
+                                        {% with transaction=payment.transaction %}
+                                            <div class="payment-deliverypay">
+                                                <p>Você selecionou <b>{% if transaction.connector.title %}{{ transaction.connector.title }}{% else %}Pagar na Entrega{% endif %}</b></p>
+                                            </div>
+                                        {% endwith %}
+                                    {% else %}
+                                        <div class="payment-externallink">
+                                            <p>Prossiga com a compra em uma nova tela</p>
+                                            <a href="{{ URL_EMAIL }}{% url 'external_link' order.uuid %}" class="btn btn-lg btn-info btn-code"><b>Realizar Pagamento</b></a>
+                                        </div>
+                                    {% endif %}
+                                    <span style="display:none;">{{ payment.transaction.group }}</span>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="title-box float">
+                        Produto(s) Comprado(s):
+                    </div>
+                    <ul class="list-dotted">
+                        {% for item in order.items.all %}
+                            <li>
+                                <div class="cart-thumb-description">
+                                    <a class="thumb"><img src="{{ MEDIA_URL }}{{ item.sku.get_image }}" width="80" heigth="80" alt="{{ item.description }}" title="{{ item.description }}" /></a>
+                                    <div class="desc">
+                                        <p>{{ item.description }} </p>
+                                        <p>Valor: <b>{{ item.total_price|currency }}</b></p>
+                                        <p>Quantidade: <b>{{ item.quantity }}</b></p>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="clear"></div>
+                    <div class="title-box float">
+                        Resumo do pedido:
+                    </div>
+                    <div class="clear"></div>
+                    <div class="info-payment">
+                        <div class="col-payments">
+                            <div class="title-box float mtz">
+                                Informações do comprador
+                            </div>
+                            <p>Nome: <b>{{ order.billing_detail_name }}</b></p>
+                            <p>E-mail: <b>{{ order.billing_detail_email }}</b></p>
+                            <p>CPF: <b>{{ order.billing_detail_document }}</b></p>
+                            <p>Telefone: <b>{{ order.billing_detail_phone }}</b></p>
+                            <p>Endereço de entrega: <b>{{ order.billing_detail_address }}, {{ order.billing_detail_number }}</b></p>
+                        </div>
+                        <div class="col-values">
+                            <div class="title-box float">
+                                Informações do pedido
+                            </div>
+                            <p>
+                                {% trans 'Data do Pedido' %}: <b>{{ order.add_date|date:'d/m/Y' }}</b>
+                            </p>
+                            {% if order.days_to_shipping and not order.weddinglist %}
+                                <p>Entrega em até <b>{{ order.days_to_shipping }}</b> dias úteis após a confirmação do pagamento </p>
+                            {% endif %}
+                            <p>
+                                Forma de pagamento: 
+                                {% for payment in order.payments.all %}
+                                    {% with transaction=payment.transaction %}
+                                        <b>
+                                            {{ transaction.get_payment_method_display }}
+                                        </b>
+                                    {% endwith %}
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {% trans 'Sub-total:' %} <b>{{ order.item_total|currency }}</b>
+                            </p>
+                            <p>
+                                {% trans 'Frete:' %} <b>{{ order.shipping_total|currency }}</b>
+                            </p>
+                            {% if order.discount_total > 0 %}
+                                <p>
+                                    {% trans 'Desconto:' %} <b>{{ order.discount_total|currency }}</b>
+                                </p>
+                            {% elif order.discount_total < 0 and order.payment_method == 'CartaoDeCredito' %}
+                                <p>
+                                    {% trans 'Juros:' %} <b>{{ order.discount_total|currency }}</b>
+                                </p>
+                            {% endif %}
+                            <p>
+                                {% trans 'Total:' %} <b>{{ order.total|currency }}</b>
+                            </p>
+                            {% with payment=order.payments.first %}
+                                {% if payment.transaction.payment_method != 'GiftCard' %}
+                                    <p class="rest-to-pay">
+                                        {% trans 'Total a pagar:' %} <b>{{ payment.transaction.total|currency }}</b>
+                                    </p>
+                                {% else %}
+                                    <p class="rest-to-pay">
+                                        {% trans 'Total a pagar:' %} <b>R$0,00</b>
+                                    </p>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    <div class="float pd20 prz plz">
+                        <a href="{% url 'home' %}" class="btn btn-default pull-right">{% trans 'Realizar nova compra' %} </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endlocalize %}
+{% endblock %}
+
+{% block extra_footer %}
+{% localize off %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>       
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.countdown.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>       
+    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.countdown.min.js"></script>
+    <script type="text/javascript">
+        //ele pega a data do pedido pelo template do django create by:wilker
+        const addMinutes = new Date('{{ order.add_date|date:'Y/m/d H:i:s' }}');
+        let minUP = 30; // aqui fica uma let como acrescentador de minutos
+        addMinutes.setMinutes(addMinutes.getMinutes() + minUP);
+        /*nessa parte ele pega os minutos como minUP e da um SET dentro desse SET, ele já faz um GET minutes e soma com a LET que no caso te 15
+        assim acrescentando 15minutos no horário do template do pedido*/
+        $('#countdown').countdown(addMinutes)//aqui procura o ID e depois ele chama o plugin countdown em seguida ele realiza já a converção do tempo atual com o contador.
+            .on('update.countdown', function(event) {
+            var countMinutes = '%H:%M:%S'; // template para puxar a HORA MINUTO E SEGUNDO 
+            $(this).html(event.strftime('<div class="clock-single"><span class="textCount"><i class="icon-timer"></i> Tempo restante para pagar: <span class="count">'+countMinutes+'</span></span></div>'));
+        })//Ao finalizar o countdown ele dispara uma nova mensagem de finalização 
+            .on('finish.countdown', function(event) {
+                $(this).html('<div class="clock-single"><span class="textCount"><i class="icon-timer"></i> Tempo restante para pagar: <span class="count expired">Código expirado</span></span></div>')
+            .parent().addClass('disabled');
+        });
+        function pixcopy() {
+            $("#pixcode").select();
+            document.execCommand('copy');
+            $("#pixcopied").show();
+            setTimeout(function() { $("#pixcopied").fadeOut(1000); }, 1000);
+        }
+        // Send transaction data with a pageview if available
+        // when the page loads. Otherwise, use an event when the transaction
+        // data becomes available.
+        var dataLayer = dataLayer || [];
+        dataLayer.push({
+            pageName: 'purchase_success',
+            shipping_address: {
+                city: '{{ order.shipping_detail_city }}',
+                state: '{{ order.shipping_detail_state }}'
+            },
+            ecommerce: {
+                purchase: {
+                    actionField: {
+                        id: '{{ order.id }}',                         // Transaction ID. Required for purchases and refunds.
+                        affiliation: '{{ order.get_channel_display }}',
+                        revenue: '{{ order.total }}',                     // Total transaction value (incl. tax and shipping)
+                        shipping: '{{ order.shipping_total }}'
+                    },
+                    products: [{% for item in order.items.all %}{                            // List of productFieldObjects.
+                        name: '{{ item.sku }}', // Name or ID is required.
+                        id: '{{ item.sku.id }}',
+                        price: '{{ item.unit_price }}',
+                        unit_price: '{{ item.unit_price }}',
+                        product_id: '{{ item.sku.product.id }}',
+                        product_upc: '{{ item.sku.product.upc }}',
+                        product_name: '{{ item.sku.product.name }}',
+                        {% if item.sku.product.brand %}brand: '{{ item.sku.product.brand.title }}',{% endif %}
+                        category: '{{ item.sku.product.category.title }}',
+                        quantity: {{ item.quantity }}
+                    }{% if not forloop.last %},{% endif %}{% endfor %}]
+                }
+            }
+        });
+    </script>
+{% endlocalize %}
+{% endblock %}

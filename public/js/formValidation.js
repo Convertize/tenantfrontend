@@ -21,16 +21,21 @@
             return true;
         }
 
+        function isEmpty(ob){
+            for(var i in ob){ return false }
+            return true
+        }
+
         const data_rules = {};
         const data_messages = {};
 
-        self.find(".form-group.required select, .form-group.required input, .form-group.required textarea").each(function(){
+        self.find("[required]").each(function(){
             const name = $(this).attr("name");
             data_rules[name] = {
                 required: true
             };
             data_messages[name] = {
-                required: $(this).data("title") ? `Preencha o campo de <b>${$(this).data("title")}</b>`:"Este campo obrigatório"
+                required: $(this).data("title") ? `Preencha o campo de <b>${$(this).data("title")}</b>`:"Este campo é obrigatório"
             };
         });
 
@@ -50,12 +55,14 @@
             submitHandler: async function(form, event){
                 event.preventDefault();
 
+                if(settings.submitHandler) return settings.submitHandler(form, event)
+
                 self.addClass("loading");
 
                 if(!settings.ajax){
                     form.submit();
                     return true;
-                }
+                };
 
                 const config = {
                     url: settings.url,
@@ -67,15 +74,27 @@
 
                 const body = settings.formData ? new FormData():{};
 
+                const extraData = {}
+
                 if(settings.formData){
                     $(form).serializeArray().map(function(item){
-                        body.append(item.name, item.value);
+                        if(item.name.split("__")[0] == "extra_data") extraData[item.name.split("__").pop()] = item.value;
+                        else body.append(item.name, item.value);
                     });
+                    if(!isEmpty(extraData)){
+                        body.append("extra", JSON.stringify(extraData));
+                        body.append("extra_data", JSON.stringify(extraData));
+                    }
                 }else{
                     $(form).serializeArray().map(function(item){
-                        body[item.name] = item.value;
+                        if(item.name.split("__")[0] == "extra_data") extraData[item.name.split("__").pop()] = item.value;
+                        else body[item.name] = item.value;
                     });
-                }
+                    if(!isEmpty(extraData)){
+                        body["extra"] = JSON.stringify(extraData);
+                        body["extra_data"] = JSON.stringify(extraData);
+                    }
+                };
 
                 if(config.method == "get") config.params = body;
                 else config.data = body;

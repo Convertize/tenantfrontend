@@ -1,0 +1,22 @@
+{% load l10n user_agents shop_tags %}
+{% localize off %}
+    <div class="showcase-object showcase-category">
+        {% if object.bannerdhtml.title %}
+            <div class="title-showcase">
+                <h2>{{ object.bannerdhtml.title }} </h2>
+            </div>
+        {% endif %}
+        <div id="{{ object.bannerdhtml.name|slugify }}" class="carousel carousel-default owl-theme owl-carousel banner" data-owl-carousel='{"items":{% if object.bannerdhtml.num_columns %}{{ object.bannerdhtml.num_columns }}{% else %}4{% endif %}, "nav":{{ object.bannerdhtml.navigation|lower }}, "dots":{{ object.bannerdhtml.pagination|lower }}, "autoplay":{{ object.bannerdhtml.autoplay|lower }}, "loop":{{ object.bannerdhtml.loop|lower }}{% if object.bannerdhtml.attr %}, {{ object.bannerdhtml.attr|safe }}{% endif %}}'>
+            {% for banner in object.bannerdhtml.get_images %}
+                <a href="{{ banner.link|default:'/' }}"{% if banner.target %} target="_blank"{% endif %} class="text-center" aria-label="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" style="background-image:url({{ banner.background_image.url }});{% if banner.style %}{{ banner.style }}{% endif %}">
+                    {% with width=banner.image.dimensions|first height=banner.image.dimensions|last %}
+                        <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title }}" class="img-lazy" width="{{ width|f_division:'2' }}" height="{{ height|f_division:'2' }}" style="aspect-ratio:{{ width }}/{{ height  }};border-radius:50%;" />
+                    {% endwith %}
+                    {% if banner.title %}
+                        <span class="d-block mt-2 font-size-13 text-uppercase">{{ banner.title }}</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endlocalize %}

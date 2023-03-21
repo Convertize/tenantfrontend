@@ -73,45 +73,76 @@
                         </ul>
                     </div>
                 {% endif %}
-                <h1 class="name" itemprop="name">{{ product.name }}</h1>
-                <div class="d-flex flex-wrap text-secondary mb-3">
-                    {% if product.brand %}
-                        <a href="{% if product.category %}{{ product.category.get_absolute_url|slice:'0:-1' }}{% endif %}{{ product.get_brand.get_absolute_url }}" class="font-weight-bold mr-3 text-secondary" >{{ product.brand.title }}</a>
-						<meta itemprop="brand" content="{{ product.brand.title }}">
-                    {% endif %}
-                    <span class="mr-3">
-						<meta itemprop="sku" content="{% if sku %}{{ sku.id }}{% else %}{{ product.get_sku_default.id }}{% endif %}">
-						{% if product.get_sku_default.ean_13 %}
-						<meta itemprop="gtin13" content="{{ product.get_sku_default.ean_13 }}">
-						{% endif %}
-                        Cód: {{ product.upc }}
-                    </span>
-                    <span class="rating-star">
-                        <span class="star-{{ product.rating|default:0 }}">{{ product.rating|default:0 }} avaliaç{{ product.rating|default:0|pluralize:"ão,ões" }}</span>
-                    </span>
-					{% if product.rating %}
-					<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-						<meta itemprop="ratingValue" content="{{ product.rating }}">
-						<meta itemprop="reviewCount" content="{% if product.rating_total %}{{ product.rating_total }}{% else %}0{% endif %}">
-						<meta itemprop="bestRating" content="5">
-						<meta itemprop="worstRating" content="1">
-                    </div>
-					{% endif %}
-                </div>
-                {% if product.get_seals %}
-                    <div class="seals">
-                        {% for seal in product.get_seals %}
-                            {{ seal|safe }}
-                        {% endfor %}
-                    </div>
-                {% endif %}
                 <form method="POST" action="{{ product.get_absolute_url }}" class="product-form pt-3">
+                    <h1 class="name" itemprop="name">{{ product.name }}</h1>
+                    <div class="d-flex flex-wrap text-secondary mb-3">
+                        {% if product.brand %}
+                            <a href="{% if product.category %}{{ product.category.get_absolute_url|slice:'0:-1' }}{% endif %}{{ product.get_brand.get_absolute_url }}" class="font-weight-bold mr-3 text-secondary" >{{ product.brand.title }}</a>
+                            <meta itemprop="brand" content="{{ product.brand.title }}">
+                        {% endif %}
+                        <span class="mr-3">
+                            <meta itemprop="sku" content="{% if sku %}{{ sku.id }}{% else %}{{ product.get_sku_default.id }}{% endif %}">
+                            {% if product.get_sku_default.ean_13 %}
+                            <meta itemprop="gtin13" content="{{ product.get_sku_default.ean_13 }}">
+                            {% endif %}
+                            Cód: {{ product.upc }}
+                        </span>
+                        <span class="rating-star">
+                            <span class="star-{{ product.rating|default:0 }}">{{ product.rating|default:0 }} avaliaç{{ product.rating|default:0|pluralize:"ão,ões" }}</span>
+                        </span>
+                        {% if product.rating %}
+                        <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                            <meta itemprop="ratingValue" content="{{ product.rating }}">
+                            <meta itemprop="reviewCount" content="{% if product.rating_total %}{{ product.rating_total }}{% else %}0{% endif %}">
+                            <meta itemprop="bestRating" content="5">
+                            <meta itemprop="worstRating" content="1">
+                        </div>
+                        {% endif %}
+                        <div class="wishlist ml-auto">
+                            {% if request.session.customer %}
+                                <button type="submit" class="btn btn-link p-0 text-dark btn-wishlist" title="Adicionar à lista de desejos">
+                                    <i class="icon-heart"></i>
+                                </button>
+                            {% else %}
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-link bt_login p-0 text-dark" title="Adicionar à lista de desejos">
+                                    <i class="icon-heart"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if product.get_seals %}
+                        <div class="seals">
+                            {% for seal in product.get_seals %}
+                                {{ seal|safe }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                     <div style="display:none;">
-                        <input type="hidden" value="{{ product.id }}" name="product"/>
+                        <input type="hidden" value="{{ product.id }}" name="product">
+                        <input type="hidden" value="{{ product.slug }}" name="slug">
                     </div>
                     {% with options=product.get_all_options %}
                         {% regroup options by option_title as options %}
-                        {% if options %}
+                        {% if product.product_type == 3 %}
+                            <div class="bundles pt-3">
+                                <div class="option size14 fw600 pd plz prz color2">Selecione uma opção abaixo:</div>
+                                {% for name,bundle in product.get_bundles.items %}
+                                    <div class="form-group{% if bundle.required %} required{% endif %}">
+                                        <div class="values">
+                                            <span class="number">{{ forloop.counter }}</span>
+                                            <select name="{{ name }}"{% if bundle.required %} required{% endif %}>
+                                                {% for name_item,option in bundle.options.items %}
+                                                    {% if forloop.first %}
+                                                        <option value="" data-sale-price="0" selected="selected" data-cover="{{ MEDIA_URL }}{{ option.cover }}">------</option>
+                                                    {% endif %}
+                                                    <option value="{{ name_item }}" data-sale-price="{{ option.sale_price }}" data-cover="{{ MEDIA_URL }}{{ option.cover }}">{{ option.name|replace:'/,' }} {{ option.quantity }} unidade{{ option.quantity|pluralize:'s' }} por {{ option.sale_price|currency }} cada</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% elif options %}
                             <div class="variations mt-2">
                                 {% for option in options %}
                                     <div class="form-group-{{ option.grouper|slugify }}">
@@ -147,26 +178,6 @@
                             </div>
                         {% endif %}
                     {% endwith %}
-                    {% if product.product_type == 3 %}
-                        <div class="bundles">
-                            <div class="option size14 fw600 pd plz prz color2">Selecione uma opção abaixo:</div>
-                            {% for name,bundle in product.get_bundles.items %}
-                                <div class="form-group{% if bundle.required %} required{% endif %}">
-                                    <div class="values">
-                                        <span class="number">{{ forloop.counter }}</span>
-                                        <select name="{{ name }}" {% if bundle.required %} required{% endif %}>
-                                            {% for name_item,option in bundle.options.items %}
-                                                {% if forloop.first %}
-                                                    <option value="" data-sale-price="0" selected="selected" data-cover="{{ MEDIA_URL }}{{ option.cover }}">------</option>
-                                                {% endif %}
-                                                <option value="{{ name_item }}" data-sale-price="{{ option.sale_price }}" data-cover="{{ MEDIA_URL }}{{ option.cover }}">{{ option.name|replace:'/,' }} {{ option.quantity }} unidade{{ option.quantity|pluralize:'s' }} por {{ option.sale_price|currency }} cada</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
                     {% if product.is_available %}
                         <div class="row mt-sm-3">
                             {% with sku=sku|default:product %}
@@ -176,16 +187,22 @@
                                         <link itemprop="availability" href="http://schema.org/InStock">
                                         <meta itemprop="priceCurrency" content="BRL">
                                         <p class="unit-price"{% if sku.unit_price <= sku.price %} style="display:none;"{% endif %}>
-                                            {{ sku.unit_price|currency }}
+                                            <span>{{ sku.unit_price|currency }}</span>
                                         </p>
-                                        <p class="spot-price" data-discount="{{ billet_discount|floatformat }}">
+                                        <p class="sale-price">
+                                            <meta itemprop="price" content="{{ sku.price }}">
+                                            <strong>{{ sku.price|currency }}</strong>
+                                        </p>
+                                        {% comment %}
+                                        <p class="boleto-price" data-discount="{{ billet_discount|floatformat }}">
                                             <meta itemprop="price" content="{{ sku.price|get_price_boleto }}">
-                                            <strong>{{ sku.price|get_price_boleto|currency }}</strong>
+                                            <strong>{{ sku.price|get_price_boleto|currency }}</strong> no boleto
                                         </p>
                                         {% payment_price sku.price "pix" as pix_discount %}
-                                        <p class="sale-price " data-discount="{{ pix_discount.discount|floatformat }}">
-                                            <strong>{{ pix_discount.value|currency }}</strong>
+                                        <p class="pix-price" data-discount="{{ pix_discount.discount|floatformat }}">
+                                            <strong>{{ pix_discount.value|currency }}</strong> no pix
                                         </p>
+                                        {% endcomment %}
                                         <p class="card-installments">
                                             <a href="#" data-toggle="modal" data-target="#all_installments" class="font-size-12 text-success get_installments" data-price="{{ sku.price }}">em até <strong class="get_min_installments">{{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }}</strong></a>
                                         </p>
@@ -199,7 +216,7 @@
                                             <label aria-label="Quantidade" class="m-0">
                                                 <input type="tel" value="1" name="quantity">
                                             </label>
-                                            <button type="button" class="btn btn-checkout d-block" data-loading-text="Adicionando">Comprar</button>
+                                            <button type="button" class="btn btn-checkout d-block" data-loading-text="Comprando">Comprar</button>
                                         {% endif %}
                                     </div>
                                 </div>
