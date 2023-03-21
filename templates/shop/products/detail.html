@@ -2,16 +2,16 @@
 {% block body_id %}product{% endblock %}
 
 {% block extra_meta %}
-        <meta property="og:locale" content="pt_BR">
-        <meta property="og:site_name" content="{{ shop_settings.SEO_TITLE }}">
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="{{ product.name }}">
-        <meta property="og:url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}">
-        <meta property="og:description" content="{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}">
-        <meta property="og:image" content="http:{{ MEDIA_URL|cut:'https://' }}{{ product.image }}">
-        <meta property="og:image:secure_url" content="https:{{ MEDIA_URL }}{{ product.image }}">
-        <meta property="og:image:type" content="image/jpeg">
-        {% localize off %}
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="{{ shop_settings.SEO_TITLE }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ product.name }}">
+    <meta property="og:url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}">
+    <meta property="og:description" content="{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}">
+    <meta property="og:image" content="http:{{ MEDIA_URL|cut:'https://' }}{{ product.image }}">
+    <meta property="og:image:secure_url" content="https:{{ MEDIA_URL }}{{ product.image }}">
+    <meta property="og:image:type" content="image/jpeg">
+    {% localize off %}
         <script>
             window.dataProduct = {
                 "id": "{{ product.id }}",
@@ -23,7 +23,7 @@
                 "options": {% if sku %}{{ sku.options|default:'""' }}{% else %}{{ product.get_sku_default.options|default:'""' }}{% endif %}
             }
         </script>
-        {% endlocalize %}
+    {% endlocalize %}
 {% endblock%}
 
 {% block meta_title %}{% if product.title and product.name != product.title %}{% trans product.title %}{% else %}{% trans product.name %} | {{ block.super }} {% endif %}{% endblock %}
@@ -33,8 +33,8 @@
 {% block meta_robots %}{{ block.super }}<link rel="canonical" href="https://{{ request.get_host }}/{{ product.slug }}/p">{% endblock %}
 
 {% block content %}
-{% get_data_json product.specifications as json_specifications %}
-            {% localize off %}
+    {% get_data_json product.specifications as json_specifications %}
+        {% localize off %}
 			<div itemscope itemtype="http://schema.org/Product">
 				{% include 'shop/products/detail_ajax.html' %}
 				<div class="container">
@@ -140,8 +140,8 @@
                         {% include "shop/products/rating_details.html" %}
                     </div>
                 </div>
-            {% endlocalize %}
 			</div>
+        {% endlocalize %}
 {% endblock %}
 
 {% block footer_script %}

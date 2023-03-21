@@ -3,12 +3,18 @@ $(".img-lazy:not(.loaded)").show().lazyload({
     effect: "show"
 });
 
-const CheckoutView = $.Class.create({
+const CheckoutView = BaseView.extend({
     init: function(){
         log("Init Checkout");
+
+        const self = this;
 		
         window.cvz.events.bind("cart_update", function(data, events){
             // Carrinho
+            window.events = events;
+
+            self.carousel();
+            self.addProduct();
 
         });
 

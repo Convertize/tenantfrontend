@@ -1,88 +1,88 @@
 {% extends 'shop/customers/central/base.html' %}{% load i18n l10n thumbnail shop_tags %}
 {% block meta_title %}{% trans "Lista de Desejos" %} | {{ block.super }}{% endblock %}
-{% block body_id %}category{% endblock %}
+
 {% block main %}
-        <div class="title-shelf float mz ptz"><h3>Lista de Desejos</h3></div>
-        {% localize off %}
-        <ul class="list-products page-content float">
-            {% for item in wishlists %}
-            <li>
-                {% with has_stock=item.sku.has_stock %}
-                <div class="item-product{% if not has_stock %} not_stock{% endif %}">
-                    <a href="{{ item.sku.product.get_absolute_url }}" class="link image">
-                        {% if item.sku.get_image %}
-                        <span class="align_c item-image">
-                            <img data-src="{{ MEDIA_URL }}{{ item.sku.get_image }}" src="{{ STATIC_URL }}img/blank.gif" alt="{{ item.sku.name }}" title="{{ item.sku.name }}" width="200" height="200" class="lazyOwl" /><span></span>
-                            <noscript><img src="{{ MEDIA_URL }}{{ item.sku.get_image }}" alt="{{ item.sku.name }}" title="{{ item.sku.name }}" width="200" height="200" /></noscript>
-                        </span>
-                        {% else %}
-                        <img src="{{ STATIC_URL }}img/not-image.jpg" alt="" />
-                        {% endif %}
-                        {% if item.sku.descont_percentage %}
-                        <span class="descont"><span><strong>{{ item.sku.descont_percentage|floatformat|cut:'-' }}%</strong> off</span></span>
-                        {% endif %}
-                    </a>
-                    <div class="desc">
-                        {% if item.sku.get_seals %}
-                        <a href="{{ item.sku.get_absolute_url }}" class="seals">
-                            {% for seal in item.sku.get_seals %}
-                            {{ seal|safe }}
-                            {% endfor %}
-                        </a>
-                        {% endif %}
-                        <h2 class="title">
-                            <a href="{{ item.sku.product.get_absolute_url }}">
-                                <span>{{ item.sku.product }}</span>
+    <h4 class="h4 mb-4">{% trans "Lista de Desejos" %}</h4>
+    {% localize off %}
+        <div id="search">
+            <div class="list-products default">
+                {% for item in wishlists %}
+                    <div class="li">
+                        {% with has_stock=item.sku.has_stock sku=item.sku product=item.sku.product %}
+                            <div 
+                                class="item-product position-relative{% if not has_stock %} not_stock{% endif %}" 
+                                data-id="{{ product.id }}" 
+                                data-sku="{{ sku.id }}" 
+                            >
+                            <a href="{{ product.get_absolute_url }}" class="item-image">
+                                {% if item.sku.get_image %}
+                                    <img data-src="{{ MEDIA_URL }}{{ item.sku.get_image }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ sku.name }}" title="{{ sku.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" class="img-lazy">
+                                {% else %}
+                                    <img alt="" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}">
+                                {% endif %}
+                                {% if sku.descont_percentage %}
+                                    <span class="discount"><span>{{ sku.descont_percentage|floatformat|cut:'-' }}%</span></span>
+                                {% endif %}
                             </a>
-                        </h2>
-                        <div class="box-stars-trust" data-trustvox-product-code="{{ item.sku.product_id }}"></div>
-                        <div class="box-prices">
-                            {% if not has_stock or not item.sku.product.available %}
-                            <div class="clear pd10"></div>
-                            <p class="invalible">Produto Indisponível</p>
-                            {% elif not item.sku.available %}
-                            <div class="clear pd10"></div>
-                            <p class="invalible">Produto Indisponível</p>
-                            {% else %}
-                            {% if item.sku.sale_price %}
-                            <div class="prices">
-                                <p class="price-of"><span class="unit_price"><span class="line-through">{{ item.sku.unit_price|currency }}</span></span></p>
-                                <p class="price-boleto"><strong class="price">{{ item.sku.sale_price|currency }}</strong></p>
+                            <div class="desc position-relative">
+                                <div>
+                                    {% if sku.get_seals %}
+                                        <div class="seals position-relative">
+                                            {% for seal in sku.get_seals %}
+                                                {% if "{" not in seal %}
+                                                    {{ seal|safe }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <h2 class="title">
+                                        <a href="{{ product.get_absolute_url }}">
+                                            {{ sku.name|upper }}
+                                        </a>
+                                    </h2>
+                                    <div class="box-prices">
+                                        {% if not has_stock %}
+                                            <p class="font-size-16 font-weight-bold text-dark">Avise-me</p>
+                                        {% elif not product.available %}
+                                            <p class="font-size-16 font-weight-bold text-dark">Avise-me</p>
+                                        {% elif sku.price %}
+                                            <div class="prices">
+                                                {% if sku.price < sku.unit_price %}
+                                                    <p class="unit-price">
+                                                        <span>{{ sku.unit_price|currency }}</span>
+                                                    </p>
+                                                {% endif %}
+                                                <p class="sale-price">
+                                                    <span>{{ sku.price|currency }}</span>
+                                                </p>
+                                                <p class="card-installments">
+                                                    <span class="parcel">ou <strong class="get_min_installments">{{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }}</strong> sem juros</span>
+                                                </p>
+                                            </div>
+                                        {% else %}
+                                            <p class="h5 font-weight-bold m-0">Produto Indisponível</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <form method="POST" class="product-form">{% csrf_token %}
+                                    <div style="display:none;">
+                                        <input type="hidden" name="sku" value="{{ sku.id }}" />
+                                    </div>
+                                    <button type="submit" class="btn btn-link text-danger empty position-absolute" name="empty_wishlist" style="top: 0;"><i class="icon-close-radius"></i></button>
+                                    <div class="purchase">
+                                        <a href="{{ product.get_absolute_url }}" class="btn btn-product" aria-label="Visualizar">Visualizar</a>
+                                    </div>
+                                </form>
                             </div>
-                            <p class="card-installments"><span class="parcel">{{ item.sku.sale_price|get_min_installments }}x de {{ item.sku.sale_price|get_card_price|currency }} sem juros</span></p>                            
-                            {% elif item.sku.unit_price %}
-                            <div class="prices">
-                                <p class="price-boleto"><strong class="price">{{ item.sku.unit_price|currency }}</strong></p>
-                            </div>
-                            <p class="card-installments"><span class="parcel">{{ item.sku.unit_price|get_min_installments }}x de {{ item.sku.unit_price|get_card_price|currency }} sem juros</span></p>
-                            {% else %}
-                            <div class="clear pd10"></div>
-                            <p class="invalible">Produto Indisponível</p>
-                            {% endif %}
-                            {% endif %}
-                            <div class="information-price">
-                                {% comment %}<p class="price_boleto get_price_boleto"><span>{{ product.price|get_price_boleto|currency }}</span> à vista no boleto</p>{% endcomment %}
-                                <p class="price_boleto get_price_boleto">à vista no boleto <strong>5%</strong> de desconto *</p>
-                            </div>
+                            {% endwith %}
                         </div>
-                        {% if has_stock and item.sku.available and item.sku.product.available %}
-                        <a href="{{ item.sku.product.get_absolute_url }}" class="add_to_cart"><span>adicionar ao carrinho</span></a>
-                        {% endif %}
-                        <form method="POST" class="fl">{% csrf_token %}
-                            {% localize off %}
-                            <input type="hidden" name="sku" value="{{ item.sku.id }}" />
-                            {% endlocalize %}
-                            <button type="submit" class="empty" name="empty_wishlist"><i class="icon-close-radius"></i></button>
-                        </form>
                     </div>
-                </div>
-                {% endwith %}
-            </li>
-            {% empty %}
-            <li>
-                <div class="pd plz size16 color6">{% trans 'Sua lista está vazia' %} </div>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endlocalize %}
+                {% empty %}
+                    <div class="d-block mt-3 pt-3 border-top w-100">
+                        <h5 class="h5 font-weight-bold">{% trans "Sua lista está vazia" %}</h5>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endlocalize %}
 {% endblock %}

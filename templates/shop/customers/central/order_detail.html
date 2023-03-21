@@ -105,7 +105,7 @@
                 <div class="col text-center current-1">
                     <a>
                         <span class="box-icon">
-                            <i class="icon-clock"></i>
+                            <i class="icon-clock-full"></i>
                         </span>
                         Aguardando pagamento
                     </a>
@@ -114,7 +114,7 @@
                     <div class="col text-center current-2">
                         <a>
                             <span class="box-icon">
-                                <i class="icon-like"></i>
+                                <i class="icon-like-full"></i>
                             </span>
                             Pagamento confirmado
                         </a>
@@ -134,7 +134,7 @@
                 <div class="col text-center current-3">
                     <a>
                         <span class="box-icon">
-                            <i class="icon-delivery-truck"></i>
+                            <i class="icon-stock-full"></i>
                         </span>
                         Em separação
                     </a>
@@ -142,7 +142,7 @@
                 <div class="col text-center current-4">
                     <a>
                         <span class="box-icon">
-                            <i class="icon-delivery"></i>
+                            <i class="icon-delivery-full"></i>
                         </span>
                         Em transporte{% if 'retirar' in order.shipping_type|slugify %} para loja escolhida {% endif %}
                     </a>
@@ -151,7 +151,7 @@
                     <a>
                         {% if 'retirar' in order.shipping_type|slugify %}
                             <span class="box-icon">
-                                <i class="icon-box"></i>
+                                <i class="icon-box-full"></i>
                             </span>
                             Pronto para a retirada
                         {% else %}
@@ -165,26 +165,28 @@
             </div>
         </div>
         {% if order.trackers.exists %}
-            <table border="0" class="table table-simple" width="100%">
-                <tr>
-                    <th class="btz blz">{% trans "Código rastreador" %}</th>
-                    <th class="btz brz" width="40">{% trans "Rastrear" %}</th>
-                </tr>
-                {% for tracker in order.trackers.all %}
-                <tr>
-                    <td class="blz">&nbsp;&nbsp; {{ tracker.code }} </td>
-                    <td class="brz" align="center">
-                        {% if tracker.url %}
-                        <a href="{{ tracker.url }}" target="_blank" class="bt bt-mini bt-style-1 mz">RASTREAR</a>
-                        {% else %}
-                        <a href="{% url 'customers:order_tracking_code' order.id %}?code={{ tracker.code }}" target="_blank" class="bt bt-mini bt-style-1 tracking_code mz">RASTREAR</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+            <h3 class="h4 mb-0 mt-4">{% trans 'Código de rastreamento' %}</h3>
+            <div class="card p-1 mt-3 mb-5">
+                <table border="0" class="table m-0 bg-white" width="100%">
+                    <tr class="font-weight-bold">
+                        <th class="border-top-0">{% trans "Número do rastreamento" %}</th>
+                        <th class="text-center border-top-0">{% trans "URL" %}</th>
+                    </tr>
+                    {% for tracker in order.trackers.all %}
+                        <tr>
+                            <td>{{ tracker.code }} </td>
+                            <td class="text-center">
+                                {% if tracker.url %}
+                                    <a href="{{ tracker.url }}" target="_blank" class="btn btn-sm btn-dark">RASTREAR</a>
+                                {% else %}
+                                    <a href="{% url 'customers:order_tracking_code' order.id %}?code={{ tracker.code }}" target="_blank" class="btn btn-sm btn-dark tracking_code">RASTREAR</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         {% endif %}
-
         {% if order.items.exists %}
             <h3 class="h4 mb-0 mt-4">{% trans 'Detalhes do pedido' %}</h3>
             <small class="font-size-14">{% trans 'Segue abaixo a relação dos produtos comprados' %}</small>
@@ -214,7 +216,6 @@
                 </table>
             </div>
         {% endif %}
-
         <h3 class="h4 mb-0 mt-4">{% trans 'Endereços' %} </h3>
         <div class="card mt-3 mb-3">
             <div class="card-body">
@@ -283,7 +284,6 @@
                 </div>
             </div>
         </div>
-
         {% if products %}
             <div class="container">
                 <div class="title-showcase">

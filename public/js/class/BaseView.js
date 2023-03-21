@@ -318,22 +318,26 @@ const BaseView = $.Class.create({
                 if(sku){
                     const price = parseFloat(sku.sale_price || sku.unit_price);
 
-                    const discountPix = $boxProduct.find(".sale-price").data("discount");
+                    const discountPix = $boxProduct.find(".pix-price").data("discount");
                     if(discountPix){
                         const pricePix = price - (price * (discountPix/100))
-                        $boxProduct.find(".sale-price strong").html(pricePix.toCurrency());
+                        $boxProduct.find(".pix-price strong").html(pricePix.toCurrency());
                     }else{
-                        $boxProduct.find(".sale-price strong").html(price.toCurrency());
+                        $boxProduct.find(".pix-price strong").html(price.toCurrency());
                     };
-                    $boxProduct.find(".spot-price strong").html(sku.get_price_boleto.toCurrency());
+                    $boxProduct.find(".name").html(sku.title);
+                    $boxProduct.find(".code").html(`Ref: ${(sku.reference_code)}`);
+                    $boxProduct.find(".boleto-price strong").html(sku.get_price_boleto.toCurrency());
+                    $boxProduct.find(".get_installments").data("price", price);
                     $boxProduct.find(".get_min_installments").html(`${parseInt(price / parseFloat(sku.get_card_price))}x`);
                     $boxProduct.find(".get_card_price").html(parseFloat(sku.get_card_price).toCurrency());
                     if(sku.sale_price){
-                        $boxProduct.find(".unit-price").removeClass("hide").show().find("span").html(parseFloat(sku.unit_price).toCurrency());
+                        $boxProduct.find(".unit-price").removeClass("d-none").show().find("span").html(parseFloat(sku.unit_price).toCurrency());
+                        $boxProduct.find(".sale-price").find("span").html(parseFloat(sku.sale_price).toCurrency());
                         const discount =+ (Math.round(((parseFloat(sku.sale_price) * 100) / parseFloat(sku.unit_price) - 100)*-1 + "e+2") + "e-2");
-                        $boxProduct.find(".discount").removeClass("d-none").addClass("d-inline-block").html(`${parseInt(discount)}%`);
+                        $boxProduct.find(".discount").removeClass("d-none").addClass("d-inline-block").html(`${parseInt(discount)}% OFF`);
                     }else{
-                        $boxProduct.find(".unit-price").addClass("hide").hide().find("span").html("");
+                        $boxProduct.find(".unit-price").addClass("d-none").hide().find("span").html("");
                         $boxProduct.find(".discount").removeClass("d-inline-block").addClass("d-none").find("span").html
                     }
 
@@ -355,8 +359,8 @@ const BaseView = $.Class.create({
 
         });
 
-        $("body").off("click.convertize", ".product-form .btn-checkout");
-        $("body").on("click.convertize", ".product-form .btn-checkout", function(e){
+        $("body").off("click.convertize", ".product-form .btn-checkout:not(.not-action)");
+        $("body").on("click.convertize", ".product-form .btn-checkout:not(.not-action)", function(e){
             e.preventDefault();
 
             const $bt = $(this);
@@ -451,6 +455,67 @@ const BaseView = $.Class.create({
                 }
             });
             $form.trigger("submit.validate");
+        });
+
+        $("body").off("click.convertize", ".product-form .btn-wishlist");
+        $("body").on("click.convertize", ".product-form .btn-wishlist", function(e){
+            e.preventDefault();
+            const $bt = $(this);
+            const $form = $(this).closest(".product-form");
+
+            const body = new FormData();
+
+            $form.serializeArray().map(function(item){
+                if(item.value) body.append(item.name, item.value);
+            });
+
+            body.append("add_wishlist", true);
+
+            $bt.addClass("loading").prop("disabled", true);
+
+            axios({
+                url: $form.attr("action"),
+                method: "POST",
+                data: body,
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-requested-with": "XMLHttpRequest"
+                }
+            })
+            .then(function(response){
+                const resp = response.data;
+                if(resp && resp.messages){
+                    resp.messages.map(function(message){
+                        $.toast({
+                            hideAfter: 7000,
+                            icon: message.level.toLowerCase(),
+                            text: message.message,
+                            position: "top-center",
+                            showHideTransition: "plain",
+                            beforeShow: function(){
+                                $(".jq-toast-loader").addClass("jq-toast-loaded")
+                            }
+                        });
+                    });
+                    $bt.addClass("active");
+                }else if(resp && resp.error){
+                    $.toast({
+                        hideAfter: 7000,
+                        icon: "error",
+                        text: resp.error,
+                        position: "top-center",
+                        showHideTransition: "plain",
+                        beforeShow: function(){
+                            $(".jq-toast-loader").addClass("jq-toast-loaded")
+                        }
+                    });
+                }
+                $bt.removeClass("loading").prop("disabled", false);
+            })
+            .catch(function(error){
+                log(error);
+                $bt.removeClass("loading").prop("disabled", false);
+            });
         });
     },
     cart: function(){

@@ -7,7 +7,7 @@
                 <i class="icon-close"></i>
             </div>
             <a class="title" href="{% url 'shop_checkout' %}#/carrinho">
-                Cesta de compras
+                Carrinho de compras
                 <i class="icon-angle-right d-md-block d-none ml-auto"></i>
             </a>
         </header>
@@ -18,7 +18,7 @@
                         <span class="face">:(</span>
                         <span class="text">
                             <strong class="h3">Ops!</strong>
-                            <br />
+                            <br>
                             Seu carrinho está vazio
                         </span>
                     </div>
@@ -26,7 +26,7 @@
             </ul>
         </div>
         <footer style="display: none;">
-            <div class="bg-secondary p-3">
+            <div class="bg-light p-3">
                 <div class="info-prices">
                     <div class="values_footer mb-3">
                         <h3>Subtotal:</h3>
@@ -38,9 +38,9 @@
                         {% endfor %}
                     </div>
                     <form class="coupon d-flex align-items-center mb-3">
-                        <div class="values_footer"><h3>Cupom de desconto:</h3></div>
+                        <div class="values_footer"><h3>Cupom:</h3></div>
                         <div class="box-coupon d-flex justify-content-end input-group">
-                            <input type="text" name="coupon" class="border-0 rounded p-2 m-0" placeholder="Cupom de desconto" />
+                            <input type="text" name="coupon" class="border-0 rounded p-2 m-0" placeholder="Cupom de desconto">
                             <div class="input-group-append">
                                 <button id="coupon" type="submit" class="btn btn-dark btn-sm" data-loading-text="Aplicando...">{% trans 'Aplicar' %} </button>
                             </div>
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="fields-cart text-center">
-                <a href="{% url 'checkout_backend' 'carrinho' %}" class="btn btn-checkout py-3 w-75">Finalizar compra</a>
+                <a href="{% url 'checkout_backend' 'carrinho' %}" class="btn btn-checkout py-3 w-75 font-weight-bold rounded-pill">finalizar compra</a>
             </div>
         </footer>
     </div>

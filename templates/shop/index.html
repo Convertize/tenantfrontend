@@ -4,9 +4,9 @@
 
 {% block logo %}
 	<h1 class="logo m-0 text-center" itemscope="" itemtype="http://schema.org/Organization">
-        <a href="{% url 'home' %}" itemprop="name">{{ shop_settings.SEO_TITLE_HOME }}</a>
+        <a href="{% url 'home' %}" itemprop="name">{{ shop_settings.SEO_TITLE }}</a>
         <meta itemprop="url" content="https://{{ request.get_host }}">
-        <meta itemprop="logo" content="https://{{ request.get_host }}{{ STATIC_URL }}img/logo.png">
+        <meta itemprop="logo" content="https:{{ STATIC_URL }}img/logo.png">
     </h1>
 {% endblock %}
 
