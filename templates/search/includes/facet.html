@@ -1,5 +1,5 @@
 {% load search_tags user_agents %}
-<div class="card">
+<div class="card facet facet-{{ v.key }}">
     <div class="card-title">
         {{ v.title }}
     </div>
@@ -13,7 +13,7 @@
                 </li>
             {% endif %}
         {% endcomment %}
-        {% for item in v.value %}
+        {% for item in v.value|sort_size %}
             {% if v.template_name %}
                 {% include v.template_name %}
             {% else %}
