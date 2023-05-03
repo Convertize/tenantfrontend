@@ -47,7 +47,7 @@
                                     <button type="submit" class="btn-search" aria-label="Buscar">
                                         <i class="icon-search"></i>
                                     </button>
-                                    <input type="text" aria-label="q" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Olá, o que você procura hoje?" class="form-control" />
+                                    <input type="text" aria-label="q" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Olá, o que você procura hoje?" class="form-control">
                                     <div class="autocomplete">
                                         <button type="button" class="close" aria-label="Fechar" style="display: none;"><i class="icon-close"></i></button>
                                         <div class="p-3">
@@ -94,7 +94,7 @@
                             </div>
                             <div class="d-lg-none mr-1">
                                 <button class="bt-header bt-search bt-open-page" data-target="#floating-search" aria-label="Busca" data-prefetch>
-                                    <icon class="icon-search" />
+                                    <icon class="icon-search">
                                 </button>
                             </div>
                             <div class="my-cart">
@@ -219,19 +219,19 @@
                                                 {% endif %}
                                                     <ul class="d-flex align-items-center mb-md-0">
                                                         <li class="mr-3">
-                                                            <a href="http://www.google.com/safebrowsing/diagnostic?site={{ request.get_host }}" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
-                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png?v=2" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google" />
+                                                            <a href="http://www.google.com/safebrowsing/diagnostic?site={{ request.get_host }}" target="_blank" rel="noopener" onclick="redir(this.href);">
+                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png?v=3" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google">
                                                             </a>
                                                         </li>
                                                         <li class="mr-3">
-                                                            <a href="https://safeweb.norton.com/report/show?url={{ request.get_host }}&amp;ulang=por_bra" target="_blank" rel="noopener" onclick="redir(this.href);" class="bz">
-                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web" />
+                                                            <a href="https://safeweb.norton.com/report/show?url={{ request.get_host }}&amp;ulang=por_bra" target="_blank" rel="noopener" onclick="redir(this.href);">
+                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web">
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <div>
                                                                 <div id="convertize-pci-seal"></div>
-                                                                <script type="text/javascript" src="https://secure.convertize.com.br/static/js/seal.js" schama_name="{{ request.tenant.schema_name }}" content="convertize-pci-seal" size="50"></script>
+                                                                <script type="text/javascript" src="https://secure.convertize.com.br/static/js/seal.js" schama_name="{{ request.tenant.schema_name }}" content="convertize-pci-seal" size="50x60"></script>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -256,13 +256,21 @@
                                                 {% if is_mobile %}
                                                 <div id="collapseContact" class="collapse " aria-labelledby="headingContact" data-parent="#accordionFooter">
                                                 {% endif %}
-                                                    <ul>
-                                                        <li>
-                                                            <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ shop_settings.SHOP_ADDRESS_PHONE|mask_text }}" target="_blank" rel="noopener" class="d-flex align-items-center">
-                                                                <i class="icon-whatsapp h5 mr-2 mb-0"></i>
-                                                                {{ shop_settings.SHOP_ADDRESS_PHONE }}
+                                                    <ul class="d-lg-flex align-items-center icons-circle">
+                                                        <li class="mr-3">
+                                                            <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ shop_settings.SHOP_ADDRESS_PHONE|mask_text }}" target="_blank" rel="noopener" class="d-flex align-items-center justify-content-center bg-white rounded-circle">
+                                                                <i class="icon-phone h4 m-0 text-success"></i>
                                                             </a>
-                                                            <i class="icon-envelope h5 mr-2 mb-0"></i><span class="footer-sac">{{ shop_settings.FROM_EMAIL_COMERCIAL }}</span>
+                                                        </li>
+                                                        <li class="mr-3">
+                                                            <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_CONTACTS_WHATSAPP|mask_text }}" target="_blank" rel="noopener" class="d-flex align-items-center justify-content-center bg-white rounded-circle">
+                                                                <i class="icon-whatsapp h4 m-0 text-success"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="mr-3">
+                                                            <a href="{% url 'plugin_contacts:contact' %}" class="d-flex align-items-center justify-content-center bg-white rounded-circle">
+                                                                <i class="icon-envelope h4 m-0 text-success"></i>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 {% if is_mobile %}
@@ -415,7 +423,7 @@
                     </div>
                     <div class="form-search w-100">
                         <form method="GET" action="{% url 'search:pote_search' slug='' %}">
-                            <input type="text" aria-label="q" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Olá, o que você procura hoje?" class="form-control autofocus" />
+                            <input type="text" aria-label="q" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Olá, o que você procura hoje?" class="form-control autofocus">
                             <button type="submit" class="btn-search" aria-label="Buscar"><i class="icon-search"></i></button>
                         </form>
                     </div>
@@ -466,7 +474,7 @@
                     <ul>
                         <li><a href="{% url 'customers:profile' %}">Minha conta</a></li>
                         <li><a href="{% url 'customers:my_orders' %}">Meus pedidos</a></li>
-                        <li><a href="{% url 'customers:logout' %}" class="bz">Sair</a></li>
+                        <li><a href="{% url 'customers:logout' %}">Sair</a></li>
                     </ul>
                 </div>
             </div>

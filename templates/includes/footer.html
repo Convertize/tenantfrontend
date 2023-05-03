@@ -2,20 +2,17 @@
 <div class="f-f-2">
     <div class="container">
         <div class="row">
-            <div class="col-12">
-                <div class="footer-info text-center ">
-                    <p class="h5 mb-3 text-center">Informações</p>
-                    <p class="m-2">@ {{ shop_settings.SHOP_NOME_FANTASIA}} {% now "Y" %} - Todos direitos reservados | CNPJ: {{ shop_settings.SHOP_CNPJ }} | SAC: sac@convertize.com.br</p>
-                    <p class="m-0">
-                        Horário de Atendimento: 08:00 as 18:30 seg a sex, sab 08:00 as 12:00 horas | 
-                        Endereço: {{ shop_settings.SHOP_ADDRESS }}, {{ shop_settings.SHOP_ADDRESS_NUMBER }} - {{ shop_settings.SHOP_ADDRESS_NEIGHBORHOOD }} - {{ shop_settings.SHOP_ADDRESS_CITY }}/{{ shop_settings.SHOP_ADDRESS_STATE }}, CEP: {{ shop_settings.SHOP_ADDRESS_CEP }} | 
-                    </p>
+            <div class="col-12 col-lg-8">
+                <div class="footer-info">
+                    <p>© {{ shop_settings.SHOP_NOME_FANTASIA}} {% now "Y" %} - Todos direitos reservados | CNPJ: {{ shop_settings.SHOP_CNPJ }}</p>
+                    <p>Endereço: {{ shop_settings.SHOP_ADDRESS }}, {{ shop_settings.SHOP_ADDRESS_NUMBER }} - {{ shop_settings.SHOP_ADDRESS_NEIGHBORHOOD }} - {{ shop_settings.SHOP_ADDRESS_CITY }}, {{ shop_settings.SHOP_ADDRESS_STATE }} | CEP: {{ shop_settings.SHOP_ADDRESS_CEP }}</p>
+                    <p>Horário de Atendimento: 08:00 as 18:30 seg a sex, sab 08:00 as 12:00 horas</p>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="d-flex align-items-end justify-content-center mt-5 w-100 text-center">
+            <div class="col-12 col-lg-4">
+                <div class="text-center text-lg-right">
                     <a href="https://www.convertize.com.br/" target="_blank" rel="noopener">
-                        <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/convertize.svg" class="full-img img-lazy" title="Convertize" alt="Convertize" width="116" height="29" />
+                        <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/convertize.svg" class="img-lazy" title="Convertize" alt="Convertize" width="116" height="29">
                     </a>
                 </div>
             </div>

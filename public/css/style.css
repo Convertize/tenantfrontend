@@ -1033,13 +1033,12 @@ body.open-page .mask-floating-page{
 .footer{}
 .footer-info {
     font-size: 12px;
-    color: #383838;
     line-height: 18px;
-    padding: 0px 15px;
-    letter-spacing: -0.1px;
+    color: #383838;
 }
 .footer div[class*="f-f-"]{
-    padding: 40px 0px;
+    padding-top: 20px;
+    padding-bottom: 20px;;
 }
 .footer .f-f-1{ 
     background: #ececec;
@@ -1081,9 +1080,9 @@ body.open-page .mask-floating-page{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-.footer div[class*="f-f-"] ul{ 
+/* .footer div[class*="f-f-"] ul{ 
     margin-bottom: 20px; 
-}
+} */
 .footer div[class*="f-f-"] ul li > a{
     font-size: 14px;
     line-height: 15px;
@@ -1119,38 +1118,36 @@ background: linear-gradient(45deg, #f87f2e 0%,#f4792c 5%,#f5762f 6%,#f17039 11%,
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', endColorstr='#555cce',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */}
 
 .flag{
-    width:42px;
-    height:28px;
     display: block;
-    background:url(../img/sprite-payments.png) 49px 0px no-repeat;
+    width: 56px;
+    height: 34px;
+    background: url(../img/sprite-payments.svg) 49px 0px no-repeat;
     border-radius: 3px;
 }
-.flag-visa{background-position: -42px 0px;}
-.flag-mastercard{background-position: 0px 0px;}
-.flag-amex{background-position: -84px 0px;}
-.flag-diners{background-position: -252px 0px;}
-.flag-hipercard{background-position:-336px 0;}
-.flag-hiper{background-position:-420px 0;}
-.flag-elo{background-position:-210px 0;}
-.flag-discover{background-position:-126px 0;}
-.flag-boleto, .flag.boleto{background-position:-378px 0;}
-.flag-jcb{background-position: -168px 0;}
-.flag-maestro{ background-position:-462px 0;}
-.flag-visaelectron{ background-position:-504px 0;}
-.flag-ame{ background-position: -546px 0;}
-.flag-picpay{ background-position: -588px 0;}
+.flag.black-white{
+    filter: grayscale(1);
+}
+.flag-visa{ background-position: 0px 0px;}
+.flag-mastercard{ background-position: -57px 0px;}
+.flag-amex{ background-position: -114px 0px;}
+.flag-diners{ background-position: -171px 0px;}
+.flag-hipercard{ background-position: -228px 0;}
+.flag-hiper{ background-position: -285px 0;}
+.flag-elo{ background-position: -342px 0;}
+.flag-discover{ background-position: -399px 0;}
+.flag-boleto, .flag.boleto{ background-position: -456px 0;}
+.flag-jcb{ background-position: -513px 0;}
+.flag-maestro{ background-position: -570px 0;}
+.flag-visaelectron{ background-position: -627px 0;}
+.flag-ame{ background-position: -684px 0;}
+.flag-picpay{ background-position: -741px 0;}
 .flag-sodexo{ display: none;}
-.flag-sodexo-alimentacao{ background-position: -630px 0;}
-.flag-sodexo-refeicao{ background-position: -672px 0;}
-.flag-pix{ background-position: -714px 0;}
-.flag-vr{ background-position: -756px 0;}
-.flag-ticket{ background-position: -798px 0;}
-.flag-sorocred{ background-position: -840px 0;}
-
-.flag-bancodobrasil{background-position:-291px 0px; width:32px; height:32px;}
-.flag-bradesco{background-position:-355px 0px; width:32px; height:32px;}
-.flag-itau{background-position:-419px 0px; width:32px; height:32px;}
-.flag-banrisul{background-position:-451px 0px; width:32px; height:32px;}
+.flag-sodexo-alimentacao{ background-position: -855px 0;}
+.flag-sodexo-refeicao{ background-position: -798px 0;}
+.flag-pix{ background-position: -912px 0;}
+.flag-vr{ background-position: -969px 0;}
+.flag-ticket{ background-position: -1026px 0;}
+.flag-sorocred{ background-position: -1083px 0;}
 /* End Footer  */
 
 /* Newsletter */
@@ -1172,15 +1169,13 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
     position: relative;
     text-align: left;
     margin: 20px 0px 15px 0px;
-    text-align: center;
 }
 .title-showcase h2 {
+    display: block;
+    position: relative;
     font-size: 20px;
     font-weight: 600;
-    display: inline-block;
-    position: relative;
-    color: #434343;
-    padding-right: 10px;
+    color: #333;
 }
 .bannerdhtml-showcase .horizontal-scroll .item{
     margin: 0 10px;
@@ -1272,18 +1267,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
 .list-products .item-product:hover{
     box-shadow: 0 2px 5px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 7%);
 }
-.list-products .item-product form.product-form{
+.list-products .item-product .product-form{
     margin-top: 10px;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease;
 }
-.list-products .item-product:hover form.product-form{
+.list-products .item-product:hover .product-form{
     opacity: 1;
     visibility: visible;
 }
-
-.list-products .item-product form.product-form .purchase{
+.list-products .item-product .product-form .purchase{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1313,10 +1307,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
     max-height: 100%;
 }
 .list-products .item-product .title {
-    color: #242424;
-    min-height: 40px;
     font-size: 13px;
     line-height: 18px;
+    min-height: 40px;
     text-align: left;
 }
 .list-products .item-product .title a {
@@ -1704,70 +1697,6 @@ img.img-lazy:not([src*="/blank.png"]) {
 .top-content .sub-title{
     font-size: 18px;
 }
-.navbar-icons{
-    overflow: auto;
-    background: #f7f7f7;
-    border-radius: 10px;
-    margin-top: -30px;
-    margin-bottom: 20px;
-}
-.navbar-icons ul{
-    display: flex;
-    padding: 0;
-    margin: 0;
-    background: #fff;
-    border-radius: 10px;
-}
-.navbar-icons li {
-    width: 14.2%;
-    min-width: 150px;
-}
-.navbar-icons li a {
-    display: block;
-    padding: 20px 10px;
-    position: relative;
-    font-size: 13px;
-    color: #000;
-    text-align: center;
-    font-weight: 400;
-    height: 100%;
-}
-.navbar-icons li i {
-    display: block;
-    font-size: 30px;
-    color: #666;
-    padding-bottom: 5px;
-}
-.navbar-icons li a.active>i{
-    color: #000;
-}
-.navbar-icons li a.active:before{
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 20%;
-    left: 20%;
-    height: 2px;
-    background: #e0303a;
-}
-.share .share_link{ 
-    display: inline-block;
-    vertical-align: middle;
-    font-size: 20px;
-    background: #a2a2a2;
-    border: 0;
-    margin-right: 4px;
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    color: #ffffff;
-    line-height: 42px;
-    border-radius: 50%;
-}
-.share .share_link.bt-whatsapp{ background: #25cb63;}
-.share .share_link.bt-telegram{ background: #2999d0;}
-.share .share_link.bt-twitter{ background: #35b3f6;}
-.share .share_link.bt-mail{ background: #f6a725;}
 .stages a{
     z-index: 5;
     position: relative;
@@ -1846,19 +1775,6 @@ img.img-lazy:not([src*="/blank.png"]) {
     background: #d8252b;
 }
 
-.accept_cookie{
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    max-width: 600px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: 0px 2px 10px 2px rgb(0 0 0 / 10%);
-    z-index: 99; 
-}
-
 /* Institutional */
 .pages-institutional .top-content{
     background: url('../img/pattern.png') repeat;
@@ -1880,6 +1796,8 @@ img.img-lazy:not([src*="/blank.png"]) {
 .pages-institutional span{
 	font-size: 14px;
 }
+/* End Institutional */
+
 /* Grid Institutional */
 .grid__institutional{ 
 	display: grid; 
@@ -1906,6 +1824,20 @@ img.img-lazy:not([src*="/blank.png"]) {
     .grid__institutional{ grid-template-columns: initial; padding: 0px;}
     .grid__institutional-item{ padding: 10px;}
     
+}
+/* End Grid Institutional */
+
+.accept_cookie {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    max-width: 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0px 2px 10px 2px rgb(0 0 0 / 10%);
+    z-index: 99;
 }
 
 .accessibility-font{

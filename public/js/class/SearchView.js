@@ -2,6 +2,36 @@ const SearchView = BaseView.extend({
     init: function(){
         this._super();
         log("Init Search");
+        this.facets();
+    },
+    normalize: function(value){
+        return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,-=]/g, "").replace(/^'|'$/g, '').replace(/^"|"$/g, "").trim()
+    },
+    facetSearch: function(e){
+        const $input = $(e.currentTarget);
+        const $box = $input.closest(".facet");
+        const value = e.data.self.normalize($input.val());
+        if(value){
+            $box.find("ul li").each(function(){
+                const text = e.data.self.normalize($(this).find("a").text());
+                if(text.includes(value)) $(this).show()
+                else $(this).hide()
+            })
+        }else{
+            $box.find("ul li").show()
+        }
+    },
+    facets: function(){
+        $(".facet:not(.facet-p)").each(function(){
+            if($(this).find("ul").height() > 262){
+                $(this).find("ul").addClass("scrollbar");
+                $(`<div class="facet-search">
+                    <input type="search" name="search" placeholder="Buscar" class="form-control mb-1" />
+                </div>`).insertBefore($(this).find("ul"));
+            }
+        });
+        $("body").off("keyup.convertize", ".facet-search input");
+        $("body").on("keyup.convertize", ".facet-search input", { self: this }, this.facetSearch);
     },
     bind_events: function(){
         this._super();

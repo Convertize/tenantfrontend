@@ -1,54 +1,14 @@
 @charset "utf-8";
 .seals{
     display: flex;
+    align-items: center;;
 }
 .seal{
     max-width: 100%;
 }
-.seal-oferta-relampago{
-    height: 40px;
-    width: 100%;
-    min-width: 130px;
-    max-width: 178px;
-    background: url(../img/seals/selo-oferta-relampago.png) 0 0 no-repeat;
-    background-size: contain;
+.list-products .item-product .seals{
+    margin: 0px 2px 2px 0px;
 }
-
-.seal.venda_com_receita{
-    background: #343b40;
-    color: #fff;
-    padding: 5px 15px;
-    font-weight: 600;
-    border-radius: 20px;
-}
-
-.list-products .item-product .seals .promocao-imperdivel,
-#content-product .seals .promocao-imperdivel{ display: block; padding: 5px 10px; background: #f57b00; font-size: 12px; font-weight: 600; color: #ffffff; text-align: center; text-transform: uppercase;}
-
-.list-products .item-product .seals .ultimas-unidades,
-#content-product .seals .ultimas-unidades{ display: block; padding: 5px 10px; background: #5959d8; font-size: 12px; font-weight: 600; color: #ffffff; text-align: center; text-transform: uppercase;}
 
 .list-products .item-product .seals .compre-ganhe, 
-#content-product .seals .compre-ganhe{ display: inline-block; padding: 4px 10px; background: #d4247c; font-size: 12px; line-height: 12px; font-weight: 600; color: #fff; text-align: center; text-transform: uppercase; margin-top: -20px; margin-bottom: 3px; border-radius: 20px;}
-#content-product .seals .compre-ganhe{ margin: 0; }
-
-.list-products .item-product .seals .oferta-exclusiva,
-#content-product .seals .oferta-exclusiva{ display:block; padding: 4px 10px; background: #51d2d2; font-size: 12px; line-height: 12px; font-weight: 600; color: #fff; text-align: center; text-transform: uppercase; border-radius: 20px;}
-
-.list-products .item-product .seals .off-carrinho,
-#content-product .seals .off-carrinho{ display:block; padding: 4px 10px; background: #81c94c; font-size: 12px; line-height: 12px; font-weight: 600; color: #fff; text-align: center; text-transform: uppercase; border-radius: 20px;}
-
-.list-products .item-product .seals .multipack_product{ display: inline-block; vertical-align: middle; background: #e0303a; position: absolute; top: -30px; left: 0; width: 100px; height: 22px; line-height: 22px; padding: 5px; font-size: 12px; color: #ffffff; text-align: center; border-radius: 20px;}
-.list-products .item-product .seals .multipack_product span{ z-index: 10; background: #e0303a; position: absolute; left: 10px; top: 0; right: 10px; height: 100%; color: #ffffff; border-radius: 20px;}
-.list-products .item-product .seals .multipack_product:before{ content: "por menos"; background: #e0303a; color: #ffd200; position: absolute; left: 10px; top: 0; right: 10px; height: 100%; -webkit-animation: multipack 5s infinite; animation: multipack 5s infinite; border-radius: 20px;}
-@-webkit-keyframes multipack{
-    50%{ z-index: 101;}
-}
-@keyframes multipack{
-    50%{ z-index: 101;}
-}
-
-#content-product .product-detail .desconto-progressivo{
-    font-weight: bold;
-    font-size: 14px;
-}
+#content-product .seals .compre-ganhe{ display: block; padding: 2px 8px; background: #d4247c; font-size: 12px; line-height: 12px; font-weight: bold; color: #fff; text-align: center; border-radius: 3px;}

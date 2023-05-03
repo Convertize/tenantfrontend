@@ -70,8 +70,13 @@ function fromCurrencyToFloat(valor){
         return parseFloat(valor);
     }catch(e){}
 };
+
 function htmlDecode(value){
   return $('<div/>').html(value).text();
+};
+
+function roundToTwo(num){
+    return +(Math.round(num + "e+2") + "e-2");
 };
 
 if($.widget && $.ui){

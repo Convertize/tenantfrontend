@@ -220,66 +220,66 @@
 {% endblock %}
 
 {% block extra_footer %}
-{% localize off %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>       
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.countdown.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>       
-    <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.countdown.min.js"></script>
-    <script type="text/javascript">
-        //ele pega a data do pedido pelo template do django create by:wilker
-        const addMinutes = new Date('{{ order.add_date|date:'Y/m/d H:i:s' }}');
-        let minUP = 30; // aqui fica uma let como acrescentador de minutos
-        addMinutes.setMinutes(addMinutes.getMinutes() + minUP);
-        /*nessa parte ele pega os minutos como minUP e da um SET dentro desse SET, ele já faz um GET minutes e soma com a LET que no caso te 15
-        assim acrescentando 15minutos no horário do template do pedido*/
-        $('#countdown').countdown(addMinutes)//aqui procura o ID e depois ele chama o plugin countdown em seguida ele realiza já a converção do tempo atual com o contador.
-            .on('update.countdown', function(event) {
-            var countMinutes = '%H:%M:%S'; // template para puxar a HORA MINUTO E SEGUNDO 
-            $(this).html(event.strftime('<div class="clock-single"><span class="textCount"><i class="icon-timer"></i> Tempo restante para pagar: <span class="count">'+countMinutes+'</span></span></div>'));
-        })//Ao finalizar o countdown ele dispara uma nova mensagem de finalização 
-            .on('finish.countdown', function(event) {
-                $(this).html('<div class="clock-single"><span class="textCount"><i class="icon-timer"></i> Tempo restante para pagar: <span class="count expired">Código expirado</span></span></div>')
-            .parent().addClass('disabled');
-        });
-        function pixcopy() {
-            $("#pixcode").select();
-            document.execCommand('copy');
-            $("#pixcopied").show();
-            setTimeout(function() { $("#pixcopied").fadeOut(1000); }, 1000);
-        }
-        // Send transaction data with a pageview if available
-        // when the page loads. Otherwise, use an event when the transaction
-        // data becomes available.
-        var dataLayer = dataLayer || [];
-        dataLayer.push({
-            pageName: 'purchase_success',
-            shipping_address: {
-                city: '{{ order.shipping_detail_city }}',
-                state: '{{ order.shipping_detail_state }}'
-            },
-            ecommerce: {
-                purchase: {
-                    actionField: {
-                        id: '{{ order.id }}',                         // Transaction ID. Required for purchases and refunds.
-                        affiliation: '{{ order.get_channel_display }}',
-                        revenue: '{{ order.total }}',                     // Total transaction value (incl. tax and shipping)
-                        shipping: '{{ order.shipping_total }}'
-                    },
-                    products: [{% for item in order.items.all %}{                            // List of productFieldObjects.
-                        name: '{{ item.sku }}', // Name or ID is required.
-                        id: '{{ item.sku.id }}',
-                        price: '{{ item.unit_price }}',
-                        unit_price: '{{ item.unit_price }}',
-                        product_id: '{{ item.sku.product.id }}',
-                        product_upc: '{{ item.sku.product.upc }}',
-                        product_name: '{{ item.sku.product.name }}',
-                        {% if item.sku.product.brand %}brand: '{{ item.sku.product.brand.title }}',{% endif %}
-                        category: '{{ item.sku.product.category.title }}',
-                        quantity: {{ item.quantity }}
-                    }{% if not forloop.last %},{% endif %}{% endfor %}]
-                }
+    {% localize off %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>       
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.countdown.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>       
+        <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.countdown.min.js"></script>
+        <script type="text/javascript">
+            //ele pega a data do pedido pelo template do django create by:wilker
+            const addMinutes = new Date('{{ order.add_date|date:'Y/m/d H:i:s' }}');
+            let minUP = 30; // aqui fica uma let como acrescentador de minutos
+            addMinutes.setMinutes(addMinutes.getMinutes() + minUP);
+            /*nessa parte ele pega os minutos como minUP e da um SET dentro desse SET, ele já faz um GET minutes e soma com a LET que no caso te 15
+            assim acrescentando 15minutos no horário do template do pedido*/
+            $('#countdown').countdown(addMinutes)//aqui procura o ID e depois ele chama o plugin countdown em seguida ele realiza já a converção do tempo atual com o contador.
+                .on('update.countdown', function(event) {
+                var countMinutes = '%H:%M:%S'; // template para puxar a HORA MINUTO E SEGUNDO 
+                $(this).html(event.strftime('<div class="clock-single"><span class="textCount"><i class="icon-timer"></i> Tempo restante para pagar: <span class="count">'+countMinutes+'</span></span></div>'));
+            })//Ao finalizar o countdown ele dispara uma nova mensagem de finalização 
+                .on('finish.countdown', function(event) {
+                    $(this).html('<div class="clock-single"><span class="textCount"><i class="icon-timer"></i> Tempo restante para pagar: <span class="count expired">Código expirado</span></span></div>')
+                .parent().addClass('disabled');
+            });
+            function pixcopy() {
+                $("#pixcode").select();
+                document.execCommand('copy');
+                $("#pixcopied").show();
+                setTimeout(function() { $("#pixcopied").fadeOut(1000); }, 1000);
             }
-        });
-    </script>
-{% endlocalize %}
+            // Send transaction data with a pageview if available
+            // when the page loads. Otherwise, use an event when the transaction
+            // data becomes available.
+            var dataLayer = dataLayer || [];
+            dataLayer.push({
+                pageName: 'purchase_success',
+                shipping_address: {
+                    city: '{{ order.shipping_detail_city }}',
+                    state: '{{ order.shipping_detail_state }}'
+                },
+                ecommerce: {
+                    purchase: {
+                        actionField: {
+                            id: '{{ order.id }}',                         // Transaction ID. Required for purchases and refunds.
+                            affiliation: '{{ order.get_channel_display }}',
+                            revenue: '{{ order.total }}',                     // Total transaction value (incl. tax and shipping)
+                            shipping: '{{ order.shipping_total }}'
+                        },
+                        products: [{% for item in order.items.all %}{                            // List of productFieldObjects.
+                            name: '{{ item.sku }}', // Name or ID is required.
+                            id: '{{ item.sku.id }}',
+                            price: '{{ item.unit_price }}',
+                            unit_price: '{{ item.unit_price }}',
+                            product_id: '{{ item.sku.product.id }}',
+                            product_upc: '{{ item.sku.product.upc }}',
+                            product_name: '{{ item.sku.product.name }}',
+                            {% if item.sku.product.brand %}brand: '{{ item.sku.product.brand.title }}',{% endif %}
+                            category: '{{ item.sku.product.category.title }}',
+                            quantity: {{ item.quantity }}
+                        }{% if not forloop.last %},{% endif %}{% endfor %}]
+                    }
+                }
+            });
+        </script>
+    {% endlocalize %}
 {% endblock %}
