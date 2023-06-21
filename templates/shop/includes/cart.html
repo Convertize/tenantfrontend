@@ -32,6 +32,7 @@
                         <h3>Subtotal:</h3>
                         <p><strong class="request__cart__total_price"></strong></p>
                     </div>
+                    {% comment %}
                     <div class="codes">
                         {% for coupon in request.cart.coupons.all %}
                             <a>{{ coupon.code }}</a>
@@ -46,10 +47,11 @@
                             </div>
                         </div>
                     </form>
-                </div>
-                <div class="values_footer mb-3">
-                    <h3>Desconto:</h3>
-                    <p><strong class="request__cart__discount_value"></strong></p>
+                    <div class="values_footer mb-3">
+                        <h3>Desconto:</h3>
+                        <p><strong class="request__cart__discount_value"></strong></p>
+                    </div>
+                    {% endcomment %}
                 </div>
                 <div class="values_footer">
                     <h3>Total:</h3>

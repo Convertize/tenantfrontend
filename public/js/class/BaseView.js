@@ -18,11 +18,10 @@ const BaseView = $.Class.create({
     cookieLGPD: function(){
         if(!Cookies.get("accept_cookie")){
            $("body").append(`<div class="accept_cookie">
-                <div class="d-md-flex align-items-center">
-                    <p>Esta loja utiliza cookies para melhorar a sua experiência, recolher estatísticas, otimizar as funcionalidades do site e oferecer conteúdo adequado aos seus interesses. Acesse a nossa <a href="/politica-de-privacidade/s" class="font-weight-bold">Política de Privacidade</a></p>
-                    <div class="ml-md-2 mt-2 mt-md-0">
-                       <button class="btn btn-checkout close_accept_cookie w-100">Aceitar</button>
-                    </div>
+                <div class="d-flex flex-column align-items-center">
+					<i class="icon-cookie h1 m-0 text-primary"></i>
+                    <p class="text-center py-2">Utilizamos cookies para garantir que você tenha uma melhor experiência em nosso site. Ao continuar navegando você concorda com a nossa <a href="/politica-de-privacidade/s" class="text-underline">política de privacidade</a></p>
+                    <button class="btn btn-checkout close_accept_cookie">Aceitar e fechar</button>
                 </div>
            </div>`);
            $(".close_accept_cookie").unbind("click.convertize").bind("click.convertize", function(e){
@@ -698,16 +697,16 @@ const BaseView = $.Class.create({
         data.items.map(function(item){
             let price = "";
             if(item.discount_value < item.total_price){
-                price = `<span class="unit-price">${item.total_price.toCurrency()}</span><br />${item.discount_value.toCurrency()}`;
+                price = `<span class="unit-price">${item.total_price.toCurrency()}</span><br /><span class="sale-price">${item.discount_value.toCurrency()}</span>`;
             }else{
                 price = `<span class="sale-price">${item.total_price.toCurrency()}</span>`;
             };
             $("#mini-cart .content-cart ul").append(`<li>
                 <input type="hidden" value="${item.id}" name="_id" />
                 ${item.image ?
-                    `<a href="${item.url}" class="item-image"><img src="${item.image.replace("/small/", "/mini/")}" width="65" height="65" alt="" /></a>`
+                    `<a href="${item.url}" class="item-image"><img src="${item.image.replace("/small/", "/mini/")}" width="60" height="60" alt="${item.sku_name}" /></a>`
                 :
-                    `<a href="${item.url}" class="item-image"><img src="${window.__static_prefix__}img/blank.png" width="65" height="65" alt="" /></a>`
+                    `<a href="${item.url}" class="item-image"><img src="${window.__static_prefix__}img/blank.png" width="60" height="60" alt="${item.sku_name}" /></a>`
                 }
                 <div class="item-info">
                     <a href="${item.url}" class="item-title d-block">${item.sku_name}</a>
@@ -715,12 +714,12 @@ const BaseView = $.Class.create({
                         <div>
                             <span class="item-price">${price}</span>
                         </div>
-				        <div class="quantity ml-3">
+				        <div class="quantity ml-4">
                             <input type="tel" value="${item.quantity}" name="quantity" class="input" />
                         </div>
                     </div>
                 </div>
-                <a class="remove-item"><i class="icon-close-radius"></i></a>
+                <a class="remove-item"><i class="icon-trash"></i></a>
             </li>`);
         });
 
