@@ -10,11 +10,11 @@
         <div class="card mt-4 mb-5">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-12 col-sm-5 text-sm-center align-items-sm-center justify-content-sm-center d-flex flex-column">
-                        <p class="font-size-14 mb-1">
+                    <div class="col-12 col-sm-5 text-md-center align-items-md-center justify-content-start d-flex flex-column">
+                        <p class="font-size-14 mb-2">
                             <strong>NÚMERO DO PEDIDO<span class="d-inline-block d-sm-none">:</span></strong>
                             <br class="d-none d-sm-block" />
-                            {{ order.id }}
+                            #{{ order.id }}
                         </p>
                         <p class="font-size-12 mb-2 mb-sm-0">
                             A confirmação do pedido foi enviada para o e-mail
@@ -22,7 +22,7 @@
                             <b class="text-dark">{{ order.billing_detail_email }}</b>
                         </p>
                     </div>
-                    <div class="col-12 col-sm-7">
+                    <div class="col-12 col-sm-7 mt-4 mt-lg-0">
                         <p class="mb-1">
                             <b>Status do pedido:</b> {{ order.status|get_status_display }}
                         </p>
@@ -64,32 +64,9 @@
                                         Depois, na seção <strong>Pix</strong> do aplicativo da sua instituição financeira, procure a função <strong>Pix Copia e Cola</strong>.
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 text-center">
-                                            &nbsp;<span id="pixcopied" class="text-center" style="display: none; color: blue">Código Pix Copiado!</span>
-                                        </div>
-                                        <div class="col-md-12 mb-3">
+                                        <div class="col-md-12 mb-3 pix text-center">
+                                            <span id="pixcopied" style="display:none;" data-toggle="tooltip" data-placement="top" title="Código pix copiado"></span>
                                             <input type="text" class="form-control" id="pixcode" name="pixcode" placeholder="" readonly="readonly" value="{{ payment.transaction.extra_data.qrcode }}" onclick="pixcopy();">
-                                        </div>
-                                    </div>
-                                    <hr class="mb-4">
-                                    <div class="share">
-                                        <h4 class="mb-3">
-                                            <span>Compartilhar fatura</span>
-                                            <span><i class="icon-share"></i></span>
-                                        </h4>
-                                        <div class="list-group-item text-center">
-                                            <a class="share_link bt-whatsapp" href="https://api.whatsapp.com/send?text=Fatura%20para%20{{ order.billing_detail_name }}%20%0A%0Ahttps://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar pelo WhatsApp">
-                                                <i class="icon-whatsapp2"></i>
-                                            </a>
-                                            <a class="share_link bt-telegram" href="https://telegram.me/share/url?url=Fatura%20para%20{{ order.billing_detail_name }}%20%0A%0Ahttps://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar pelo Telegram">
-                                                <i class="icon-telegram"></i>
-                                            </a>
-                                            <a class="share_link bt-twitter" href="https://twitter.com/intent/tweet?text=Fatura%20para%20{{ order.billing_detail_name }}%20%0A%0Ahttps://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar pelo Twitter">
-                                                <i class="icon-twitter"></i>
-                                            </a>
-                                            <a class="share_link bt-mail" href="mailto:?subject=Fatura%20para%20{{ order.billing_detail_name }}&amp;body=https://{{ request.get_host }}{{ request.get_full_path }}" title="Compartilhar por e-mail">
-                                                <i class="icon-envelope"></i>
-                                            </a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -262,22 +239,22 @@
                         <p class="h6 font-weight-bold mb-3 text-center">{% trans 'Resumo do pedido' %} </p>
                         <table class="table table-sm m-0" width="100%">
                             <tr>
-                                <td align="right" class="bz"><b class="color4">{% trans 'Sub-total' %}:</b></td>
-                                <td align="left" class="bz"><b class="color1">{{ order.item_total|currency }}</b></td>
+                                <td align="right" class="border-0"><b>{% trans 'Sub-total' %}:</b></td>
+                                <td align="left" class="border-0"><b>{{ order.item_total|currency }}</b></td>
                             </tr>
                             <tr>
-                                <td align="right" class="bz"><b class="color4">Frete:</b></td>
-                                <td align="left" class="bz"><b class="color1">{{ order.shipping_total|currency }}</b></td>
+                                <td align="right" class="border-0"><b>Frete:</b></td>
+                                <td align="left" class="border-0"><b>{{ order.shipping_total|currency }}</b></td>
                             </tr>
                             {% if order.discount_total > 0 %}
                                 <tr>
-                                    <td align="right" class="bz"><b class="color4">{% trans 'Desconto' %}:</b></td>
-                                    <td align="left" class="bz"><b class="color1">{{ order.discount_total|currency }}</b></td>
+                                    <td align="right" class="border-0"><b>{% if order.discount_total < 0 %}{% trans 'Acréscimo' %}{% else %}{% trans 'Desconto' %}{% endif %}:</b></td>
+                                    <td align="left" class="border-0"><b>{{ order.discount_total|currency }}</b></td>
                                 </tr>
                             {% endif %}
                             <tr>
-                                <td align="right" class="bz"><b class="color4">{% trans 'Total' %}:</b></td>
-                                <td align="left" class="bz"><b class="color1 size13">{{ order.total|currency }}</b></td>
+                                <td align="right" class="border-0"><b>{% trans 'Total' %}:</b></td>
+                                <td align="left" class="border-0 p-0"><b class="font-size-16 text-success">{{ order.total|currency }}</b></td>
                             </tr>
                         </table>
                     </div>
@@ -299,4 +276,18 @@
             </div>
         {% endif %}
     {% endlocalize %}
+{% endblock %}
+
+{% block extra_footer %}
+    <script type="text/javascript">
+        function pixcopy(){
+            $(`#pixcode`).select();
+            document.execCommand('copy');
+            $(`#pixcopied`).show();
+            $(`.pix [data-toggle="tooltip"]`).tooltip("show");
+            setTimeout(function(){
+                $(`.pix [data-toggle="tooltip"]`).tooltip("hide");
+            }, 3000);
+        }
+    </script>
 {% endblock %}

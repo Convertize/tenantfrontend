@@ -1780,6 +1780,36 @@ img.img-lazy:not([src*="/blank.png"]) {
     background: #d8252b;
 }
 
+/* STATUS ON ORDER */
+#profile .table .badge.aadf {
+    background-color: #ECAC39;
+    color: #000;
+}
+#profile .table .badge.pen {
+    background-color: #999;
+    color: #fff;
+}
+#profile .table .badge.error {
+    background-color: #9c0c00;
+    color: #fff;
+}
+#profile .table .badge.canm {
+    background-color: #F84031;
+    color: #fff;
+}
+#profile .table .badge.cep,
+#profile .table .badge.pes,
+#profile .table .badge.etp,
+#profile .table .badge.ret {
+    background-color: #53BEE6;
+    color: #fff;
+}
+#profile .table .badge.pecs {
+    background-color: #527913;
+    color: #fff;
+}
+/* END STATUS ON ORDER */
+
 /* Institutional */
 .pages-institutional .top-content{
     background: url('../img/pattern.png') repeat;
