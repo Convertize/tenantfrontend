@@ -182,7 +182,7 @@ const ProductView = BaseView.extend({
                     body.append("add_cart", true);
 
                     $(form).serializeArray().map(function(item){
-                        if(item.name.indexOf("bundle_") >= 0 || item.name == "quantity"){
+                        if((item.name.indexOf("bundle_") >= 0 && item.value) || item.name == "quantity"){
                             body.append(item.name, item.value);
                         };
                     });

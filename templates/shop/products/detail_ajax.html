@@ -135,7 +135,7 @@
                                                     {% if forloop.first %}
                                                         <option value="" data-sale-price="0" selected="selected" data-cover="{{ MEDIA_URL }}{{ option.cover }}">------</option>
                                                     {% endif %}
-                                                    <option value="{{ name_item }}" data-sale-price="{{ option.sale_price }}" data-cover="{{ MEDIA_URL }}{{ option.cover }}">{{ option.name|replace:'/,' }} {{ option.quantity }} unidade{{ option.quantity|pluralize:'s' }} por {{ option.sale_price|currency }} cada</option>
+                                                    <option value="{{ name_item }}" data-sale-price="{{ option.sale_price|f_multiply:option.quantity }}" data-cover="{{ MEDIA_URL }}{{ option.cover }}">{{ option.name|replace:'/,' }} {{ option.quantity }} unidade{{ option.quantity|pluralize:'s' }} por {{ option.sale_price|currency }} cada</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
