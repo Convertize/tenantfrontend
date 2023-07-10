@@ -14,10 +14,10 @@
 {% block meta_keywords %}{% if object.meta_keywords %}{{ object.meta_keywords }}{% endif %}{% endblock %}
 
 {% block meta_robots %}
-        {{ block.super }}
-        {% if object and object.get_absolute_url %}
+    {{ block.super }}
+    {% if object and object.get_absolute_url %}
         <link rel="canonical" href="https://{{ request.get_host }}{{ object.get_absolute_url }}" />
-        {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}

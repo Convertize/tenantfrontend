@@ -18,11 +18,10 @@ const BaseView = $.Class.create({
     cookieLGPD: function(){
         if(!Cookies.get("accept_cookie")){
            $("body").append(`<div class="accept_cookie">
-                <div class="d-md-flex align-items-center">
-                    <p>Esta loja utiliza cookies para melhorar a sua experiência, recolher estatísticas, otimizar as funcionalidades do site e oferecer conteúdo adequado aos seus interesses. Acesse a nossa <a href="/politica-de-privacidade/s" class="font-weight-bold">Política de Privacidade</a></p>
-                    <div class="ml-md-2 mt-2 mt-md-0">
-                       <button class="btn btn-checkout close_accept_cookie w-100">Aceitar</button>
-                    </div>
+                <div class="d-flex flex-column align-items-center">
+					<i class="icon-cookie h1 m-0 text-primary"></i>
+                    <p class="text-center py-2">Utilizamos cookies para garantir que você tenha uma melhor experiência em nosso site. Ao continuar navegando você concorda com a nossa <a href="/politica-de-privacidade/s" class="text-underline">política de privacidade</a></p>
+                    <button class="btn btn-checkout close_accept_cookie">Aceitar e fechar</button>
                 </div>
            </div>`);
            $(".close_accept_cookie").unbind("click.convertize").bind("click.convertize", function(e){
@@ -187,6 +186,14 @@ const BaseView = $.Class.create({
     },
     formSearch: function(){
         const self = this;
+
+        // GA 4
+        $(".form-search form").on("submit.convertize", function(){
+            $(this).find("input[name=q]").val($(this).find("input[name=q]").val().toLowerCase());
+            if(window.cvz) window.cvz.events.trigger("search", {term: $(this).find("input[name=q]").val().toLowerCase()});
+        });
+        // GA 4 - end
+
         $("body").off("focus.convertize", ".form-search.desktop input");
         $("body").on("focus.convertize", ".form-search.desktop input", function(e){
             e.preventDefault();
@@ -420,6 +427,18 @@ const BaseView = $.Class.create({
                         });
                         const resp = response.data;
                         self.renderCart(resp);
+
+                        // GA 4
+                        const item = resp.items.find(function(i){
+                            return i.product == parseInt(body.product) && i.sku_options.map(function(item){return item.value_id}).sort().toString() == body.options.sort().toString()
+                        });
+
+                        if(window.cvz && item){
+                            item.quantity = body.quantity;
+                            window.cvz.events.trigger("add_to_cart", item);
+                        }
+                        // GA 4 - end
+                        
                         if(window.events && window.events.loadCart) window.events.loadCart();
 
                         // Open mini cart
@@ -535,6 +554,20 @@ const BaseView = $.Class.create({
                 });
                 const resp = response.data;
                 self.renderCart(resp);
+                // GA 4
+                if(window.cvz && resp && resp.items && resp.items.length){
+                    const item = resp.items.find(function(i){return i.id == parseInt(id)});
+                    if(item){
+                        if(item.quantity > $this.data("quantity")){
+                            item.quantity = item.quantity - $this.data("quantity")
+                            window.cvz.events.trigger("add_to_cart", item);
+                        }else if(item.quantity < $this.data("quantity")){
+                            item.quantity = $this.data("quantity") - item.quantity;
+                            window.cvz.events.trigger("remove_from_cart", item);
+                        }
+                    }
+                }
+                // GA 4 - end
             }catch(err){
                 log(err)
             };
@@ -554,6 +587,15 @@ const BaseView = $.Class.create({
                 const response = await self.api.delete(url);
                 const resp = response.data;
                 self.renderCart(resp);
+                // GA 4
+                if(window.cvz && !resp.items.filter(function(item){ return item.id == parseInt(id)}).length){
+                    window.cvz.events.trigger("remove_from_cart", [{
+                        "item_id": $this.closest("li").find("input[name=_sku]").val(),
+                        "item_name": $this.closest("li").find(".item-title").text().trim(),
+                        "quantity": parseInt($this.closest("li").find("input[name=quantity]").val())
+                    }]);
+                }
+                // GA 4 - end
                 return;
             }catch(err){
                 log(err)
@@ -666,6 +708,22 @@ const BaseView = $.Class.create({
             const resp = response.data;
             self.renderCart(resp);
             $("#mini-cart").removeClass("loading");
+            // GA 4
+            if(window.cvz){
+                window.cvz.events.trigger("view_cart", {
+                    currency: "BRL",
+                    value: resp.totalizers.total_price,
+                    items: resp.items.map(function(item){
+                        return {
+                            item_name: item.sku_name,
+                            item_id: item.sku,
+                            price: item.unit_price,
+                            "quantity": item.quantity
+                        }
+                    })
+                })
+            }
+            // GA 4 - end
         }catch(err){
             log(err);
             if(err.response && err.response.status === 404){
@@ -698,16 +756,17 @@ const BaseView = $.Class.create({
         data.items.map(function(item){
             let price = "";
             if(item.discount_value < item.total_price){
-                price = `<span class="unit-price">${item.total_price.toCurrency()}</span><br />${item.discount_value.toCurrency()}`;
+                price = `<span class="unit-price">${item.total_price.toCurrency()}</span><br /><span class="sale-price">${item.discount_value.toCurrency()}</span>`;
             }else{
                 price = `<span class="sale-price">${item.total_price.toCurrency()}</span>`;
             };
             $("#mini-cart .content-cart ul").append(`<li>
                 <input type="hidden" value="${item.id}" name="_id" />
+                <input type="hidden" value="${item.sku}" name="_sku" />
                 ${item.image ?
-                    `<a href="${item.url}" class="item-image"><img src="${item.image.replace("/small/", "/mini/")}" width="65" height="65" alt="" /></a>`
+                    `<a href="${item.url}" class="item-image"><img src="${item.image.replace("/small/", "/mini/")}" width="60" height="60" alt="${item.sku_name}" /></a>`
                 :
-                    `<a href="${item.url}" class="item-image"><img src="${window.__static_prefix__}img/blank.png" width="65" height="65" alt="" /></a>`
+                    `<a href="${item.url}" class="item-image"><img src="${window.__static_prefix__}img/blank.png" width="60" height="60" alt="${item.sku_name}" /></a>`
                 }
                 <div class="item-info">
                     <a href="${item.url}" class="item-title d-block">${item.sku_name}</a>
@@ -715,12 +774,12 @@ const BaseView = $.Class.create({
                         <div>
                             <span class="item-price">${price}</span>
                         </div>
-				        <div class="quantity ml-3">
-                            <input type="tel" value="${item.quantity}" name="quantity" class="input" />
+				        <div class="quantity ml-4">
+                            <input type="tel" value="${item.quantity}" name="quantity" class="input" data-quantity="${item.quantity}" />
                         </div>
                     </div>
                 </div>
-                <a class="remove-item"><i class="icon-close-radius"></i></a>
+                <a class="remove-item"><i class="icon-trash"></i></a>
             </li>`);
         });
 

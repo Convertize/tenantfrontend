@@ -3,9 +3,6 @@
     {% if object.bannerdhtml.title %}
         <div class="title-showcase">
             <h2>{{ object.bannerdhtml.title }} </h2>
-            {% if object.bannerdhtml.sub_title %}
-                <h3>{{ object.bannerdhtml.sub_title }}</h3>
-            {% endif %}
         </div>
     {% endif %}
     <div class="carousel carousel-default owl-theme owl-carousel banner" data-owl-carousel='{"items":1, "nav":{{ object.bannerdhtml.navigation|lower }}, "dots":{{ object.bannerdhtml.pagination|lower }}, "autoplay":{{ object.bannerdhtml.autoplay|lower }}, "loop":{{ object.bannerdhtml.loop|lower }}{% if object.bannerdhtml.attr %}, {{ object.bannerdhtml.attr|safe }}{% endif %}}'>

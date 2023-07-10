@@ -1,7 +1,72 @@
-{% load i18n %}            
+{% load i18n %}
 <div class="f-f-2">
     <div class="container">
         <div class="row">
+            <div class="col-12 col-lg-6">
+                <h3>
+                    {% if is_mobile %}
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePayment" aria-expanded="true" aria-controls="collapsePayment">
+                    {% endif %}
+                        Formas de pagamento
+                    {% if is_mobile %}
+                    </button>
+                    {% endif %}
+                </h3>
+                {% if is_mobile %}
+                <div id="collapsePayment" class="collapse " aria-labelledby="headingPayment" data-parent="#accordionFooter">
+                {% endif %}
+                    <ul class="d-flex align-items-center flex-wrap">
+                        {% for f in payment_flags %}
+                            <li class="mr-1 mb-1">
+                                <span class="flag flag-{{ f }}"></span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% if is_mobile %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-lg-6">
+                <h3>
+                    {% if is_mobile %}
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSecurity" aria-expanded="true" aria-controls="collapseSecurity">
+                    {% endif %}
+                        Segurança
+                    {% if is_mobile %}
+                    </button>
+                    {% endif %}
+                </h3>
+                {% if is_mobile %}
+                <div id="collapseSecurity" class="collapse " aria-labelledby="headingSecurity" data-parent="#accordionFooter">
+                {% endif %}
+                    <ul class="d-flex align-items-center mb-md-0">
+                        <li class="mr-3">
+                            <a href="http://www.google.com/safebrowsing/diagnostic?site={{ request.get_host }}" target="_blank" rel="noopener" onclick="redir(this.href);">
+                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png?v=3" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google">
+                            </a>
+                        </li>
+                        <li class="mr-3">
+                            <a href="https://safeweb.norton.com/report/show?url={{ request.get_host }}&amp;ulang=por_bra" target="_blank" rel="noopener" onclick="redir(this.href);">
+                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web">
+                            </a>
+                        </li>
+                        <li>
+                            <div>
+                                <div id="convertize-pci-seal"></div>
+                                <script type="text/javascript" src="https://secure.convertize.com.br/static/js/seal.js" data-schema-name="{{ request.tenant.schema_name }}" content="convertize-pci-seal" data-size="50x60"></script>
+                            </div>
+                        </li>
+                    </ul>
+                {% if is_mobile %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="f-f-3 openit">
+    <div class="container">
+        <div class="row align-items-center">
             <div class="col-12 col-lg-8">
                 <div class="footer-info">
                     <p>© {{ shop_settings.SHOP_NOME_FANTASIA}} {% now "Y" %} - Todos direitos reservados | CNPJ: {{ shop_settings.SHOP_CNPJ }}</p>
@@ -10,7 +75,7 @@
                 </div>
             </div>
             <div class="col-12 col-lg-4">
-                <div class="text-center text-lg-right">
+                <div class="text-center text-lg-right mt-4 mt-lg-0">
                     <a href="https://www.convertize.com.br/" target="_blank" rel="noopener">
                         <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/convertize.svg" class="img-lazy" title="Convertize" alt="Convertize" width="116" height="29">
                     </a>

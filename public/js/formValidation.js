@@ -44,8 +44,8 @@
             messages: data_messages,
             errorElement: "p",
             errorPlacement: function(error, element){
-                element.closest(".variations").addClass("error");
-                const ul = $(`<div class="errorlist" />`).html(error.addClass("text-danger mt-2"));
+                element.closest(".variations, .form-group").addClass("error");
+                const ul = $(`<div class="errorlist" />`).html(error.addClass("mt-2 font-size-12 text-danger"));
                 if(!error.html()) return;
                 element.closest(".form-group").append(ul);
             },
@@ -68,7 +68,8 @@
                     url: settings.url,
                     method: settings.method.toLowerCase(),
                     headers: {
-                        "Content-Type": settings.contentType
+                        "Content-Type": settings.contentType,
+                        "X-Requested-With": "XMLHttpRequest"
                     }
                 };
 

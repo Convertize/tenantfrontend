@@ -2,15 +2,15 @@
 <div>
     <form method="POST" action="{% url 'plugin_newsletters:add' %}" class="form-newsletters-validate" id="form-newsletters" data-form-data="true">
         {% if not success %}
-            <div class="field form-group required">
-                <label aria-label="Digite aqui seu nome">
-                    <input type="text" name="name" placeholder="Digite aqui seu melhor e-mail" value="{% if newsletterform.name.value %}{{ newsletterform.name.value }}{% endif %}" class="form-control{% if newsletterform.name.errors %} error{% endif %}" />
+            <div class="field form-group">
+                <label aria-label="Qual seu nome?">
+                    <input type="text" name="name" required placeholder="Qual seu nome?" value="{% if newsletterform.name.value %}{{ newsletterform.name.value }}{% endif %}" class="form-control{% if newsletterform.name.errors %} error{% endif %}" />
                 </label>
                 {{ newsletterform.name.errors }}
             </div>
-            <div class="field form-group required">
-                <label aria-label="Digite aqui seu melhor e-mail">
-                    <input type="email" name="email" placeholder="Digite aqui seu melhor e-mail" value="{% if newsletterform.email.value %}{{ newsletterform.email.value }}{% endif %}" class="form-control{% if newsletterform.email.errors %} error{% endif %}" />
+            <div class="field form-group">
+                <label aria-label="Digite aqui seu email">
+                    <input type="email" name="email" required placeholder="Digite aqui seu email" value="{% if newsletterform.email.value %}{{ newsletterform.email.value }}{% endif %}" class="form-control{% if newsletterform.email.errors %} error{% endif %}" />
                 </label>
                 {{ newsletterform.email.errors }}
             </div>

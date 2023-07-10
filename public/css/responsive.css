@@ -22,7 +22,6 @@
         min-height: 50px;
     }
     .header .logo a{
-        width: 110px;
         height: 30px;
     }
     .header .col-menu{ order: 0; }
@@ -61,20 +60,10 @@
 }
 
 @media(max-width: 767.98px){
-    .bt-header{
-        height: auto;
-        width: auto;
-        background: none;
-        padding: 0px 10px;
-    }
     .footer div[class*="f-f-"] ul li>a{
         display: block;
         padding: 5px 0px;
         font-size: 14px;
-    }
-    .bt-header .badge, .navbar-mobile .badge{
-        right: 2px;
-        top: -10px;
     }
     .horizontal-scroll{
         padding-bottom: 20px;
@@ -158,17 +147,15 @@
         right: auto;
         left: 0px;
     }
-    .footer div[class*="f-f-"]{
+    .footer div.f-f-1,
+    .footer div.f-f-2{
         padding: 0px;
     }
-    .footer div[class*="f-f-"] h3{
-        margin-bottom: 0px;
-    }
-    .footer div[class*="f-f-"] .accordion{
+    .footer .accordion div[class*="f-f-"]:not(.openit) h3{
         margin: 0px -15px;
         overflow: hidden;
     }
-    .footer div[class*="f-f-"] .accordion ul{
+    .footer .accordion div[class*="f-f-"] ul{
         margin: 0;
         padding: 0px 15px 15px 15px;
     }
@@ -178,6 +165,9 @@
     .form-newsletters-validate .field{ 
         padding: 0px;
         margin-bottom: 10px;
+    }
+    .form-newsletters-validate .btn{
+        width: 100%;
     }
     .pagination .number:not(.active) {
         display: none;

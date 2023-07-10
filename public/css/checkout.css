@@ -332,9 +332,9 @@ body{
 
 #checkout .nav-tabs.nav-tabs-horizontal > li a:before{ font-family: 'icon-convertize'; font-size: 30px; position: absolute; top: 4px; left: 10px; color: #9d9d9e; font-weight: normal}
 #checkout .nav-tabs.nav-tabs-horizontal > li.active a:before{ color: #227540;}
-#checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-cartaodecredito-"] a:before{ content: "\e924"; }
-#checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-cartaodedebito-"] a:before{ content: "\e924";}
-#checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-boleto-"] a:before{ content: "\e91b";}
+#checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-cartaodecredito-"] a:before{ content: "\e917"; }
+#checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-cartaodedebito-"] a:before{ content: "\e917";}
+#checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-boleto-"] a:before{ content: "\e914";}
 /* #checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-pix-"] a:before{ content: "\e916";} */
 #checkout .nav-tabs.nav-tabs-horizontal > li[class*="tab-deliverypay-"] a:before{ content: "\e910";}
 
@@ -378,6 +378,7 @@ form .group .group-input input, form .group .group-input textarea, .textarea, fo
 .clean-base .top-content .alert-warning small{ font-size: 12px; margin-left: 5px;}
 .clean-base .top-content .alert-warning small a{ text-decoration: underline;}
 
+#checkout .footer{ background: #fff;}
 #checkout .footer h3{ display: block; font-size: 14px; font-weight: bold; color: #151515; margin-bottom: 8px;}
 
 #checkout #shop-table .cart-thumb-description .set_gift_item{ color: #ffffff !important; background-color: #d92528; border-color: #d92528;}
@@ -899,19 +900,19 @@ body .icon-mercadolivre:before {
 }
 
 body .icon-lock:before {
-  content: "\e940"!important;
+  content: "\e90d"!important;
 }
 
 body .icon-user:before {
-  content: "\e93d"!important;
+  content: "\e901"!important;
 }
 
 body .icon-truck:before {
-  content: "\e914"!important;
+  content: "\e91b"!important;
 }
 
 body .icon-credit-card:before {
-  content: "\e90d"!important;
+  content: "\e924"!important;
 }
 
 body .icon-edit:before {
@@ -919,7 +920,7 @@ body .icon-edit:before {
 }
 
 body .icon-tags:before {
-  content: "\e941"!important;
+  content: "\e932"!important;
 }
 
 body .icon-timer:before {

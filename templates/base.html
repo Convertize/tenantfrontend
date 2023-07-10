@@ -31,17 +31,17 @@
                             {% endblock %}
                         </div>
                         <div class="col-3 col-lg-2 d-flex align-items-center col-menu">
-                            <span class="ml-3 d-lg-block d-none font-weight-bold font-size-14 bt-menu-navbar">
+                            <span class="ml-5 d-lg-block d-none font-weight-bold font-size-14 bt-menu-navbar">
                                 <span class="d-flex align-items-center justify-content-center">
-                                    <i class="icon-menu mr-2 font-size-22"></i>
-                                    CATEGORIAS
+                                    <i class="icon-menu mr-2 font-size-20"></i>
+                                    Categorias
                                 </span>
                             </span>
                             <a href="{% url 'home' %}" class="bt-open-page d-lg-none font-size-22" data-target="#floating-menu" aria-label="Categorias">
                                 <i class="icon-menu"></i>
                             </a>
                         </div>
-                        <div class="col-12 col-lg-5 col-search d-lg-block d-none">
+                        <div class="col-12 col-lg-5 col-search mt-3 mt-lg-0">
                             <div class="form-search desktop w-100">
                                 <form method="GET" action="{% url 'search:pote_search' slug='' %}">
                                     <button type="submit" class="btn-search" aria-label="Buscar">
@@ -62,8 +62,8 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="col-3 col-lg-3 d-flex align-items-center justify-content-around col-last">
-                            <div class="account mr-1 d-lg-block d-none">
+                        <div class="col-3 col-lg-3 d-flex align-items-center justify-content-end justify-content-lg-around col-last">
+                            <div class="account d-lg-block d-none">
                                 {% if request.session.customer %}
                                     <a href="{% url 'home' %}" class="d-flex align-items-center" data-toggle="dropdown">
                                         <span class="bt-header">
@@ -86,20 +86,15 @@
                                             <i class="icon-user"></i>
                                         </span>
                                         <span class="text-wrap d-lg-block d-none">
-                                            <span class="d-block font-weight-bold">Bem Vindo!</span>
+                                            <span class="d-block font-weight-bold">Bem vindo</span>
                                             <span class="d-block">Faça o login aqui</span>
                                         </span>
                                     </a>
                                 {% endif %}
                             </div>
-                            <div class="d-lg-none mr-1">
-                                <button class="bt-header bt-search bt-open-page" data-target="#floating-search" aria-label="Busca" data-prefetch>
-                                    <icon class="icon-search">
-                                </button>
-                            </div>
                             <div class="my-cart">
                                 <a href="{% url 'shop_cart' %}" class="bt-header{% if not is_mobile %} bt-open-page{% endif %}" data-target="#mini-cart">
-                                    <i class="icon-cart"></i>
+                                    <i class="icon-cart pr-2"></i>
                                     <span class="badge quantity">
                                         <span class="request__cart__total_quantity">{{ request.cart.total_quantity|default:0 }}</span>
                                     </span>
@@ -108,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="container p-0">
+                <div class="container p-0 d-none d-lg-block">
                     <div class="row">
                         <div class="col-12 col-lg-10 offset-lg-2">
                             <div id="menuDepartament">
@@ -126,289 +121,248 @@
             </div>
             {% block footer %}
                 <footer class="footer">
-                    {% comment %}
-                    {% include 'newsletters/form.html' %}
-                    {% endcomment %}
-                    <div class="f-f-1">
-                        <div class="container">
-                            <div{% if is_mobile %} class="accordion" id="accordionFooter"{% endif %}>
+                    <div class="container">
+                        <div class="newsletter">
+                            <div class="row align-items-start">
+                                <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+                                    <span class="h5 text-light">
+                                        <span class="d-block font-weight-bold">Cadastre-se</span>
+                                        <small class="d-block">e receba nossas melhores ofertas</small>
+                                    </span>
+                                </div>
+                                <div class="col-12 col-lg-8">
+                                    {% include 'newsletters/form.html' %}
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+                    <div{% if is_mobile %} class="accordion" id="accordionFooter"{% endif %}>
+                        <div class="f-f-1">
+                            <div class="container">
                                 <div class="row">
-                                    <div class="col-md-9 col-12">
-                                        <div class="row">
-                                            <div class="col-md-3 col-12">
-                                                <h3>
-                                                    {% if is_mobile %}
-                                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseAbout" aria-expanded="true" aria-controls="collapseAbout">
-                                                    {% endif %}
-                                                        Institucional
-                                                    {% if is_mobile %}
-                                                        </button>
-                                                    {% endif %}
-                                                </h3>
-                                                {% if is_mobile %}
-                                                <div id="collapseAbout" class="collapse " aria-labelledby="headingAbout" data-parent="#accordionFooter">
-                                                {% endif %}
-                                                    <ul>
-                                                        <li><a href="{% url 'cms_page' 'quem-somos' %}">{% trans "Quem Somos" %} </a></li>
-                                                        <li><a href="{% url 'cms_page' 'unidades' %}">{% trans "Unidades" %} </a></li>
-                                                        <li><a href="{% url 'cms_page' 'trabalhe-conosco' %}">{% trans "Trabalhe Conosco" %} </a></li>
-                                                        <li><a href="{% url 'cms_page' 'envie-sua-receita' %}">{% trans "Envie sua receita" %} </a></li>
-                                                    </ul>
-                                                {% if is_mobile %}
-                                                </div>
-                                                {% endif %}
-                                            </div>
-                                            <div class="col-md-4 col-12">
-                                                <h3>
-                                                    {% if is_mobile %}
-                                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseHelp">
-                                                    {% endif %}
-                                                        Ajuda
-                                                    {% if is_mobile %}
-                                                    </button>
-                                                    {% endif %}
-                                                </h3>
-                                                {% if is_mobile %}
-                                                <div id="collapseHelp" class="collapse " aria-labelledby="headingHelp" data-parent="#accordionFooter">
-                                                {% endif %}
-                                                    <ul>
-                                                        <li><a href="{% url 'cms_page' 'politica-do-site' %}">{% trans 'Política do Site' %} </a></li>
-                                                        <li><a href="{% url 'cms_page' 'politica-de-privacidade' %}">{% trans 'Política de Privacidade' %} </a></li>
-                                                        <li><a href="{% url 'cms_page' 'politica-de-entrega' %}"> {% trans 'Política de Entregas' %} </a></li>
-                                                        <li><a href="{% url 'cms_page' 'politica-de-trocas-e-devolucoes' %}">{% trans 'Política de Trocas e Devoluções' %} </a></li>
-                                                        <li><a href="{% url 'plugin_contacts:contact' %}">{% trans 'Fale Conosco' %} </a></li>
-                                                    </ul>
-                                                {% if is_mobile %}
-                                                </div>
-                                                {% endif %}
-                                            </div>
-                                            <div class="col-md-5 col-12">
-                                                <h3>
-                                                    {% if is_mobile %}
-                                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePayment" aria-expanded="true" aria-controls="collapsePayment">
-                                                    {% endif %}
-                                                        Formas de pagamento
-                                                {% if is_mobile %}
-                                                        </button>
-                                                    {% endif %}
-                                                </h3>
-                                                {% if is_mobile %}
-                                                <div id="collapsePayment" class="collapse " aria-labelledby="headingPayment" data-parent="#accordionFooter">
-                                                {% endif %}
-                                                    <ul class="d-flex align-items-center flex-wrap">
-                                                        {% for f in payment_flags %}
-                                                            <li class="mr-1 mb-1">
-                                                                <span class="flag flag-{{ f }}"></span>
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                {% if is_mobile %}
-                                                </div>
-                                                {% endif %}
-                                                <h3>
-                                                    {% if is_mobile %}
-                                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSecurity" aria-expanded="true" aria-controls="collapseSecurity">
-                                                    {% endif %}
-                                                        Segurança
-                                                    {% if is_mobile %}
-                                                    </button>
-                                                    {% endif %}
-                                                </h3>
-                                                {% if is_mobile %}
-                                                <div id="collapseSecurity" class="collapse " aria-labelledby="headingSecurity" data-parent="#accordionFooter">
-                                                {% endif %}
-                                                    <ul class="d-flex align-items-center mb-md-0">
-                                                        <li class="mr-3">
-                                                            <a href="http://www.google.com/safebrowsing/diagnostic?site={{ request.get_host }}" target="_blank" rel="noopener" onclick="redir(this.href);">
-                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_google.png?v=3" class="img-lazy" width="96" height="36" alt="Navegação Segura - Google">
-                                                            </a>
-                                                        </li>
-                                                        <li class="mr-3">
-                                                            <a href="https://safeweb.norton.com/report/show?url={{ request.get_host }}&amp;ulang=por_bra" target="_blank" rel="noopener" onclick="redir(this.href);">
-                                                                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ STATIC_URL }}img/safe_norton.png" class="img-lazy" width="90" height="36" alt="Norton - Safe Web">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <div>
-                                                                <div id="convertize-pci-seal"></div>
-                                                                <script type="text/javascript" src="https://secure.convertize.com.br/static/js/seal.js" schama_name="{{ request.tenant.schema_name }}" content="convertize-pci-seal" size="50x60"></script>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                {% if is_mobile %}
-                                                </div>
-                                                {% endif %}
-                                            </div>
+                                    <div class="col-12 col-lg-3">
+                                        <h3>
+                                            {% if is_mobile %}
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseAbout" aria-expanded="true" aria-controls="collapseAbout">
+                                            {% endif %}
+                                                Institucional
+                                            {% if is_mobile %}
+                                            </button>
+                                            {% endif %}
+                                        </h3>
+                                        {% if is_mobile %}
+                                        <div id="collapseAbout" class="collapse " aria-labelledby="headingAbout" data-parent="#accordionFooter">
+                                        {% endif %}
+                                            <ul>
+                                                <li><a href="{% url 'cms_page' 'quem-somos' %}">{% trans "Quem Somos" %} </a></li>
+                                                <li><a href="{% url 'cms_page' 'nossas-lojas' %}">{% trans "Nossas Lojas" %} </a></li>
+                                                <li><a href="{% url 'cms_page' 'trabalhe-conosco' %}">{% trans "Trabalhe Conosco" %} </a></li>
+                                            </ul>
+                                        {% if is_mobile %}
                                         </div>
+                                        {% endif %}
                                     </div>
-                                    <div class="col-md-3 col-12">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <h3>
-                                                    {% if is_mobile %}
-                                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseContact" aria-expanded="true" aria-controls="collapseContact">
-                                                    {% endif %}
-                                                        Atendimento
-                                                    {% if is_mobile %}
-                                                    </button>
-                                                    {% endif %}
-                                                </h3>
-                                                {% if is_mobile %}
-                                                <div id="collapseContact" class="collapse " aria-labelledby="headingContact" data-parent="#accordionFooter">
-                                                {% endif %}
-                                                    <ul class="d-lg-flex align-items-center icons-circle">
-                                                        <li class="mr-3">
-                                                            <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ shop_settings.SHOP_ADDRESS_PHONE|mask_text }}" target="_blank" rel="noopener" class="d-flex align-items-center justify-content-center bg-white rounded-circle">
-                                                                <i class="icon-phone h4 m-0 text-success"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="mr-3">
-                                                            <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_CONTACTS_WHATSAPP|mask_text }}" target="_blank" rel="noopener" class="d-flex align-items-center justify-content-center bg-white rounded-circle">
-                                                                <i class="icon-whatsapp h4 m-0 text-success"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="mr-3">
-                                                            <a href="{% url 'plugin_contacts:contact' %}" class="d-flex align-items-center justify-content-center bg-white rounded-circle">
-                                                                <i class="icon-envelope h4 m-0 text-success"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                {% if is_mobile %}
-                                                </div>
-                                                {% endif %}
-                                                <h3>
-                                                    {% if is_mobile %}
-                                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSocial" aria-expanded="true" aria-controls="collapseSocial">
-                                                    {% endif %}
-                                                        Redes Sociais
-                                                    {% if is_mobile %}
-                                                    </button>
-                                                    {% endif %}
-                                                </h3>
-                                                {% if is_mobile %}
-                                                <div id="collapseSocial" class="collapse " aria-labelledby="headingSocial" data-parent="#accordionFooter">
-                                                {% endif %}
-                                                    <ul class="d-flex align-items-center mb-md-0">
-                                                        {% if settings_pote.FACEBOOK %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.FACEBOOK }}" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook">
-                                                                <span class="footer-networks fb">
-                                                                    <i class="icon-facebook"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.TWITTER %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.TWITTER }}" rel="noopener" target="_blank" rel="nofollow" title="Twitter" aria-label="Twitter">
-                                                                <span class="footer-networks tt">
-                                                                    <i class="icon-twitter"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.GOOGLE_PLUS %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.GOOGLE_PLUS }}" rel="noopener" target="_blank" rel="nofollow" title="Google +">
-                                                                <span class="footer-networks gplus">
-                                                                    <i class="icon-google"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.GOOGLE_YOUTUBE %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.GOOGLE_YOUTUBE }}" rel="noopener" target="_blank" rel="nofollow" title="YouTube" aria-label="YouTube">
-                                                                <span class="footer-networks youtube">
-                                                                    <i class="icon-youtube"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.INSTAGRAM %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.INSTAGRAM }}" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
-                                                                <span class="footer-networks instagram">
-                                                                    <i class="icon-instagram"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.PINTEREST %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.PINTEREST }}" target="_blank" rel="noopener" title="Pinterest" aria-label="Pinterest">
-                                                                <span class="footer-networks pinterest">
-                                                                    <i class="icon-pinterest"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.LINKEDIN %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.LINKEDIN }}" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
-                                                                <span class="footer-networks linkedin">
-                                                                    <i class="icon-linkedin"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.SHOP_SOCIAL_NETWORKING_TIKTOK %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_TIKTOK }}" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
-                                                                <span class="footer-networks tiktok">
-                                                                    <i class="icon-tiktok"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.SHOP_SOCIAL_NETWORKING_SNAPCHAT %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_SNAPCHAT }}" target="_blank" rel="noopener" title="Snapchat" aria-label="Snapchat">
-                                                                <span class="footer-networks snapchat">
-                                                                    <i class="icon-snapchat"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.SHOP_SOCIAL_NETWORKING_BLOG %}
-                                                        <li class="mr-3">
-                                                            <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_BLOG }}" target="_blank" rel="noopener" title="Blog" aria-label="Blog">
-                                                                <span class="footer-networks blog">
-                                                                    <i class="icon-blog"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.SHOP_CONTACTS_TELEGRAM %}
-                                                        <li class="mr-3">
-                                                            <a href="https://t.me{{ settings_pote.SHOP_CONTACTS_TELEGRAM }}" target="_blank" rel="noopener" title="Telegram" aria-label="Telegram">
-                                                                <span class="footer-networks telegram">
-                                                                    <i class="icon-telegram"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                        {% if settings_pote.SHOP_CONTACTS_WHATSAPP %}
-                                                        <li class="mr-3">
-                                                            <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_CONTACTS_WHATSAPP|mask_text }}" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp">
-                                                                <span class="footer-networks whatsapp">
-                                                                    <i class="icon-whatsapp"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        {% endif %}
-                                                    </ul>
-                                                {% if is_mobile %}
-                                                </div>
-                                                {% endif %}
-                                            </div>
+                                    <div class="col-12 col-lg-3">
+                                        <h3>
+                                            {% if is_mobile %}
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="true" aria-controls="collapseHelp">
+                                            {% endif %}
+                                                Ajuda
+                                            {% if is_mobile %}
+                                            </button>
+                                            {% endif %}
+                                        </h3>
+                                        {% if is_mobile %}
+                                        <div id="collapseHelp" class="collapse " aria-labelledby="headingHelp" data-parent="#accordionFooter">
+                                        {% endif %}
+                                            <ul>
+                                                <li><a href="{% url 'cms_page' 'politica-de-privacidade' %}">{% trans 'Política de Privacidade' %} </a></li>
+                                                <li><a href="{% url 'cms_page' 'politica-de-entrega' %}"> {% trans 'Política de Entregas' %} </a></li>
+                                                <li><a href="{% url 'cms_page' 'politica-de-trocas-e-devolucoes' %}">{% trans 'Política de Trocas e Devoluções' %} </a></li>
+                                                <li><a href="{% url 'plugin_contacts:contact' %}">{% trans 'Fale Conosco' %} </a></li>
+                                            </ul>
+                                        {% if is_mobile %}
                                         </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12 col-lg-3">
+                                        <h3>
+                                            {% if is_mobile %}
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSocial" aria-expanded="true" aria-controls="collapseSocial">
+                                            {% endif %}
+                                                Redes Sociais
+                                            {% if is_mobile %}
+                                            </button>
+                                            {% endif %}
+                                        </h3>
+                                        {% if is_mobile %}
+                                        <div id="collapseSocial" class="collapse " aria-labelledby="headingSocial" data-parent="#accordionFooter">
+                                        {% endif %}
+                                            <ul class="d-flex align-items-center mb-md-0">
+                                                {% if settings_pote.FACEBOOK %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.FACEBOOK }}" target="_blank" title="Facebook" aria-label="Facebook">
+                                                        <span class="footer-networks fb">
+                                                            <i class="icon-facebook"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.TWITTER %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.TWITTER }}" target="_blank" rel="nofollow" title="Twitter" aria-label="Twitter">
+                                                        <span class="footer-networks tt">
+                                                            <i class="icon-twitter"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.GOOGLE_PLUS %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.GOOGLE_PLUS }}" target="_blank" rel="nofollow" title="Google +">
+                                                        <span class="footer-networks gplus">
+                                                            <i class="icon-google"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.GOOGLE_YOUTUBE %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.GOOGLE_YOUTUBE }}" target="_blank" rel="nofollow" title="YouTube" aria-label="YouTube">
+                                                        <span class="footer-networks youtube">
+                                                            <i class="icon-youtube"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.INSTAGRAM %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.INSTAGRAM }}" target="_blank" title="Instagram" aria-label="Instagram">
+                                                        <span class="footer-networks instagram">
+                                                            <i class="icon-instagram"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.PINTEREST %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.PINTEREST }}" target="_blank" title="Pinterest" aria-label="Pinterest">
+                                                        <span class="footer-networks pinterest">
+                                                            <i class="icon-pinterest"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.LINKEDIN %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.LINKEDIN }}" target="_blank" title="LinkedIn" aria-label="LinkedIn">
+                                                        <span class="footer-networks linkedin">
+                                                            <i class="icon-linkedin"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.SHOP_SOCIAL_NETWORKING_TIKTOK %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_TIKTOK }}" target="_blank" title="TikTok" aria-label="TikTok">
+                                                        <span class="footer-networks tiktok">
+                                                            <i class="icon-tiktok"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.SHOP_SOCIAL_NETWORKING_SNAPCHAT %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_SNAPCHAT }}" target="_blank" title="Snapchat" aria-label="Snapchat">
+                                                        <span class="footer-networks snapchat">
+                                                            <i class="icon-snapchat"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.SHOP_SOCIAL_NETWORKING_BLOG %}
+                                                <li class="mr-3">
+                                                    <a href="{{ settings_pote.SHOP_SOCIAL_NETWORKING_BLOG }}" target="_blank" title="Blog" aria-label="Blog">
+                                                        <span class="footer-networks blog">
+                                                            <i class="icon-blog"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.SHOP_CONTACTS_TELEGRAM %}
+                                                <li class="mr-3">
+                                                    <a href="https://t.me{{ settings_pote.SHOP_CONTACTS_TELEGRAM }}" target="_blank" title="Telegram" aria-label="Telegram">
+                                                        <span class="footer-networks telegram">
+                                                            <i class="icon-telegram"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                {% if settings_pote.SHOP_CONTACTS_WHATSAPP %}
+                                                <li class="mr-3">
+                                                    <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_CONTACTS_WHATSAPP|mask_text }}" target="_blank" title="WhatsApp" aria-label="WhatsApp">
+                                                        <span class="footer-networks whatsapp">
+                                                            <i class="icon-whatsapp"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                            </ul>
+                                        {% if is_mobile %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12 col-lg-3">
+                                        <h3>
+                                            {% if is_mobile %}
+                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseContact" aria-expanded="true" aria-controls="collapseContact">
+                                            {% endif %}
+                                                Atendimento
+                                            {% if is_mobile %}
+                                            </button>
+                                            {% endif %}
+                                        </h3>
+                                        {% if is_mobile %}
+                                        <div id="collapseContact" class="collapse " aria-labelledby="headingContact" data-parent="#accordionFooter">
+                                        {% endif %}
+                                            <ul>
+                                                <li class="mb-2">
+                                                    <a href="tel:+55{{ shop_settings.SHOP_ADDRESS_PHONE|mask_text }}" target="_blank" class="d-flex align-items-center">
+                                                        <i class="icon-phone h4 mb-0 mr-2"></i>
+                                                        <span>
+                                                            <span class="d-block font-weight-bold">Telefone</span>
+                                                            <span class="d-block text-muted">{{ shop_settings.SHOP_ADDRESS_PHONE }}</span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <a href="https://api.whatsapp.com/send?l=pt_br&phone=55{{ settings_pote.SHOP_CONTACTS_WHATSAPP|mask_text }}" target="_blank" class="d-flex align-items-center">
+                                                        <i class="icon-whatsapp h4 mb-0 mr-2"></i>
+                                                        <span>
+                                                            <span class="d-block font-weight-bold">WhatsApp</span>
+                                                            <span class="d-block text-muted">{{ shop_settings.SHOP_CONTACTS_WHATSAPP }}</span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <a href="{% url 'plugin_contacts:contact' %}" class="d-flex align-items-center">
+                                                        <i class="icon-contact h4 mb-0 mr-2"></i>
+                                                        <span>
+                                                            <span class="d-block font-weight-bold">Central de Atendimento</span>
+                                                            <span class="d-block text-muted">entre em contato conosco</span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        {% if is_mobile %}
+                                        </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {% include "includes/footer.html" %}
                     </div>
-                    {% include "includes/footer.html" %}
                 </footer>
             {% endblock %}
         </div>

@@ -1,4 +1,4 @@
-{% extends 'shop/checkout/direct/checkout.html' %}{% load i18n l10n shop_tags thumbnail cms_tags %}
+{% extends 'shop/checkout/direct/success.html' %}{% load i18n l10n shop_tags thumbnail cms_tags %}
 {% block meta_title %}{% trans 'Compra feita com Sucesso' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
@@ -220,6 +220,7 @@
 {% endblock %}
 
 {% block extra_footer %}
+    {{ block.super }}
     {% localize off %}
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>       
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.countdown.min.js"></script>

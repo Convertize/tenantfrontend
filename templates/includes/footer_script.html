@@ -5,6 +5,7 @@
         <script src="{{ STATIC_URL }}js/libs/popper.min.js"></script>
         <script src="{{ STATIC_URL }}js/libs/bootstrap.min.js"></script>
         <script src="{{ STATIC_URL }}js/libs/axios.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/customEvents.js' %}"></script>
     {% endcompress %}
     {% compress js %}
         <script src="{{ STATIC_URL }}js/libs/owl.carousel.min.js"></script>
@@ -27,4 +28,5 @@
         <script src="{{ STATIC_URL }}js/class/Nav.js" async></script>
     {% endcompress %}
     {% include 'includes/gtm.html' %}
+    {% include 'includes/ga4.html' %}
     {% if shop_settings.EXTRA_FOOTER %}{% render shop_settings.EXTRA_FOOTER|safe %}{% endif %}
