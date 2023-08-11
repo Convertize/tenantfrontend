@@ -72,24 +72,39 @@
                         <div style="display:none;">
                             <input type="hidden" value="{{ p.product_id }}" name="product"/>
                             <input type="hidden" value="{{ p.price }}" name="price"/>
+                            <input type="hidden" value="{{ p.get_absolute_url|split:'/'|slice:'1:2'|first }}" name="slug">
                         </div>
                         {% regroup p.get_all_options|load_json by option_title as options %}
                         {% if options %}
                             <div class="variations">
                                 {% for option in options %}
                                     <div class="required form-group"{% if option.list|length <= 1 %} style="display:none"{% endif %}>
-                                        <select name="option_{{ option.list.0.option_id }}" class="form-control">
-                                            <option value="">{{ option.grouper|title }}</option>
-                                            {% for value in option.list %}
-                                                <option 
-                                                    value="{{ value.option__value_id }}" 
-                                                    {% if not value.available %}disabled {% endif %}
-                                                    {% for o in p.get_options|load_json %}{% if o.value_id == value.option__value_id %}selected{% endif %}{% endfor %}
-                                                >
-                                                    {{ value.option__value }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
+                                        {% if product.grid.display == "select" %}
+                                            <select name="option_{{ option.list.0.option_id }}" class="form-control">
+                                                <option value="">{{ option.grouper|title }}</option>
+                                                {% for value in option.list %}
+                                                    <option 
+                                                        value="{{ value.option__value_id }}" 
+                                                        {% if not value.available %}disabled {% endif %}
+                                                        {% for o in p.get_options|load_json %}{% if o.value_id == value.option__value_id %}selected{% endif %}{% endfor %}
+                                                    >
+                                                        {{ value.option__value }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        {% else %}
+                                            <label class="font-weight-bold font-size-14">
+                                                {{ option.grouper|title }}
+                                            </label>
+                                            <div>
+                                                {% for value in option.list %}
+                                                    <label class="value{% if not value.available %} disabled{% endif %}">
+                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
+                                                        <span>{{ value.option__value }}</span>
+                                                    </label>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 {% endfor %}
                             </div>

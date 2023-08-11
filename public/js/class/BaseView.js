@@ -340,9 +340,9 @@ const BaseView = $.Class.create({
                     $boxProduct.find(".get_card_price").html(parseFloat(sku.get_card_price).toCurrency());
                     if(sku.sale_price){
                         $boxProduct.find(".unit-price").removeClass("d-none").show().find("span").html(parseFloat(sku.unit_price).toCurrency());
-                        $boxProduct.find(".sale-price").find("span").html(parseFloat(sku.sale_price).toCurrency());
+                        $boxProduct.find(".sale-price").find("strong").html(parseFloat(sku.sale_price).toCurrency());
                         const discount =+ (Math.round(((parseFloat(sku.sale_price) * 100) / parseFloat(sku.unit_price) - 100)*-1 + "e+2") + "e-2");
-                        $boxProduct.find(".discount").removeClass("d-none").addClass("d-inline-block").html(`${parseInt(discount)}% OFF`);
+                        $boxProduct.find(".discount").removeClass("d-none").addClass("d-inline-block").html(`${parseInt(discount)}%`);
                     }else{
                         $boxProduct.find(".unit-price").addClass("d-none").hide().find("span").html("");
                         $boxProduct.find(".discount").removeClass("d-inline-block").addClass("d-none").find("span").html
