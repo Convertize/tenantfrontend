@@ -51,7 +51,7 @@
                                     <div class="autocomplete">
                                         <button type="button" class="close" aria-label="Fechar" style="display: none;"><i class="icon-close"></i></button>
                                         <div class="p-3">
-                                            <div class="results" style="display: none;">
+                                            <div class="results list-products" style="display: none;">
                                             </div>
                                             <div class="not-results">
                                                 <p class="h6">Mais buscados</p>
@@ -94,7 +94,7 @@
                             </div>
                             <div class="my-cart">
                                 <a href="{% url 'shop_cart' %}" class="bt-header{% if not is_mobile %} bt-open-page{% endif %}" data-target="#mini-cart">
-                                    <i class="icon-cart pr-2"></i>
+                                    <i class="icon-cart pr-2" data-toggle="popover" data-placement="bottom" data-content="✓ Produto adicionado"></i>
                                     <span class="badge quantity">
                                         <span class="request__cart__total_quantity">{{ request.cart.total_quantity|default:0 }}</span>
                                     </span>

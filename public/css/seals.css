@@ -10,5 +10,18 @@
     margin: 0px 2px 2px 0px;
 }
 
+.list-products .item-product .seals .desconto-progressivo,
+.box-seal-desconto-progressivo{
+    display: block;
+    background-color: #dc3545;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 5px;
+}
+.list-products .item-product .seals .desconto-progressivo > span,
+.box-seal-desconto-progressivo p > span{
+    color: #ffeb3b;
+}
+
 .list-products .item-product .seals .compre-ganhe, 
 #content-product .seals .compre-ganhe{ display: block; padding: 2px 8px; background: #d4247c; font-size: 12px; line-height: 12px; font-weight: bold; color: #fff; text-align: center; border-radius: 3px;}

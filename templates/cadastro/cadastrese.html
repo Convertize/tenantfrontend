@@ -1,0 +1,257 @@
+{% load compress %}
+<link href="{{ STATIC_URL }}js/libs/cadastro/toastr.min.css" rel="stylesheet" type="text/css" />
+<style>
+    .form-control{
+        height: 44px;
+    }
+    .form-group.error label{
+        color: #ff002b;
+    }
+    .form-control.error{
+        border-color: #ff002b;
+    }
+    .form-group.error .errorlist{
+        font-size: 11px;
+        margin-top: 3px;
+        color: #ff002b;
+    }
+    label{
+        font-size: 13px;
+        font-weight: bold;
+    }
+	.cz-preloading-success{
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: rgb(0 0 0 / 10%);
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(1px);
+        z-index: 1;
+	}
+	input[type=checkbox]:focus,
+    input[type=radio]:focus{
+        outline: none;
+		box-shadow: none;
+    }
+</style>
+<div class="top-content pt-5 pb-5">
+	<div class="container">
+		<h1>Cadastre-se</h1>
+		<h2 class="sub-title">Informe seus dados cadastrais</h2>
+	</div>
+</div>
+<div class="container py-5">
+    <div class="cz-preloading-success">
+        <img src="https://drogal.my.convertize.com.br/s/drogal/img/preloading.gif">
+    </div>
+    <form class="cadastrese" id="form-cadastrese" novalidate="novalidate" name="cadastrese" method="POST">
+        <div class="row">
+            <div class="col-12 col-lg-6 profile">
+                <div class="mb-3 pb-3 border-bottom">
+                    <span class="d-flex align-items-center">
+                        <i class="icon-user h4 mr-2"></i>
+                        <h2 class="h4 text-dark font-weight-bold">Dados Pessoais</h2>
+                    </span>
+                    <span class="text-muted">Solicitamos apenas as informações essenciais para a realização da compra</span>
+                </div>
+                <div class="box-step-checkout active">
+                    <div class="form-group" aria-required="true">
+                        <label for="id_email" aria-required="true">*E-mail </label>
+                        <input type="email" class="form-control required" id="id_email" maxlength="255" name="email" data-validator='{"required":true,"email":true}' />
+                    </div>
+                    <div class="form-group">
+                        <label for="id_name" aria-required="true">*Nome Completo</label>
+                        <input class="form-control required" type="text" name="name" id="id_name" maxlength="255" autocomplete="off" data-validator='{"required":true,"valid_name":true}' />
+                    </div>
+                    <div class="form-row">
+                        <div class="col-6">
+                            <div id="cpf-cnpj-field" class="form-group">
+                                <label for="id_document" aria-required="true">*CPF</label>
+                                <input class="form-control required" type="tel" id="id_document" maxlength="14" name="document" autocomplete="off" data-validator='{"required":true,"cpf":true}' />  
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="id_phone" aria-required="true">*Telefone</label>
+                                <input class="form-control required" type="tel" id="id_phone" name="phone" maxlength="15" autocomplete="off" data-validator='{"required":true, "phoneBR":true}' />
+                            </div>
+                        </div>
+                    </div>
+					<div class="handle-cnpj">
+						<a class="btn btn-sm btn-block btn-primary text-light btn-cnpj">Incluir dados de Pessoa Jurídica</a>
+						<span class="d-none"> Dados da pessoa jurídica</span>
+						<a class="discard btn btn-sm btn-secondary text-light ml-2 d-none">Descartar</a>
+					</div>
+                    <div class="cnpj mt-3 d-none">
+                        <div class="form-row" style="align-items: flex-end;">
+                            <div class="form-group col-md-5">
+                                <label for="id_corporate_document" aria-required="true">*CNPJ</label>
+                                <input class="form-control required" type="tel" id="id_corporate_document" maxlength="14" name="corporate_document" autocomplete="off" data-validator='{"required":true, "cnpj":true}' />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inscricao_estadual">Inscrição Estadual </label>
+                                <input type="text" name="inscricao_estadual" id="inscricao_estadual" maxlength="25" class="form-control ie">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="ie_isento" type="checkbox" name="inscricao_estadual_isento"  id="inscricao_estadual_isento">
+                                <label class="m-0 ml-2" for="inscricao_estadual_isento">I.E Isento?</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_corporate_name" aria-required="true">*Razão Social</label>
+                            <input class="form-control required" type="text" name="corporate_name" id="id_corporate_name" maxlength="255" autocomplete="off" data-validator='{"required":true}' />
+                        </div>
+                        <div class="form-group">
+                            <label for="id_fancy_name" aria-required="true">*Nome Fantasia</label>
+                            <input class="form-control required" type="text" name="fancy_name" id="id_fancy_name" maxlength="255" autocomplete="off" data-validator='{"required":true}' />
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+						<label for="newsletter" aria-required="true" class="mb-0">Desejo receber avisos de ofertas por e-mail</label>
+						<div id="newsletter">
+						    <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="newsletter_0" name="newsletter" value="0" class="custom-control-input required">
+                                <label class="custom-control-label" for="newsletter_0">Sim</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="newsletter_1" name="newsletter" value="1" class="custom-control-input required">
+                                <label class="custom-control-label" for="newsletter_1">Não</label>
+                            </div>
+						</div>
+						{% comment %}
+						<ul id="newsletter" class="d-flex">
+							<li class="d-flex align-items-center mr-3">
+                                <input type="radio" name="newsletter" value="0" id="newsletter_0" class="form-control required">
+								<label for="newsletter_0" class="font-weight-normal mb-0 ml-1">Sim</label>
+							</li>
+							<li class="d-flex align-items-center">
+                                <input type="radio" name="newsletter" value="1" checked="" id="newsletter_1" class="form-control required">
+								<label for="newsletter_1" class="font-weight-normal mb-0 ml-1">Não</label>
+							</li>
+						</ul>
+						{% endcomment %}
+					</div>
+					<div class="form-group d-flex align-items-start">
+					    <input type="checkbox" id="id_gdpr_agreement" name="gdpr_agreement" value="1" class="mt-1 mr-2 required" data-validator='{"required":true}'>
+                        <label for="id_gdpr_agreement" aria-required="true" class="font-weight-normal">
+                            Li os <a href="/politica-de-privacidade/s" class="text-underline font-weight-bold">Termos de Uso</a> e aceito o uso dos meus dados
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="mb-3 pb-3 border-bottom">
+                    <span class="d-flex align-items-center">
+                        <i class="icon-truck h3 mr-2"></i>
+                        <h2 class="h4 text-dark font-weight-bold">Entrega</h2>
+                    </span>
+                    <span class="text-muted">Preencha seus dados para envio e cobrança</span>
+                </div>
+                <div class="box-step-checkout box-step-shipping active">
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label for="id_zipcode" aria-required="true">*CEP</label>
+                            <a href="http://www.buscacep.correios.com.br/servicos/dnec/index.do" target="_blank" class="float-right mt-2 font-size-10 btn-link">Não sabe seu CEP?</a>
+                            <input class="valid cep_with_callback form-control required" type="tel" id="id_zipcode" name="zipcode" maxlength="9" minlength="9" autocomplete="off" aria-required="true" aria-describedby="id_zipcode-error" aria-invalid="false" data-validator='{"required":true}' />
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="id_address" aria-required="true">*Endereço</label>
+                            <input class="form-control required" type="text" id="id_address" maxlength="100" minlength="3" name="address" data-validator='{"required":true}' />  
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="id_number" aria-required="true">*Número</label>
+                            <input class="form-control required" type="text" id="id_number" maxlength="100" name="number" data-validator='{"required":true}' />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-7">
+                            <label for="id_complement">Complemento</label>
+                            <input class="form-control" type="text" id="id_complement" maxlength="100" name="complement" data-validator='{"required":false}' />
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="id_neighborhood" aria-required="true">*Bairro</label>
+                            <input class="form-control required" type="text" id="id_neighborhood" maxlength="100" minlength="3" name="neighborhood" data-validator='{"required":true}' />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="id_city" aria-required="true">*Cidade</label>
+                            <input class="form-control required" type="text" id="id_city" maxlength="100" name="city" readonly="readonly" data-validator='{"required":true}' />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="id_state" aria-required="true">*Estado</label>
+                            <select class="form-control required" id="id_state" name="state" disabled="disabled" data-validator='{"required":true}'>
+                                <option selected="selected">-----</option>
+                                <option value="AC">AC</option>
+                                <option value="AL">AL</option>
+                                <option value="AP">AP</option>
+                                <option value="AM">AM</option>
+                                <option value="BA">BA</option>
+                                <option value="CE">CE</option>
+                                <option value="DF">DF</option>
+                                <option value="ES">ES</option>
+                                <option value="GO">GO</option>
+                                <option value="MA">MA</option>
+                                <option value="MT">MT</option>
+                                <option value="MS">MS</option>
+                                <option value="MG">MG</option>
+                                <option value="PA">PA</option>
+                                <option value="PB">PB</option>
+                                <option value="PR">PR</option>
+                                <option value="PE">PE</option>
+                                <option value="PI">PI</option>
+                                <option value="RJ">RJ</option>
+                                <option value="RN">RN</option>
+                                <option value="RS">RS</option>
+                                <option value="RO">RO</option>
+                                <option value="RR">RR</option>
+                                <option value="SC">SC</option>
+                                <option value="SP">SP</option>
+                                <option value="SE">SE</option>
+                                <option value="TO">TO</option>
+                            </select>  
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_receiver" aria-required="true">Nome destinatário</label>
+                        <input class="form-control required" type="text" id="id_receiver" maxlength="100" minlength="3" name="receiver" data-validator='{"required":true}' />
+                    </div>
+                    <div class="form-group">
+                        <label for="id_reference">Referência para entrega</label>
+                        <input class="form-control" type="text" id="id_reference" maxlength="255" name="reference" />
+                    </div>
+                    <div class="float-right mt-3 box-address">
+                        <!-- btn-larger -->
+                        <input type="submit" id="go-to-cadastrese" name="add_contact" value="Cadastrar" class="btn btn-larger py-2 px-5 btn-success font-size-20" data-loading-text="" />
+                    </div>
+                    <input type="hidden" name="code_ibge" />
+                    <input type="hidden" name="city_id" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="text-center" id="registerSuccess" style="display:none">
+        <div class="content-register-success">
+            <h2 class="h4 text-dark font-weight-bold">Caro cliente,</h2>
+            <span class="font-size-14 text-muted">
+                Obrigado por se cadastrar em nossa loja.
+                <br />
+                <br />
+                Ficamos felizes em ter você por aqui!
+            </span>
+        </div>
+        <a href="https://{{ request.get_host }}" class="btn btn-outline-secondary mt-3">Voltar para loja</a>
+    </div>
+</div>
+{% compress js %}
+<script charset="UTF-8" src="{{ STATIC_URL }}js/libs/jquery.js"></script>
+<script charset="UTF-8" src="{{ STATIC_URL }}js/libs/jquery.validate.js"></script>
+<script charset="UTF-8" src="{{ STATIC_URL }}js/libs/cadastro/toastr.min.js"></script>
+<script charset="UTF-8" src="{{ STATIC_URL }}js/libs/cadastro/jquery-migrate-1.1.1.min.js"></script>
+<script charset="UTF-8" src="{{ STATIC_URL }}js/libs/cadastro/cadastro.js"></script>
+{% endcompress %}

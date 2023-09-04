@@ -45,7 +45,7 @@
             errorElement: "p",
             errorPlacement: function(error, element){
                 element.closest(".variations, .form-group").addClass("error");
-                const ul = $(`<div class="errorlist" />`).html(error.addClass("mt-2 font-size-12 text-danger"));
+                const ul = $(`<div class="errorlist" />`).html(error.addClass("text-danger mt-2"));
                 if(!error.html()) return;
                 element.closest(".form-group").append(ul);
             },
