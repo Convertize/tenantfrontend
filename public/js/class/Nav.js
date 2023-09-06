@@ -53,7 +53,7 @@ $(window).ready(function() {
 Number.prototype.toCurrency = function () {
     var match, centavos, reais, result;
 
-    match = (this).toFixed(2).match(/^-?(\d+)(\.\d+)?$/);
+    match = roundToTwo(this).toFixed(2).match(/^-?(\d+)(\.\d+)?$/);
     if (!match) return;
 
     centavos = match[2] ? (match[2] + "00").substr(1, 2) : "00";

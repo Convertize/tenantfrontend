@@ -1,0 +1,81 @@
+{% extends 'base.html' %}{% load l10n i18n thumbnail shop_tags %}
+{% block body_class %}product{% endblock %}
+
+{% block meta_title %}Avaliações | {{ block.super }}{% endblock %}
+{% block meta_robots %}{{ block.super }}<link rel="canonical" href="https://{{ request.get_host }}/avaliacoes/">{% endblock %}
+{% block meta_description %}Confira as avaliações reais dos nossos clientes que confiam nos produtos da NewNutrition{% endblock %}
+
+{% block content %}
+    <div class="top-content">
+        <div class="container">
+            <h1>{% trans 'Avaliações dos Produtos' %}</h1>
+            <span>{% trans 'Sua opinião com outros clientes' %}</span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="py-3 w-50 mx-auto">
+            <div class="form-group">
+                <form method="GET">
+                    <div class="input-group input-group-lg">
+                        <input type="text" name="q" placeholder="Busque pelo produto" class="form-control form-control-lg" />
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-link input-group-text"><i class="icon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% if request.GET.product %}
+                <div class="text-center">
+                    <a href="{% url 'product:ratings' %}" class="btn btn-outline-secondary my-3">ver todos os comentários</a>
+                </div>
+            {% endif %}
+        </div>
+        {% for rating in ratings.object_list %}
+            <div class="card border mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-2">
+                            <a href="{{ rating.product.get_absolute_url }}">
+                                <img src="{{ MEDIA_URL }}{{ rating.product.image }}" alt="{{ rating.product.name }}" title="{{ rating.product.name }}" class="img-full" />
+                            </a>
+                        </div>
+                        <div class="col-10 font-size-13">
+                            <div class="mb-2">
+                                <p class="font-size-16 font-weight-bold text-dark">{{ rating.name }}</p>
+                                <p>Avaliado em {{ rating.add_date|date:'d/M/Y' }}</p>
+                            </div>
+                            <div class="mb-2 text-muted">
+                                <div>
+                                    <span class="rating-star"><span class="star-{{ rating.vote }}">({{ rating.vote }} avaliaç{{ product.rating|default:0|pluralize:"ão,ões" }})</span></span>
+                                </div>
+                            </div>
+                            {% if rating.title %}
+                            <div class="mb-2">
+                                <span class="font-size-16 font-weight-bold text-dark">{{ rating.title }}</span>
+                            </div>
+                            {% endif %}
+                            {% if rating.recommends_product %}
+                                <div class="mb-2">
+                                    <p class="font-size-13 text-muted"><b>{% trans 'Eu recomendo este produto' %}{% if rating.opinion %}:{% endif %}</b> {{ rating.opinion|linebreaksbr }}</p>
+                                </div>
+                            {% endif %}
+                            {% if rating.recommends_site %}
+                                <p class="font-size-13 text-muted"><b>{% trans 'Eu recomendo este site' %}{% if rating.why_site %}:{% endif %}</b>{% if rating.why_site %} {{ rating.why_site }}{% endif %}</p>
+                            {% endif %}
+                            {% if not request.GET.product %}
+                                {% localize off %}
+                                <div class="d-flex justify-content-end mt-3">
+                                    <a href="?product={{ rating.product.id }}" class="btn btn-sm btn-outline-secondary">ver todas avaliações deste produto</a>
+                                </div>
+                                {% endlocalize %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="mt-4">
+            {% pagination_for ratings %}
+        </div>
+    </div>
+{% endblock %}

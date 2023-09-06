@@ -5,6 +5,7 @@ const BaseView = $.Class.create({
     storage: window.localStorage,
     init: function(){
         log("Init BaseView");
+        this.renderFront();
         this.cart();
         this.carousel();
         this.addProduct();
@@ -14,6 +15,48 @@ const BaseView = $.Class.create({
         this.horizontalScroll();
         this.cookieLGPD();
         this.maskForm();
+        this.seals();
+    },
+    seals: function(){
+        $(".item-product .seal-subscription").each(function(){
+            $(this).closest(".item-product .seals").find(".seal-subscription").hide();
+            $(this).closest(".item-product").find(".seals").append(`<span class="seal seal-assinatura bg-info text-light font-weight-bold py-1 px-2 rounded">Desconto na assinatura</span>`);
+        });
+        
+        $(".item-product .compre-x-pague-y").each(function(){
+            if($(this).closest(".item-product").find(".box-compre-pague").length || !$(this).closest(".item-product").find(".sale-price").length) return;
+            const salePrice = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text().trim());
+            const value = (salePrice / $(this).attr("qtd") * $(this).attr("buy")).toCurrency();
+            const $box = $(`<div class="box-compre-pague mt-2 p-1 text-center">Leve ${$(this).attr("qtd")} e pague <span>${value}</span> cada</div>`);
+            $(".list-products .item-product .seals .compre-x-pague-y").hide();
+            $(this).closest(".item-product").find(".prices").append($box);
+        });
+        
+        $(".item-product .compre-x-por-y").each(function(){
+            const $box = $(`<div class="box-compre-pague mt-2 p-1 text-center">Compre ${$(this).attr("qtd")} por <span>${$(this).attr("buy")}</span> cada</div>`);
+            $(".list-products .item-product .seals .compre-x-por-y").hide();
+            $(this).closest(".item-product").find(".prices").append($box);
+        });
+        
+        $(".item-product .percent-off").each(function(){
+//            if($(this).closest(".item-product").find(".box-percent-off").length || !$(this).closest(".item-product").find(".sale-price").length) return;
+//            const salePrice = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text().trim());
+//            const value = ((salePrice * $(this).attr("qtd") - salePrice * $(this).attr("percentage")) / $(this).attr("qtd")).toCurrency();
+//            const $box = $(`<div class="box-percent-off">Ganhe ${$(this).attr("value")}% off na ${$(this).attr("qtd")} uni.</p></div>`);
+            const $box = $(".list-products .item-product .seals .percent-off");
+            $(this).closest(".item-product").find(".prices").append('<div class="box-percent-off mt-2 p-1 text-center"></div>')
+            $(".box-percent-off").append($box);
+        });
+        
+        $(".item-product .seal-desconto-progressivo").each(function(){
+            if($(this).closest(".item-product").find(".box-desconto-progressivo").length || !$(this).closest(".item-product").find(".sale-price").length) return;
+            const price = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text());
+            const value = roundToTwo(price - (price * $(this).attr("percentage"))).toCurrency();
+            const quantity = $(this).attr("qtd");
+            const $box = $(`<div class="box-desconto-progressivo text-center mt-2 p-1"><p>Leve ${quantity} pague <span>${value}</span> cada</p></div>`);
+            $(this).closest(".item-product").find(".prices").append($box);
+            //$(this).closest(".list-products .item-product").find(".seals").append(`<span class="seal desconto-progressivo py-1 px-2">Leve mais<span> Por menos</span></span>`);
+        });  
     },
     cookieLGPD: function(){
         if(!Cookies.get("accept_cookie")){
@@ -69,6 +112,13 @@ const BaseView = $.Class.create({
             error: (form, error) => {
                 // log(error)
             }
+        });
+        
+        $("body").off("click.convertize2", ".bt_login, .btn-login");
+        $("body").on("click.convertize2", ".bt_login, .btn-login", function(e){
+            setTimeout(function(){
+                $("#boxLogin .initial-page .modal-body").append(`<div class="mt-4"><a href="/cadastro-cliente/s" class="btn btn-block btn-outline-dark py-3"><i class="icon-user h4 align-middle mr-2"></i> Realize seu cadastro</a></div>`);
+            }, 1);
         });
 
         $("body").off("click.convertize", ".bt-open-page");
@@ -186,29 +236,34 @@ const BaseView = $.Class.create({
     },
     formSearch: function(){
         const self = this;
-
+        
         // GA 4
         $(".form-search form").on("submit.convertize", function(){
             $(this).find("input[name=q]").val($(this).find("input[name=q]").val().toLowerCase());
             if(window.cvz) window.cvz.events.trigger("search", {term: $(this).find("input[name=q]").val().toLowerCase()});
         });
         // GA 4 - end
-
+        
         $("body").off("focus.convertize", ".form-search.desktop input");
         $("body").on("focus.convertize", ".form-search.desktop input", function(e){
             e.preventDefault();
-            $(this).parent().find(".autocomplete").addClass("active");
+            if($(".autocomplete .popular-words").html() || $(".autocomplete .last-search").html()){
+                $(this).addClass("focus");
+                $(this).parent().find(".autocomplete").addClass("active");
+            }
         });
 
         $("body").off("click.convertize", ".form-search .close");
         $("body").on("click.convertize", ".form-search .close", function(e){
             e.preventDefault();
+            $(this).closest(".form-search").find(".form-control").removeClass("focus");
             $(this).closest(".form-search").find(".autocomplete").removeClass("active");
         });
 
         $("body").off("keyup.convertize", ".form-search input");
         $("body").on("keyup.convertize", ".form-search input", function(e){
             e.preventDefault();
+            $(this).parent().find(".autocomplete").addClass("active");
             const $form = $(this).closest("#floating-search").length ? $(this).closest("#floating-search"):$(this).closest(".form-search");
             if($(this).val()){
                 $form.find(".not-results").hide();
@@ -220,33 +275,67 @@ const BaseView = $.Class.create({
         });
 
         if(typeof menuPopularWordsTemplate !== "undefined"){
-            $(".popular-words").html(menuPopularWordsTemplate);
+            if(menuPopularWordsTemplate){
+                $(".section-words").removeClass("d-none");
+                $(".popular-words").html(menuPopularWordsTemplate);
+            };
         };
 
         let search_status;
 
         $(".form-search input").autocomplete({
             source: async function(request){
+                $("#floating-search, .form-search .autocomplete").find(".results").html(`<small>Carregando...</small>`).addClass("loading");
                 const response = await axios.get(`${window.__url_path__}busca/suggest/?query_term=${request.term}`);
                 search_status = response.status;
                 if(response.status == 200 && response.data && response.data.result_list){
-                    const listItems = [];
+                    const listItems = [`<div><form></form></div>`];
+                    const categories = [];
                     response.data.result_list.map(function(item){
-                        log(item);
+                        if(item.type === "category"){
+                            const name = item.name.split("/").pop().replaceAll("---","/").replaceAll("-"," ");
+                            categories.push(`<p class="mb-1"><a href="${request.term}"><b>${request.term}</b> em <span class="text-capitalize">${name}</span></a></p>`);
+                        }
                         if(item.type === "sku"){
-                            listItems.push(`<a href="/${item.url}/p" class="d-flex align-items-center mb-2 mt-2">
-                                ${item.image ?
-                                    `<span class="item-image mr-2"><img src="${window.__media_prefix__}${item.image.replace("/small/", "/mini/")}" width="65" height="65" alt="" /></span>`
-                                :
-                                    `<span class="item-image mr-2"><img src="${window.__static_prefix__}img/blank.png" width="65" height="65" alt="" /></span>`
-                                }
-                                <span class="title">
-                                    ${item.name}
-                                </span>
-                            </a>`);
+                            listItems.push(`<div class="item-product" data-id=sku_${item.id}>
+                                <a href="/${item.url}/p" class="item-image">
+                                    <span class="item-image mr-2"><img src="${window.__media_prefix__}${item.image ? item.image.replace("/small/", "/mini/"):"img/blank.png"}" width="65" height="65" alt="" /></span>
+                                </a>
+                                <div class="desc position-relative w-100 align-items-center">
+                                    <div class="w-100">
+                                        <h2 class="title">
+                                            <a href="/${item.url}/p">
+                                                ${item.name}
+                                            </a>
+                                        </h2>
+                                        <div class="box-prices">
+                                            <div class="prices">
+                                                <div class="d-flex align-items-center">
+                                                    ${item.unit_price < item.price ? `<p class="unit-price mr-3"><span>${item.unit_price.toCurrency()}</span></p>`:""}
+                                                    <p class="sale-price"><strong>${item.price.toCurrency()}</strong></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form method="POST" action="/${item.url}/p" class="product-form w-auto">
+                                        <div style="display:none">
+                                            <input type="hidden" value="${item.product_id }" name="product" />
+                                            <input type="hidden" value="${item.price }" name="price" />
+                                        </div>
+                                        <div class="purchase">
+                                            <label aria-label="Quantidade" class="m-0 mr-2">
+                                                <input type="tel" value="1" name="quantity" />
+                                            </label>
+                                            <button type="button" class="btn btn-checkout mt-0" aria-label="Comprar">Comprar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>`);
                         }
                     })
-                    $("#floating-search, .form-search .autocomplete").find(".results").html(listItems.join(""))
+                    $("#floating-search, .form-search .autocomplete").find(".results").html((categories.length > 0 ? `<div class="categories"><h4 class="h6">Sugestões de pesquisa</h4>${categories.join("")}</div><hr class="w-100 mt-2 mb-3" />`:"") + listItems.join("")).removeClass("loading");
+                    self.functionsCart();
+                    self.renderFront();
                 }
             },
             minLength: 2,
@@ -264,7 +353,10 @@ const BaseView = $.Class.create({
         });
 
         $(document).on("click", function(e){
-            if(!$(e.target).closest(".form-search").length) $(".autocomplete.active").removeClass("active");
+            if(!$(e.target).closest(".form-search").length){
+                $(".autocomplete.active").removeClass("active");
+                $(".form-search .form-control.focus").removeClass("focus");
+            }
         });
 
         const words = JSON.parse(self.storage.getItem("cvz_last_search") || "[]");
@@ -294,7 +386,7 @@ const BaseView = $.Class.create({
                 const word = $(this).data("word");
                 const words = JSON.parse(self.storage.getItem("cvz_last_search") || "[]");
                 self.storage.setItem("cvz_last_search", JSON.stringify(words.filter((v) => v != word)))
-                $(this).closest("li").hide();
+                $(this).closest("li").remove();
             });
         }
     },
@@ -325,26 +417,22 @@ const BaseView = $.Class.create({
                 if(sku){
                     const price = parseFloat(sku.sale_price || sku.unit_price);
 
-                    const discountPix = $boxProduct.find(".pix-price").data("discount");
+                    const discountPix = $boxProduct.find(".sale-price").data("discount");
                     if(discountPix){
                         const pricePix = price - (price * (discountPix/100))
-                        $boxProduct.find(".pix-price strong").html(pricePix.toCurrency());
+                        $boxProduct.find(".sale-price strong").html(pricePix.toCurrency());
                     }else{
-                        $boxProduct.find(".pix-price strong").html(price.toCurrency());
+                        $boxProduct.find(".sale-price strong").html(price.toCurrency());
                     };
-                    $boxProduct.find(".name").html(sku.title);
-                    $boxProduct.find(".code").html(`Ref: ${(sku.reference_code)}`);
-                    $boxProduct.find(".boleto-price strong").html(sku.get_price_boleto.toCurrency());
-                    $boxProduct.find(".get_installments").data("price", price);
+                    $boxProduct.find(".spot-price strong").html(sku.get_price_boleto.toCurrency());
                     $boxProduct.find(".get_min_installments").html(`${parseInt(price / parseFloat(sku.get_card_price))}x`);
                     $boxProduct.find(".get_card_price").html(parseFloat(sku.get_card_price).toCurrency());
                     if(sku.sale_price){
-                        $boxProduct.find(".unit-price").removeClass("d-none").show().find("span").html(parseFloat(sku.unit_price).toCurrency());
-                        $boxProduct.find(".sale-price").find("strong").html(parseFloat(sku.sale_price).toCurrency());
+                        $boxProduct.find(".unit-price").removeClass("hide").show().find("span").html(parseFloat(sku.unit_price).toCurrency());
                         const discount =+ (Math.round(((parseFloat(sku.sale_price) * 100) / parseFloat(sku.unit_price) - 100)*-1 + "e+2") + "e-2");
                         $boxProduct.find(".discount").removeClass("d-none").addClass("d-inline-block").html(`${parseInt(discount)}%`);
                     }else{
-                        $boxProduct.find(".unit-price").addClass("d-none").hide().find("span").html("");
+                        $boxProduct.find(".unit-price").addClass("hide").hide().find("span").html("");
                         $boxProduct.find(".discount").removeClass("d-inline-block").addClass("d-none").find("span").html
                     }
 
@@ -356,6 +444,8 @@ const BaseView = $.Class.create({
                         $boxProduct.find(".hide-available").show();
                     }
 
+                    $boxProduct.attr("data-id", `sku_${sku.id}`);
+
                     if(window.dataProduct && window.dataProduct.sku) window.dataProduct.sku = sku.id;
 
                     if(self.updateImages) self.updateImages(sku, $boxProduct);
@@ -366,13 +456,14 @@ const BaseView = $.Class.create({
 
         });
 
-        $("body").off("click.convertize", ".product-form .btn-checkout:not(.not-action)");
-        $("body").on("click.convertize", ".product-form .btn-checkout:not(.not-action)", function(e){
+        $("body").off("click.convertize", ".item-product:not(.added) .product-form .btn-checkout:not(.not-action)");
+        $("body").on("click.convertize", ".item-product:not(.added) .product-form .btn-checkout:not(.not-action)", function(e){
             e.preventDefault();
 
             const $bt = $(this);
             const $form = $(this).closest(".product-form");
 
+            $form.addClass("loading");
             $bt.addClass("loading").prop("disabled", true);
 
             if($form.data("validator")){
@@ -399,11 +490,12 @@ const BaseView = $.Class.create({
                 errorElement: "p",
                 errorPlacement: function(error, element){
                     element.closest(".variations").addClass("error");
-                    const ul = $(`<div class="errorlist" />`).html(error.addClass("text-danger mt-2"));
+                    const ul = $(`<div class="errorlist" />`).html(error.addClass("text-danger mb-1"));
                     if(!error.html()) return;
-                    element.closest(".form-group").append(ul);            
+                    element.closest(".form-group").prepend(ul);            
                 },
                 invalidHandler: function(event, validator){
+                    $form.removeClass("loading");
                     $bt.removeClass("loading").prop("disabled", false);
                 },
                 submitHandler: async function(form, event){
@@ -427,30 +519,16 @@ const BaseView = $.Class.create({
                         });
                         const resp = response.data;
                         self.renderCart(resp);
-
-                        // GA 4
-                        const item = resp.items.find(function(i){
-                            return i.product == parseInt(body.product) && i.sku_options.map(function(item){return item.value_id}).sort().toString() == body.options.sort().toString()
-                        });
-
-                        if(window.cvz && item){
-                            item.quantity = body.quantity;
-                            window.cvz.events.trigger("add_to_cart", item);
-                        }
-                        // GA 4 - end
-                        
                         if(window.events && window.events.loadCart) window.events.loadCart();
 
-                        // Open mini cart
-                        $("body").addClass("open-page");
-                        $("#mini-cart").addClass("active").removeClass("loading");
-                        // Open mini cart
+                        $(`.my-cart [data-toggle="popover"]`).popover("show");
+                        setTimeout(function(){
+                            $bt.removeClass("added");
+                            $(`.my-cart [data-toggle="popover"]`).popover("hide");
+                        }, 3000);
 
-                        // $bt.addClass("added");
-						// window.location = "/checkout/#/carrinho"
-                        // setTimeout(function(){
-                        //     $bt.removeClass("added");
-                        // }, 5000);
+                        $("#mini-cart").addClass("active").removeClass("loading");
+
                     }catch(err){
                         if(err.response && err.response.data && err.response.data.messages){
                             err.response.data.messages.map(function(message){
@@ -468,6 +546,7 @@ const BaseView = $.Class.create({
                         };
                     }
 
+                    $form.removeClass("loading");
                     $bt.removeClass("loading").prop("disabled", false);
 
                     return false;
@@ -536,72 +615,50 @@ const BaseView = $.Class.create({
                 $bt.removeClass("loading").prop("disabled", false);
             });
         });
+
     },
     cart: function(){
         const self = this;
-        $("body").off("blur.convertize", "#mini-cart input[name=quantity]");
-        $("body").on("blur.convertize", "#mini-cart input[name=quantity]", async function(e){
+        $("body").off("blur.convertize", "#mini-cart input[name=quantity], .item-product.added input[name=quantity]");
+        $("body").on("blur.convertize", "#mini-cart input[name=quantity], .item-product.added input[name=quantity]", async function(e){
             e.preventDefault();
             const $this = $(this);
             const uuid = Cookies.get("convertize_cart_id");
-            const url = `/order/${uuid}/${$this.closest("li").find("input[name=_id]").val()}/`;
+            const url = `/order/${uuid}/${$(this).closest("form, li").find("input[name=_id]").val()}/`;
 
-            $(this).closest("li").addClass("loading");
+            $(this).closest("form, li").addClass("loading");
 
             try{
                 const response = await self.api.put(url, {
-                    quantity: $this.val()
+                    quantity: parseInt($this.val()) <= 0 ? 1:parseInt($this.val())
                 });
                 const resp = response.data;
                 self.renderCart(resp);
-                // GA 4
-                if(window.cvz && resp && resp.items && resp.items.length){
-                    const item = resp.items.find(function(i){return i.id == parseInt(id)});
-                    if(item){
-                        if(item.quantity > $this.data("quantity")){
-                            item.quantity = item.quantity - $this.data("quantity")
-                            window.cvz.events.trigger("add_to_cart", item);
-                        }else if(item.quantity < $this.data("quantity")){
-                            item.quantity = $this.data("quantity") - item.quantity;
-                            window.cvz.events.trigger("remove_from_cart", item);
-                        }
-                    }
-                }
-                // GA 4 - end
             }catch(err){
                 log(err)
             };
 
-            $(this).closest("li").removeClass("loading");
+            $(this).closest("form,li").removeClass("loading");
         });
 
-        $("body").off("click.convertize", "#mini-cart .remove-item");
-        $("body").on("click.convertize", "#mini-cart .remove-item", async function(e){
+        $("body").off("click.convertize", "#mini-cart .remove-item, .item-product.added .product-form .btn-checkout:not(.not-action)");
+        $("body").on("click.convertize", "#mini-cart .remove-item, .item-product.added .product-form .btn-checkout:not(.not-action)", async function(e){
             e.preventDefault();
             const uuid = Cookies.get("convertize_cart_id");
-            const url = `/order/${uuid}/${$(this).closest("li").find("input[name=_id]").val()}/`;
+            const url = `/order/${uuid}/${$(this).closest("form,li").find("input[name=_id]").val()}/`;
 
-            $(this).closest("li").addClass("loading");
+            $(this).closest("form,li").addClass("loading");
 
             try{
                 const response = await self.api.delete(url);
                 const resp = response.data;
                 self.renderCart(resp);
-                // GA 4
-                if(window.cvz && !resp.items.filter(function(item){ return item.id == parseInt(id)}).length){
-                    window.cvz.events.trigger("remove_from_cart", [{
-                        "item_id": $this.closest("li").find("input[name=_sku]").val(),
-                        "item_name": $this.closest("li").find(".item-title").text().trim(),
-                        "quantity": parseInt($this.closest("li").find("input[name=quantity]").val())
-                    }]);
-                }
-                // GA 4 - end
-                return;
             }catch(err){
+                log("errr")
                 log(err)
             };
 
-            $(this).closest("li").removeClass("loading");
+            $(this).closest("form,li").removeClass("loading");
 
         });
 
@@ -622,13 +679,11 @@ const BaseView = $.Class.create({
                 });
                 const resp = response.data;
                 self.renderCart(resp);
-                return;
             }catch(err){
                 log(err)
             };
 
             $(this).removeClass("loading");
-
         });
 
         this.functionsCart();
@@ -636,8 +691,8 @@ const BaseView = $.Class.create({
     functionsCart: function(){
         const self = this;
         let interval = false;
-        $("#mini-cart .content-cart input[name=quantity]").spinner({
-            min: 1, 
+        $("#mini-cart .content-cart input[name=quantity], .item-product .product-form input[name=quantity]").spinner({
+            min: 1,
             classes: {
                 "ui-spinner": "ui-corner-all",
                 "ui-spinner-down": "icon-minus",
@@ -653,6 +708,13 @@ const BaseView = $.Class.create({
                     interval = true
                     $(event.target).blur();
                 }, 250);
+            }
+        }).on("keyup keypress", function(e){
+            const keyCode = e.keyCode || e.which;
+            if(keyCode === 13){ 
+                e.preventDefault();
+                $(event.target).blur();
+                return false;
             }
         });
         $("#mini-cart .coupon").validate({
@@ -686,7 +748,6 @@ const BaseView = $.Class.create({
                     });
                     const resp = response.data;
                     self.renderCart(resp);
-                    return;
                 }catch(err){
                     log(err)
                 };
@@ -707,23 +768,6 @@ const BaseView = $.Class.create({
             const response = await self.api.get(`/order/${uuid}/`);
             const resp = response.data;
             self.renderCart(resp);
-            $("#mini-cart").removeClass("loading");
-            // GA 4
-            if(window.cvz){
-                window.cvz.events.trigger("view_cart", {
-                    currency: "BRL",
-                    value: resp.totalizers.total_price,
-                    items: resp.items.map(function(item){
-                        return {
-                            item_name: item.sku_name,
-                            item_id: item.sku,
-                            price: item.unit_price,
-                            "quantity": item.quantity
-                        }
-                    })
-                })
-            }
-            // GA 4 - end
         }catch(err){
             log(err);
             if(err.response && err.response.status === 404){
@@ -736,6 +780,9 @@ const BaseView = $.Class.create({
         }
     },
     renderCart: function(data){
+        this.storage.setItem("cvz_cart", JSON.stringify(data));
+
+        if(!$("#mini-cart").length) return;
         let total = data.totalizers.total_price;
         let discount = 0;
 
@@ -749,7 +796,7 @@ const BaseView = $.Class.create({
         $(".request__cart__total_price").html(data.totalizers.total_price.toCurrency());
         $(".request__cart__discount_value").html(discount.toCurrency());
         $(".request__cart__total").html(total.toCurrency());
-        $(".request__cart__total_quantity").html(data.totalizers.quantity);
+        $(".request__cart__total_quantity").html(data.items.length);
 
         $("#mini-cart .content-cart ul").html("");
 
@@ -816,7 +863,23 @@ const BaseView = $.Class.create({
             });
         };
 
+        $("#mini-cart").removeClass("loading");
+
+        this.renderFront();
         this.functionsCart();
+    },
+    renderFront: function(){
+        if(!Cookies.get("convertize_cart_id")) return
+        const cart = JSON.parse(this.storage.getItem("cvz_cart"), "{}");
+        if(cart && cart.items){
+            $(".item-product").removeClass("added").find("input[name=_id]").remove();
+            $(".item-product .product-form input[name=quantity]").val(1);
+            cart.items.map(item => {
+                $(`.item-product[data-id=sku_${item.sku}]`).addClass("added");
+                $(`.item-product[data-id=sku_${item.sku}] .product-form`).append(`<input type="hidden" name="_id" value="${item.id}" />`);
+                $(`.item-product[data-id=sku_${item.sku}] input[name=quantity]`).val(item.quantity);
+            });
+        }
     },
     carousel: function(){
         const self = this;
@@ -1046,23 +1109,26 @@ const BaseView = $.Class.create({
     }
 });
 
-function addCartNotification(){
-    if($('.jq-toast-wrap').length){
-        $('.jq-toast-wrap').remove()
+function addCartNotification() {
+    if ($('.jq-toast-wrap').length) {
+        $('.jq-toast-wrap').remove();
     } else {
-    	$('[data-toggle="popover"]').popover('show')
+        $('[data-toggle="popover"]').popover('show')
         setTimeout(() => {
             $('[data-toggle="popover"]').popover('hide')
-            },3000)}
-        }
+        }, 3000);
+    }
+}
 
-    $(document).ready(
-        function(){
-            var showPopover = function () {
-            $(this).popover('show');
-        }, 
+$(document).ready(
+    function () {
+        var showPopover = function () {
+                $(this).popover('show');
+            },
             hidePopover = function () {
-            $(this).popover('hide');
-        };
-        $('[data-toggle="popover"]').popover({trigger: 'manual'})
+                $(this).popover('hide');
+            };
+        $('[data-toggle="popover"]').popover({
+            trigger: 'manual'
+        })
     })

@@ -6,11 +6,11 @@
         <title>{% block meta_title %}{{ settings_pote.SEO_TITLE }}{% endblock %}</title>
         <meta name="description" content="{% block meta_description %}{{ settings_pote.SEO_DESCRIPTION }}{% endblock %}">
         {% block meta_robots %}<meta name="robots" content="index, follow">{% endblock %}
-        <link href="{{ STATIC_URL }}img/favicon.png" rel="shortcut icon">
+        <link href="{{ STATIC_URL }}img/favicon.ico" rel="shortcut icon">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap"></noscript>
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"></noscript>
         <link rel="stylesheet" href="https://i.icomoon.io/public/9a2a1e86fa/LojaPadro/style.css">
         {% compress css %}
             <link href="{{ STATIC_URL }}css/bootstrap.3-3-7.min.css" rel="stylesheet" type="text/css">
@@ -99,13 +99,18 @@
         {% include "includes/gtm.html" %}
         {% if "/checkout/sucesso/" not in request.path %}
             {% compress js %}
-                <script src="{{ STATIC_URL }}js/class/Class.js" async></script>
-                <script src="{{ STATIC_URL }}js/class/Checkout.js" async></script>
-                <script src="{{ STATIC_URL }}js/class/Nav.js" async></script>
+                <script src="{{ STATIC_URL }}js/libs/axios.min.js"></script>
+                <script src="{{ STATIC_URL }}js/libs/jquery-ui.min.js"></script>
                 <script src="{{ STATIC_URL }}js/libs/bootstrap-select.js"></script>
                 <script src="{{ STATIC_URL }}js/libs/default-pt_br.min.js"></script>
                 <script src="{{ STATIC_URL }}js/libs/lazyload.min.js"></script>
                 <script src="{{ STATIC_URL }}js/libs/owl.carousel.min.js"></script>
+                <script src="{{ STATIC_URL }}js/class/Class.js"></script>
+                <script src="{{ STATIC_URL }}js/pickupStore.js"></script>
+                <script src="{{ STATIC_URL }}js/formValidation.js"></script>
+                <script src="{{ STATIC_URL }}js/class/BaseView.js"></script>
+                <script src="{{ STATIC_URL }}js/class/Checkout.js"></script>
+                <script src="{{ STATIC_URL }}js/class/Nav.js"></script>
             {% endcompress %}
         {% endif %} 
     </body>

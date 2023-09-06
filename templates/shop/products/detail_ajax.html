@@ -49,7 +49,7 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="col-12 col-md-6 pl-md-0 product-detail">
+            <div class="col-12 col-md-6 pl-md-0 product-detail item-product" data-id="sku_{{ sku.id }}">
                 {% if not request|is_mobile and product.category %}
                     <div id="breadcrumb" class="mb-4">
                         <ul class="d-flex align-items-center text-nowrap">
@@ -205,10 +205,10 @@
                                             </p>
                                             {% endcomment %}
                                             <p class="card-installments">
-                                                <a href="#" data-toggle="modal" data-target="#all_installments" class="get_installments" data-price="{{ sku.price }}">em até <strong class="get_min_installments">{{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }}</strong></a>
+                                                <a href="#" data-toggle="modal" data-target="#all_installments" class="get_installments" data-price="{{ sku.price }}">em até <strong class="get_min_installments">{{ sku.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ sku.price|get_card_price|currency }}</strong> no cartão</a>
                                             </p>
                                         </div>
-                                        <span class="discount"{% if not product.descont_percentage %} style="display:none"{% endif %}>{{ product.descont_percentage|default:"0"|floatformat }}%</span>
+                                        <span class="discount"{% if not product.descont_percentage %} style="display:none"{% endif %}>{{ product.descont_percentage|default:"0"|floatformat|cut:'-' }}%</span>
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-6 d-flex align-items-center">
@@ -258,5 +258,6 @@
                 </div>
             </div>
         </div>
+        <div class="content-more-buy"></div>
     </div>
 </div>

@@ -71,7 +71,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0" class="table table-striped table-borderless" width="100%">
                                         <tbody>
                                             {% for s,v in json_specifications.items %} 
-                                            {% if v.value and s not in 'age_group,gender,adult,is_bundle,pattern,mensagem_para_caminha_lola_tamanho_m,impermeavel,impermeabilizada,com_ziper,dupla_face,lavavel'|split %}
+                                            {% if v.value and s not in 'age_group,gender,adult,is_bundle,pattern'|split %}
                                             <tr>
                                                 <td class="font-weight-bold">{{ v.label }}</td>
                                                 <td class="{{ v.label|slugify }}">{{ v.value }}</td>

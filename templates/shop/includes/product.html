@@ -15,18 +15,18 @@
                 {% if p.descont_percentage %}
                     <span class="discount"><span>{{ p.descont_percentage|floatformat|cut:'-' }}%</span></span>
                 {% endif %}
+                {% if p.get_seals %}
+                    <span class="seals">
+                        {% for seal in p.get_seals %}
+                            {% if "{" not in seal %}
+                                {{ seal|safe }}
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                {% endif %}
             </a>
             <div class="desc position-relative">
                 <div>
-                    {% if p.get_seals %}
-                        <div class="seals position-relative">
-                            {% for seal in p.get_seals %}
-                                {% if "{" not in seal %}
-                                    {{ seal|safe }}
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
                     <h2 class="title">
                         <a href="{{ p.get_absolute_url }}">
                             {{ p.name }}
