@@ -23,12 +23,37 @@ const BaseView = $.Class.create({
             $(this).closest(".item-product").find(".seals").append(`<span class="seal seal-assinatura bg-info text-light font-weight-bold py-1 px-2 rounded">Desconto na assinatura</span>`);
         });
         
+        $(".item-product .compre-x-pague-y").each(function(){
+            if($(this).closest(".item-product").find(".box-compre-pague").length || !$(this).closest(".item-product").find(".sale-price").length) return;
+            const salePrice = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text().trim());
+            const value = (salePrice / $(this).attr("qtd") * $(this).attr("buy")).toCurrency();
+            const $box = $(`<div class="box-compre-pague mt-2 p-1 text-center">Leve ${$(this).attr("qtd")} e pague <span>${value}</span> cada</div>`);
+            $(".list-products .item-product .seals .compre-x-pague-y").hide();
+            $(this).closest(".item-product").find(".prices").append($box);
+        });
+        
+        $(".item-product .compre-x-por-y").each(function(){
+            const $box = $(`<div class="box-compre-pague mt-2 p-1 text-center">Compre ${$(this).attr("qtd")} por <span>${$(this).attr("buy")}</span> cada</div>`);
+            $(".list-products .item-product .seals .compre-x-por-y").hide();
+            $(this).closest(".item-product").find(".prices").append($box);
+        });
+        
+        $(".item-product .percent-off").each(function(){
+//            if($(this).closest(".item-product").find(".box-percent-off").length || !$(this).closest(".item-product").find(".sale-price").length) return;
+//            const salePrice = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text().trim());
+//            const value = ((salePrice * $(this).attr("qtd") - salePrice * $(this).attr("percentage")) / $(this).attr("qtd")).toCurrency();
+//            const $box = $(`<div class="box-percent-off">Ganhe ${$(this).attr("value")}% off na ${$(this).attr("qtd")} uni.</p></div>`);
+            const $box = $(".list-products .item-product .seals .percent-off");
+            $(this).closest(".item-product").find(".prices").append('<div class="box-percent-off mt-2 p-1 text-center"></div>')
+            $(".box-percent-off").append($box);
+        });
+        
         $(".item-product .seal-desconto-progressivo").each(function(){
-            if($(this).closest(".item-product").find(".box-seal-desconto-progressivo").length || !$(this).closest(".item-product").find(".sale-price").length) return;
+            if($(this).closest(".item-product").find(".box-desconto-progressivo").length || !$(this).closest(".item-product").find(".sale-price").length) return;
             const price = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text());
             const value = roundToTwo(price - (price * $(this).attr("percentage"))).toCurrency();
             const quantity = $(this).attr("qtd");
-            const $box = $(`<div class="box-seal-desconto-progressivo text-center mt-2 p-2"><p>Leve ${quantity} pague <span>${value}</span> cada</p></div>`);
+            const $box = $(`<div class="box-desconto-progressivo text-center mt-2 p-1"><p>Leve ${quantity} pague <span>${value}</span> cada</p></div>`);
             $(this).closest(".item-product").find(".prices").append($box);
             //$(this).closest(".list-products .item-product").find(".seals").append(`<span class="seal desconto-progressivo py-1 px-2">Leve mais<span> Por menos</span></span>`);
         });  
@@ -1084,23 +1109,26 @@ const BaseView = $.Class.create({
     }
 });
 
-function addCartNotification(){
-    if($('.jq-toast-wrap').length){
-        $('.jq-toast-wrap').remove()
+function addCartNotification() {
+    if ($('.jq-toast-wrap').length) {
+        $('.jq-toast-wrap').remove();
     } else {
-    	$('[data-toggle="popover"]').popover('show')
+        $('[data-toggle="popover"]').popover('show')
         setTimeout(() => {
             $('[data-toggle="popover"]').popover('hide')
-            },3000)}
-        }
+        }, 3000);
+    }
+}
 
-    $(document).ready(
-        function(){
-            var showPopover = function () {
-            $(this).popover('show');
-        }, 
+$(document).ready(
+    function () {
+        var showPopover = function () {
+                $(this).popover('show');
+            },
             hidePopover = function () {
-            $(this).popover('hide');
-        };
-        $('[data-toggle="popover"]').popover({trigger: 'manual'})
+                $(this).popover('hide');
+            };
+        $('[data-toggle="popover"]').popover({
+            trigger: 'manual'
+        })
     })

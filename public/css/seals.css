@@ -1,17 +1,93 @@
 @charset "utf-8";
-.seals{
-    display: flex;
-    align-items: center;;
-}
 .seal{
     max-width: 100%;
 }
-.list-products .item-product .seals{
-    margin: 0px 2px 2px 0px;
+#content-product .seals:not(.offer){
+    display: flex;
+    align-items: center;;
 }
 
+/* POSICOES CONFIGURACAO DE SELO */
+.list-products .item-product .seals > span[class*="position-"]{
+    position: absolute;
+}
+.list-products .item-product .seals .position-top-left{
+    top: 10px;
+    left: 10px;
+}
+.list-products .item-product .seals .position-top-middle{
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.list-products .item-product .seals .position-top-right{
+    top: 10px;
+    right: 10px;
+}
+.list-products .item-product .seals .position-middle-left{
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+.list-products .item-product .seals .position-middle-middle{
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.list-products .item-product .seals .position-middle-right{
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+.list-products .item-product .seals .position-bottom-left{
+    bottom: 10px;
+    left: 10px;
+}
+.list-products .item-product .seals .position-bottom-middle{
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.list-products .item-product .seals .position-bottom-right{
+    bottom: 10px;
+    right: 10px;
+}
+/* END POSICOES CONFIGURACAO DE SELO */
+
+/* LEVE X POR Y */
+.list-products .item-product .seals .buy-max-pay-low,
+.box-compre-pague{
+    display: block;
+    background-color: #FF5722;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 5px;
+}
+.list-products .item-product .box-compre-pague > span,
+.box-compre-pague p > span,
+.box-compre-pague .buy-max-pay-low > span{
+    color: #ffeb3b;
+}
+/* END LEVE X POR Y */
+
+/* GANHE % OFF NA UNI */
+.list-products .item-product .seals .percent-off,
+.box-percent-off{
+    display: block;
+    background-color: #03A9F4;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 5px;
+}
+.list-products .item-product .box-percent-off .percent-off > span,
+.box-percent-off p > span{
+    color: #ffeb3b;
+}
+/* END GANHE % OFF NA UNI */
+
+/* DESCONTO PROGRESSIVO */
 .list-products .item-product .seals .desconto-progressivo,
-.box-seal-desconto-progressivo{
+.box-desconto-progressivo{
     display: block;
     background-color: #dc3545;
     font-weight: bold;
@@ -19,9 +95,7 @@
     border-radius: 5px;
 }
 .list-products .item-product .seals .desconto-progressivo > span,
-.box-seal-desconto-progressivo p > span{
+.box-desconto-progressivo p > span{
     color: #ffeb3b;
 }
-
-.list-products .item-product .seals .compre-ganhe, 
-#content-product .seals .compre-ganhe{ display: block; padding: 2px 8px; background: #d4247c; font-size: 12px; line-height: 12px; font-weight: bold; color: #fff; text-align: center; border-radius: 3px;}
+/* END DESCONTO PROGRESSIVO */

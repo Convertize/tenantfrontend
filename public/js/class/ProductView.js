@@ -5,7 +5,6 @@ const ProductView = BaseView.extend({
         this.functionsOffers();
     },
     seals: function(){
-        this._super();
         this.api.get(`/offers/search/?skus=${window.dataProduct.sku}`)
         .then(response=>response.data)
         .then(resp => {
@@ -16,12 +15,12 @@ const ProductView = BaseView.extend({
                         offer.progressive_discount.map(item => {
                             if(!$(`.product-detail .seal-offer-${offer.id}-${item.quantity}`).length){
                                 if(item.discount){
-                                    $(".product-detail .content-offers").append(`<div class="box-seal-desconto-progressivo mt-3 p-3 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
+                                    $(".product-detail .content-offers").append(`<div class="box-seal-desconto-progressivo mt-3 p-2 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
                                         <p>Na compra da ${item.quantity}ª unidade(s) sai por <span>${roundToTwo(Math.floor((window.dataProduct.sale_price - (window.dataProduct.sale_price * (item.discount/100))) * 100) / 100).toCurrency()}</span> cada</p>
                                     </div>`);
                                 }else if(item.unit_price){
                                     const discount = ((item.unit_price*100) / window.dataProduct.sale_price - 100) * -1;
-                                    $(".product-detail .content-offers").append(`<div class="box-seal-desconto-progressivo mt-3 p-3 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
+                                    $(".product-detail .content-offers").append(`<div class="box-seal-desconto-progressivo mt-3 p-2 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
                                         <p>Na compra da ${item.quantity}ª unidade(s) sai por <span>${item.unit_price.toCurrency()}</span> cada</p>
                                     </div>`);
                                 }
@@ -63,7 +62,7 @@ const ProductView = BaseView.extend({
                        //     });
                        //     $("#content-product .content-more-buy .offer-13").append($box);
                        //  });
-                    }else if(offer.type_offer == 8){
+                    }else if(offer.type_offer == 8 && offer.seal == null){
                         if(!$('.content-more-buy .offer-8').length) $(".content-more-buy").append(`<div class="offer-8"></div>`);
 
                         const items = [].concat(offer.together.list1.map((i) => {
@@ -168,30 +167,47 @@ const ProductView = BaseView.extend({
             // error
         })
         
-        if($(".product-detail .buy_max_pay_low").length){
-            $(".product-detail .buy_max_pay_low").each(function(){
-                const value = (window.dataProduct.sale_price / $(this).attr("buy") * $(this).attr("pay")).toCurrency();
-                const $box = $(`<div class="seals"><div class="box-seal-leve-pague mt-4"><p>Nesta promoção cada unidade sai por <span>${value}</span> </p><button type="button" class="b_buy_pay">Comprar Kit</button></div></div>`);
+        if($(".product-detail .compre-x-pague-y").length){
+            $(".product-detail .compre-x-pague-y").each(function(){
+                const value = (window.dataProduct.sale_price / $(this).attr("qtd") * $(this).attr("buy")).toCurrency();
+                const $box = $(`<div class="seals offer"><div class="box-compre-pague mt-3 p-2 d-flex align-items-center justify-content-between font-size-15 text-center"><p>Nesta promoção cada unidade sai por <span>${value}</span> </p><button type="button" class="b_buy_pay btn btn-sm btn-checkout font-weight-bold ml-3">Comprar Kit</button></div></div>`);
                 $box.find(".b_buy_pay").unbind("click.convertize").bind("click.convertize", function(e){
                     e.preventDefault();
-                    $(".product-detail .product-form input[name=quantity]").val($(".buy_max_pay_low").attr("buy"));
+                    $(".product-detail .product-form input[name=quantity]").val($(".compre-x-pague-y").attr("qtd"));
                     $(".product-detail .product-form button.btn-checkout").click();
                 });
-                $(this).prependTo($box.find(".box-seal-leve-pague"));
-                $(".product-detail .content-offers").after($box);
+                $(this).prependTo($box.find(".box-compre-pague"));
+                $(".product-detail .content-offers").append($box);
+            });
+        }
+        
+        if($(".product-detail .compre-x-por-y").length){
+            $(".product-detail .compre-x-por-y").each(function(){
+                const $box = $(`<div class="seals offer"><div class="box-compre-pague mt-3 p-2 font-size-15 text-center"><button type="button" class="b_buy_pay btn btn-sm btn-checkout font-weight-bold ml-3">Comprar Kit</button></div></div>`);
+                $box.find(".b_buy_pay").unbind("click.convertize").bind("click.convertize", function(e){
+                    e.preventDefault();
+                    $(".product-detail .product-form input[name=quantity]").val($(".compre-x-por-y").attr("qtd"));
+                    $(".product-detail .product-form button.btn-checkout").click();
+                });
+                $(this).prependTo($box.find(".box-compre-pague"));
+                $(".product-detail .content-offers").append($box);
             });
         }
 
-        if($(".product-detail .percent_off_second").length){
-            $(".product-detail .percent_off_second").each(function(){
+        if($(".product-detail .percent-off").length){
+            $(".product-detail .percent-off").each(function(){
                 const value = ((window.dataProduct.sale_price * $(this).attr("qtd") - window.dataProduct.sale_price * $(this).attr("percentage")) / $(this).attr("qtd")).toCurrency();
-                const $box = $(`<div class="float"><div class="seals"><div class="box-seal-off-segunda-uni"><p>Na compra da ${$(this).attr("qtd")}ª unidade sai por <span>${value}</span> cada</p><button type="button" class="b_buy_pay">Comprar Kit</button></div></div></div>`);
+//                log(window.dataProduct.sale_price);
+//                log($(this).attr("qtd"));
+//                log($(this).attr("percentage"));
+                const $box = $(`<div class="seals"><div class="box-percent-off mt-3 p-2 d-flex align-items-center justify-content-between font-size-15 text-center w-100"><p>Na compra da ${$(this).attr("qtd")}ª unidade sai por <span>${value}</span> cada</p><button type="button" class="b_buy_pay btn btn-sm btn-checkout font-weight-bold ml-3">Comprar Kit</button></div></div>`);
                 $box.find(".b_buy_pay").unbind("click.convertize").bind("click.convertize", function(e){
                     e.preventDefault();
-                    $(".product-detail .product-form input[name=quantity]").val($(".percent_off_second").attr("qtd"));
+                    $(".product-detail .product-form input[name=quantity]").val($(".percent-off").attr("qtd"));
                     $(".product-detail .product-form button.btn-checkout").click();
                 });
-                $(this).prependTo($box.find(".box-seal-off-segunda-uni"));
+                $(".seal.percent-off").find("span").hide();
+                $(this).prependTo($box.find(".box-percent-off"));
                 $(".product-detail .content-offers").after($box);
             });
         }
