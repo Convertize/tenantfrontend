@@ -218,16 +218,50 @@ const ProductView = BaseView.extend({
                 const sale_price = $(this).find(".sale_price").html();
                 const discount = $(this).data("discount");
                 const $box = $(`<div class="mt-4">
-                    <div class="alert alert-info p-2 text-center d-flex align-items-center justify-content-around">
-                        <div class="d-flex align-items-center">
-                            <i class="icon-subscription h4 mb-0 mr-2"></i>
-                            <b class="font-size-20 line-height-normal">${sale_price}</b>
+                    <div class="p-3 rounded" style="background-color: #E3F8FF;">
+                        <div class="d-flex align-items-center text-info">
+                            <i class="icon-return2 h4 mb-0 mr-2"></i>
+                            <span><b class="font-size-24 line-height-normal">${sale_price}</b> para assinantes</span>
                         </div>
-                        <span class="font-size-12">Compre com recorrência e <span class="font-weight-bold text-underline">ganhe ${discount}% de desconto</span> no produto assinado</span>
+                        <div class="mt-3 font-size-12 text-black">
+                            <p><b>Porque assinar?</b></p>
+                            <ul class="pt-2">
+                                <li class="pb-1">• <b>${discount}% off</b> na assinatura</li>
+                                <li class="pb-1">• <b>Recompra automática</b> na frequência escolhida.</li>
+                                <li class="pb-1">• <b>Sem taxa.</b> Altere ou cancele quando quiser.</li>
+                                <li class="pb-1">• <u>Assine os produtos no carrinho e economize.</u></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>`);
-                //$(this).prependTo($box.find(".subscription"));
-                $(".product-detail .content-offers").after($box);
+                $(".product-detail .content-offers").append($box);
+                $(".seals .seal-subscription").hide();
+            });
+        }
+        
+        if($(".product-detail .seal-subscription").length){
+            $(".product-detail .seal-subscription").each(function(){
+                const unit_price = $(this).find(".unit_price").html();
+                const sale_price = $(this).find(".sale_price").html();
+                const discount = $(this).data("discount");
+                const $box = $(`<div class="mt-4">
+                    <div class="p-3 rounded" style="background-color: #E3F8FF;">
+                        <div class="d-flex align-items-center text-info">
+                            <i class="icon-return2 h4 mb-0 mr-2"></i>
+                            <span><b class="font-size-24 line-height-normal">${sale_price}</b> para assinantes</span>
+                        </div>
+                        <div class="mt-3 font-size-12 text-black">
+                            <p><b>Porque assinar?</b></p>
+                            <ul class="pt-2">
+                                <li class="pb-1">• <b>${discount}% off</b> na assinatura</li>
+                                <li class="pb-1">• <b>Recompra automática</b> na frequência escolhida.</li>
+                                <li class="pb-1">• <b>Sem taxa.</b> Altere ou cancele quando quiser.</li>
+                                <li class="pb-1">• <u>Assine os produtos no carrinho e economize.</u></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>`);
+                $(".product-detail .content-offers").append($box);
                 $(".seals .seal-subscription").hide();
             });
         }

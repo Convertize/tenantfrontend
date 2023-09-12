@@ -19,9 +19,10 @@ const BaseView = $.Class.create({
     },
     seals: function(){
         $(".item-product .seal-subscription").each(function(){
+            const sale_price = $(this).find(".sale_price").html();
             $(this).closest(".item-product .seals").find(".seal-subscription").hide();
-            $(this).closest(".item-product").find(".seals").append(`<span class="seal seal-assinatura bg-info text-light font-weight-bold py-1 px-2 rounded">Desconto na assinatura</span>`);
-        });
+            $(this).closest(".item-product").find(".box-prices").append(`<span class="d-flex align-items-center mt-2 text-info"><i class="icon-return2 h5 m-0 mr-2"></i><b class="font-size-20">${sale_price}</b>&nbsp; para assinantes</span>`);
+        }); 
         
         $(".item-product .compre-x-pague-y").each(function(){
             if($(this).closest(".item-product").find(".box-compre-pague").length || !$(this).closest(".item-product").find(".sale-price").length) return;

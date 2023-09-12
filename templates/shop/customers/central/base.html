@@ -37,6 +37,13 @@
                             {% trans 'Meus Cartões de Crédito' %}
                         </a>
                     </li>
+                    {% comment %}
+                    <li class="list-group-item p-0{% if 'assinaturas' in request.path %} active{% endif %}">
+                        <a href="{% url 'subscriptions:list' %}" class="d-block p-2">
+                            {% trans 'Assinaturas' %}
+                        </a>
+                    </li>
+                    {% endcomment %}
                     <li class="list-group-item p-0{% if '-desejos' in request.path %} active{% endif %}">
                         <a href="{% url 'customers:my_wishlist' %}" class="d-block p-2">
                             {% trans 'Lista de Desejos' %}

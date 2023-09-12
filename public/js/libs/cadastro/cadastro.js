@@ -116,9 +116,9 @@ $(document).ready(function () {
 	
 	$(".ie_isento").change(function(e){
 		if (e.currentTarget.checked) {
-			$('.ie').attr("disabled", "");
+			$('.ie').attr("readonly", "");
 		} else {
-			$('.ie').attr("disabled",false);
+			$('.ie').attr("readonly",false);
 		}
 	})
 	
