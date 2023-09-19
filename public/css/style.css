@@ -161,17 +161,32 @@ textarea {
 .text-underline{
     text-decoration: underline;
 }
-.bg-secondary{
-    background-color: #efefef!important;
+.text-primary{
+    color: #ff7a4a !important;
 }
-.btn-checkout,
-.btn-product{
+.bg-primary{
+    background-color: #ff7a4a !important;
+}
+.bg-secondary{
+    background-color: #efefef !important;
+}
+.btn-primary{
+    background-color: #ff7a4a;
+    border-color: #ff7a4a;
+    color: #fff;
+}
+.btn-primary:focus,
+.btn-primary:hover{
+    background-color: #f07142;
+    border-color: #f07142;
+    color: #fff;
+}
+.btn-checkout{
     color: #fff;
     background-color: #288449;
     border-color: #288449;
 }
-.btn-checkout:hover,
-.btn-product:hover{
+.btn-checkout:hover{
     color: #fff;
     background-color: #227540;
     border-color: #227540;
@@ -473,6 +488,7 @@ body.fixed .header .showcase-tipbar{
     margin-top: 10px;
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgb(0 0 0 / 25%);
+    z-index: 101;
 }
 .form-search .autocomplete.active{
     display: block;
@@ -722,7 +738,18 @@ body.open-page .mask-floating-page{
     align-items: center;
     justify-content: center;
 }
-
+.popover{
+    background-color: #288449;
+    border-color: #288449;
+    z-index: 99;
+}
+.popover .popover-body{
+    color: #fff;
+    font-weight: bold;
+}
+.popover > .arrow:after{
+    border-bottom-color: #288449;
+}
 #mini-cart header .title i{
     font-size: 26px;
 }
@@ -1055,6 +1082,10 @@ body.open-page .mask-floating-page{
 }
 .footer .f-f-2{ 
     background: #ffffff;
+}
+.footer #convertize-pci-seal a > img{
+    width: 50px;
+    height: 60px;
 }
 .footer div[class*="f-f-"] h3{
     font-weight: 600;
@@ -1661,11 +1692,13 @@ img.img-lazy:not([src*="/blank.png"]) {
     cursor: pointer;
     border-radius: 3px; 
 }
+/*
 .owl-theme .owl-nav [class*='owl-']:hover {
     background: #869791;
     color: #FFF;
     text-decoration: none;
 }
+*/
 .owl-theme .owl-nav .disabled {
     opacity: 0.5;
     cursor: default;
@@ -1957,4 +1990,8 @@ img.img-lazy:not([src*="/blank.png"]) {
 }
 .accessibility-font button[data-action="plus"]{
     font-size: 17px;
+}
+
+#setZipcode .dialog-tooltip{
+    z-index: 101;
 }
