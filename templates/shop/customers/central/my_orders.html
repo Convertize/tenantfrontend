@@ -5,25 +5,40 @@
 {% block main %}
     <h3 class="h4 mb-4">Meus pedidos</h3>
     <div class="table-responsive">
-        <table border="0" class="table table-striped table-hover" width="100%">
+        <table border="0" class="table table-bordered table-hover bg-white" width="100%">
             <thead>
                 <tr class="font-weight-bold">
-                    <th class="text-center">{% trans 'Nº do Pedido' %}</th>
-                    <th class="text-center">{% trans 'Data' %}</th>
-                    <th class="text-center">{% trans 'Total' %}</th>
-                    <th class="text-center">{% trans 'Forma de Pagamento' %}</th>
-                    <th class="text-center">{% trans 'Status' %}</th>
+                    <th class="text-center border-bottom-0">{% trans 'Nº do Pedido' %}</th>
+                    <th class="text-center border-bottom-0">{% trans 'Data' %}</th>
+                    <th class="text-center border-bottom-0">{% trans 'Total' %}</th>
+                    <th class="text-center border-bottom-0">{% trans 'Forma de Pagamento' %}</th>
+                    <th class="text-center border-bottom-0">{% trans 'Status' %}</th>
+                    <th class="text-center border-bottom-0">{% trans 'Nota Fiscal' %}</th>
+                    <th class="text-center border-bottom-0"></th>
                 </tr>
             </thead>
             <tbody>
                 {% localize off %}
                     {% for order in orders.object_list %}
                         <tr>
-                            <td class="text-center"><a href="{% url 'customers:order' order.id %}"><b>{{ order.id }}</b></a></td>
-                            <td class="text-center"><a href="{% url 'customers:order' order.id %}">{{ order.add_date|date:"d/m/Y" }}</a></td>
-                            <td class="text-center"><a href="{% url 'customers:order' order.id %}">{{ order.total|currency }}</a></td>
-                            <td class="text-center" align="center"><a href="{% url 'customers:order' order.id %}">{{ order.get_payment_method_display }}</a></td>
-                            <td class="text-center"><a href="{% url 'customers:order' order.id %}">{{ order.status|get_status_display }}</a></td>
+                            <td class="text-center align-middle"><a href="{% url 'customers:order' order.id %}"><b>{{ order.id }}</b></a></td>
+                            <td class="text-center align-middle"><a href="{% url 'customers:order' order.id %}">{{ order.add_date|date:"d/m/Y" }}</a></td>
+                            <td class="text-center align-middle"><a href="{% url 'customers:order' order.id %}">{{ order.total|currency }}</a></td>
+                            <td class="text-center align-middle"><a href="{% url 'customers:order' order.id %}">{{ order.get_payment_method_display }}</a></td>
+                            <td class="text-center align-middle"><a href="{% url 'customers:order' order.id %}">{{ order.status|get_status_display }}</a></td>
+                            <td class="text-center align-middle">
+                                {% with invoice=order.invoices.all|first %}
+                                    {% if invoice %}
+                                        {% if invoice.file %}
+                                            <a href="{{ invoice.file.url }}" class="btn btn-sm btn-primary rounded-pill">XML da Nota Fiscal</a><br/>
+                                        {% endif %}
+                                        {% if invoice.file1 %}
+                                            <a href="{{ invoice.file1.url }}" class="btn btn-sm btn-primary rounded-pill">PDF da Nota Fiscal</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td class="text-center align-middle"><a href="{% url 'shop_order_to_cart' order.id %}" class="btn btn-sm btn-success rounded-pill">Refazer pedido</a></td>
                         </tr>
                     {% empty %}
                         <tr>

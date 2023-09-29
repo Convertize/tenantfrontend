@@ -164,6 +164,33 @@
                 </table>
             </div>
         {% endif %}
+        {% with invoice=order.invoices.all|first %}
+            {% if invoice %}
+                <h3 class="h4 mb-0 mt-4">{% trans 'Nota Fiscal' %}</h3>
+                <div class="card mt-3 mb-3">
+                    <div class="card-body">
+                        <p class="h6 font-weight-bold">{% trans 'Segue os dados da sua Nota Fiscal:' %} </p>
+                        <ul>
+                            <li>Nota: {{ invoice.reference_code }}</li>
+                            <li>ID NFE: {{ invoice.key }}</li>
+                            <li>Data de Emissão: {{ invoice.date_issue }}</li>
+                            <li>Serie: {{ invoice.series }}</li>
+                            <li>Valor: {{ invoice.total }}</li>
+                            {% if invoice.file %}
+                                <li>
+                                    XML da Nota: <a href="{{ invoice.file.url }}" class="rounded-pill btn-sm btn-info">Download da nota fiscal</a>
+                                </li>
+                            {% endif %}
+                            {% if invoice.file1 %}
+                                <li>
+                                    PDF da Nota: <a href="{{ invoice.file1.url }}" class="rounded-pill btn-sm btn-info">Download da nota fiscal</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+		{% endwith %}
         {% if order.items.exists %}
             <h3 class="h4 mb-0 mt-4">{% trans 'Detalhes do pedido' %}</h3>
             <small class="font-size-14">{% trans 'Segue abaixo a relação dos produtos comprados' %}</small>

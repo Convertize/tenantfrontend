@@ -27,6 +27,16 @@
                             {% trans 'Dados cadastrais' %}
                         </a>
                     </li>
+                    <li class="list-group-item p-0{% if '-email' in request.path %} active{% endif %}">
+                        <a href="{% url 'customers:change_email' %}" class="d-block p-2">
+                            {% trans 'Alterar e-mail' %}
+                        </a>
+                    </li>
+                    <li class="list-group-item p-0{% if '-senha' in request.path %} active{% endif %}">
+                        <a href="{% url 'customers:change_password' %}" class="d-block p-2">
+                            {% trans 'Alterar senha' %}
+                        </a>
+                    </li>
                     <li class="list-group-item p-0{% if '-enderecos' in request.path %} active{% endif %}">
                         <a href="{% url 'customers:my_addresses' %}" class="d-block p-2">
                             {% trans 'Endereços de Entrega' %}
