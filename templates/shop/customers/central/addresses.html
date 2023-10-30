@@ -32,8 +32,10 @@
                 <div class="card-body line-height-21 d-flex align-items-center">
                     <div class="pr-3">
                         <input type="hidden" value="{{ e.id }}" name="address" />
-                        <b>{{ e.title|upper }}</b>
-                        <br />
+                        {% if e.title %}
+                            <b>{{ e.title|upper }}</b>
+                            <br />
+                        {% endif %}
                         {{ e.address }}, {{ e.number }}{% if e.complement %} - {{ e.complement }}{% endif %}
                         <br />
                         {% if e.neighborhood %}

@@ -161,17 +161,32 @@ textarea {
 .text-underline{
     text-decoration: underline;
 }
-.bg-secondary{
-    background-color: #efefef!important;
+.text-primary{
+    color: #ff7a4a !important;
 }
-.btn-checkout,
-.btn-product{
+.bg-primary{
+    background-color: #ff7a4a !important;
+}
+.bg-secondary{
+    background-color: #efefef !important;
+}
+.btn-primary{
+    background-color: #ff7a4a;
+    border-color: #ff7a4a;
+    color: #fff;
+}
+.btn-primary:focus,
+.btn-primary:hover{
+    background-color: #f07142;
+    border-color: #f07142;
+    color: #fff;
+}
+.btn-checkout{
     color: #fff;
     background-color: #288449;
     border-color: #288449;
 }
-.btn-checkout:hover,
-.btn-product:hover{
+.btn-checkout:hover{
     color: #fff;
     background-color: #227540;
     border-color: #227540;
@@ -473,6 +488,7 @@ body.fixed .header .showcase-tipbar{
     margin-top: 10px;
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgb(0 0 0 / 25%);
+    z-index: 101;
 }
 .form-search .autocomplete.active{
     display: block;
@@ -722,7 +738,18 @@ body.open-page .mask-floating-page{
     align-items: center;
     justify-content: center;
 }
-
+.popover{
+    background-color: #288449;
+    border-color: #288449;
+    z-index: 99;
+}
+.popover .popover-body{
+    color: #fff;
+    font-weight: bold;
+}
+.popover > .arrow:after{
+    border-bottom-color: #288449;
+}
 #mini-cart header .title i{
     font-size: 26px;
 }
@@ -1131,15 +1158,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
     display: block;
     width: 56px;
     height: 34px;
-    background: url(../img/sprite-payments.svg) 49px 0px no-repeat;
+    background: url(../img/sprite-payments.svg?v=2) 49px 0px no-repeat;
     border-radius: 3px;
 }
 .flag.black-white{
     filter: grayscale(1);
 }
-.flag-visa{ background-position: 0px 0px;}
+.flag-visa{ background-position: -2px 0px;}
 .flag-mastercard{ background-position: -57px 0px;}
-.flag-amex{ background-position: -114px 0px;}
+.flag-amex,
+.flag-express{ background-position: -114px 0px;}
 .flag-diners{ background-position: -171px 0px;}
 .flag-hipercard{ background-position: -228px 0;}
 .flag-hiper{ background-position: -285px 0;}
@@ -1147,7 +1175,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
 .flag-discover{ background-position: -399px 0;}
 .flag-boleto, .flag.boleto{ background-position: -456px 0;}
 .flag-jcb{ background-position: -513px 0;}
-.flag-maestro{ background-position: -570px 0;}
+.flag-maestro{ background-position: -570px 0 !important;}
 .flag-visaelectron{ background-position: -627px 0;}
 .flag-ame{ background-position: -684px 0;}
 .flag-picpay{ background-position: -741px 0;}
@@ -1156,8 +1184,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f87f2e', end
 .flag-sodexo-refeicao{ background-position: -798px 0;}
 .flag-pix{ background-position: -912px 0;}
 .flag-vr{ background-position: -969px 0;}
-.flag-ticket{ background-position: -1026px 0;}
+.flag-ticket,
+.flag-ticket-alimentao{ background-position: -1026px 0;}
 .flag-sorocred{ background-position: -1083px 0;}
+.flag-alelo-alimentao{ background-position: -1254px 0;}
 .flag-privatelabel{ display: none;}
 /* End Footer */
 
@@ -1661,11 +1691,13 @@ img.img-lazy:not([src*="/blank.png"]) {
     cursor: pointer;
     border-radius: 3px; 
 }
+/*
 .owl-theme .owl-nav [class*='owl-']:hover {
     background: #869791;
     color: #FFF;
     text-decoration: none;
 }
+*/
 .owl-theme .owl-nav .disabled {
     opacity: 0.5;
     cursor: default;
@@ -1957,4 +1989,8 @@ img.img-lazy:not([src*="/blank.png"]) {
 }
 .accessibility-font button[data-action="plus"]{
     font-size: 17px;
+}
+
+#setZipcode .dialog-tooltip{
+    z-index: 101;
 }
