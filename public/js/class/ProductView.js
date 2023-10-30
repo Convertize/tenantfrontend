@@ -15,12 +15,12 @@ const ProductView = BaseView.extend({
                         offer.progressive_discount.map(item => {
                             if(!$(`.product-detail .seal-offer-${offer.id}-${item.quantity}`).length){
                                 if(item.discount){
-                                    $(".product-detail .content-offers").append(`<div class="box-seal-desconto-progressivo mt-3 p-2 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
+                                    $(".product-detail .content-offers").append(`<div class="box-desconto-progressivo mt-3 p-2 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
                                         <p>Na compra da ${item.quantity}ª unidade(s) sai por <span>${roundToTwo(Math.floor((window.dataProduct.sale_price - (window.dataProduct.sale_price * (item.discount/100))) * 100) / 100).toCurrency()}</span> cada</p>
                                     </div>`);
                                 }else if(item.unit_price){
                                     const discount = ((item.unit_price*100) / window.dataProduct.sale_price - 100) * -1;
-                                    $(".product-detail .content-offers").append(`<div class="box-seal-desconto-progressivo mt-3 p-2 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
+                                    $(".product-detail .content-offers").append(`<div class="box-desconto-progressivo mt-3 p-2 font-size-15 text-center seal-offer-${offer.id}-${item.quantity}">
                                         <p>Na compra da ${item.quantity}ª unidade(s) sai por <span>${item.unit_price.toCurrency()}</span> cada</p>
                                     </div>`);
                                 }
