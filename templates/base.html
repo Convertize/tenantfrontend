@@ -47,15 +47,17 @@
                                     <button type="submit" class="btn-search" aria-label="Buscar">
                                         <i class="icon-search"></i>
                                     </button>
-                                    <input type="text" aria-label="q" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Olá, o que você procura hoje?" class="form-control">
+                                    <input type="text" aria-label="q" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Faça uma busca aqui" class="form-control" required />
                                     <div class="autocomplete">
                                         <button type="button" class="close" aria-label="Fechar" style="display: none;"><i class="icon-close"></i></button>
                                         <div class="p-3">
                                             <div class="results list-products" style="display: none;">
                                             </div>
                                             <div class="not-results">
-                                                <p class="h6">Mais buscados</p>
-                                                <div class="popular-words"></div>
+                                                <div class="section-words d-none">
+                                                    <p class="h6">Mais buscados</p>
+                                                    <div class="popular-words"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
