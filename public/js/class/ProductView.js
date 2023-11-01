@@ -370,7 +370,7 @@ const ProductView = BaseView.extend({
                     response.data.map((item) => {
                         $list.append(`<li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-2"}">
                             <span><b>${item.label}</b> - <span class="delivery_time">A partir de ${item.delivery_time}
-                            ${item.time_format != 'd' ? 'hora' : 'dia' : 'm' }${item.delivery_time != 1 ? 's':''} út${item.delivery_time != 1 ? 'eis':'il'}*</span></span>
+                            ${item.time_format != 'd' ? 'hora' : 'dia' }${item.delivery_time != 1 ? 's':''} út${item.delivery_time != 1 ? 'eis':'il'}*</span></span>
                             <span class="${item.time_format}"></span>
                             <span class="price">${parseFloat(item.absolute_value.replace(".","").replace(",",".")).toCurrency()}</span>
                         </li>`);
