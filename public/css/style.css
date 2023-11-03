@@ -647,14 +647,15 @@ ul.last-search > li i{
 .floating-page .container-fluid .content-page{
     height: 100%;
     width: 100%;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .floating-page .container-fluid footer{
     padding: 15px 0px;
 }
-body.open-page{ 
-    overflow-y: hidden; 
-    touch-action: none
+html.open-page, body.open-page {
+    overflow-y: hidden;
+    touch-action: none;
 }
 body.open-page .floating-page.active{
     right: 0;
@@ -690,7 +691,6 @@ body.open-page .mask-floating-page{
 #nav-inside .content-nav-inside{ position: relative; left: 0px;
     -webkit-transition: all 300ms ease-out; 
             transition: all 300ms ease-out;
-    
 }
 #nav-inside ul{ display: block; width: 100%;}
 #nav-inside li{ display: block;}
