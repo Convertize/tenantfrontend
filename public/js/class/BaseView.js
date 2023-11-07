@@ -295,7 +295,7 @@ const BaseView = $.Class.create({
                     response.data.result_list.map(function(item){
                         if(item.type === "category"){
                             const name = item.name.split("/").pop().replaceAll("---","/").replaceAll("-"," ");
-                            categories.push(`<p class="mb-1"><a href="${request.term}"><b>${request.term}</b> em <span class="text-capitalize">${name}</span></a></p>`);
+                            categories.push(`<p class="mb-1"><a href="${item.url}"><b>${request.term}</b> em <span class="text-capitalize">${name}</span></a></p>`);
                         }
                         if(item.type === "sku"){
                             listItems.push(`<div class="item-product" data-id=sku_${item.id}>
@@ -324,10 +324,10 @@ const BaseView = $.Class.create({
                                             <input type="hidden" value="${item.price }" name="price" />
                                         </div>
                                         <div class="purchase">
-                                            <label aria-label="Quantidade" class="m-0 mr-2">
+                                            <label aria-label="Quantidade" class="m-0">
                                                 <input type="tel" value="1" name="quantity" />
                                             </label>
-                                            <button type="button" class="btn btn-checkout mt-0" aria-label="Comprar">Comprar</button>
+                                            <button type="button" class="btn btn-checkout mt-0" aria-label="comprar">comprar</button>
                                         </div>
                                     </form>
                                 </div>

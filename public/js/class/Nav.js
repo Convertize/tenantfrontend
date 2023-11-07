@@ -48,6 +48,7 @@ function error(m){
 let nav;
 $(window).ready(function() {
     nav = new Nav();
+    window.nav = nav;
 });
 
 Number.prototype.toCurrency = function () {
