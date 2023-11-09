@@ -333,6 +333,10 @@ body{
 #checkout .box-step-checkout.active > .title-box i{ font-size: 26px; color: #ff7a4a; vertical-align: sub;}
 #checkout .box-step-checkout.active > .content-box{ background: #fff; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;}
 
+#checkout .box-address.not-found{
+	display: none!important;
+}
+
 #checkout .form-control{ font-weight: normal; border-radius: 4px;}
 #checkout form .field input, #checkout form .field select{ outline: none;}
 #checkout fieldset{ border: 0; margin-top: 0;}
