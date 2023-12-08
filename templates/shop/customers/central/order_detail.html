@@ -164,7 +164,7 @@
                 </table>
             </div>
         {% endif %}
-        {% with invoice=order.invoices.all|first %}
+        {% with invoice=order.invoices.first %}
             {% if invoice %}
                 <h3 class="h4 mb-0 mt-4">{% trans 'Nota Fiscal' %}</h3>
                 <div class="card mt-3 mb-3">

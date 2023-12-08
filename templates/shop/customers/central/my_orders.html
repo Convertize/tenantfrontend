@@ -27,7 +27,7 @@
                             <td class="text-center align-middle"><a href="{% url 'customers:order' order.id %}">{{ order.get_payment_method_display }}</a></td>
                             <td class="text-center align-middle"><a href="{% url 'customers:order' order.id %}">{{ order.status|get_status_display }}</a></td>
                             <td class="text-center align-middle">
-                                {% with invoice=order.invoices.all|first %}
+                                {% with invoice=order.invoices.first %}
                                     {% if invoice %}
                                         {% if invoice.file %}
                                             <a href="{{ invoice.file.url }}" class="btn btn-sm btn-primary rounded-pill">XML da Nota Fiscal</a><br/>
