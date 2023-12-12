@@ -7,13 +7,7 @@
     {% endif %}
     <div class="carousel carousel-default owl-theme owl-carousel banner" data-owl-carousel='{"items":1, "nav":{{ object.bannerdhtml.navigation|lower }}, "dots":{{ object.bannerdhtml.pagination|lower }}, "autoplay":{{ object.bannerdhtml.autoplay|lower }}, "loop":{{ object.bannerdhtml.loop|lower }}{% if object.bannerdhtml.attr %}, {{ object.bannerdhtml.attr|safe }}{% endif %}}'>
         {% for banner in object.bannerdhtml.get_images %}
-            {% if object.extra_data.mobile and request|is_mobile %}
-                {% if banner.classes == "m" %}
-                    {% include "shop/showcases/bannerdhtml/includes/item.html" %}
-                {% endif %}
-            {% elif banner.classes != "m" %}
-                {% include "shop/showcases/bannerdhtml/includes/item.html" %}
-            {% endif %}
+            {% include "shop/showcases/bannerdhtml/includes/item.html" %}
         {% endfor %}
     </div>
 {% endlocalize %}
