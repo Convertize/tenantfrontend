@@ -11,59 +11,44 @@ const BaseView = $.Class.create({
         this.addProduct();
         this.formSearch();
         this.bind_events();
-        this.fixedHeader();
         this.horizontalScroll();
-        this.cookieLGPD();
+        if(!window.is_app){
+            this.fixedHeader();
+            this.cookieLGPD();
+        }else{
+            $(".header").hide();
+            $(".footer").hide();
+        };
         this.maskForm();
         this.seals();
+
+        $(document).on("pagebeforehide", function(){
+            $('.loader').show();
+        });
+
+
+        $(document).on("pageshow", function(){
+            $('.loader').hide();
+        });
+
     },
     seals: function(){
-        $(".item-product .seal-subscription").each(function(){
-            const sale_price = $(this).find(".sale_price").html();
-            $(this).closest(".item-product .seals").find(".seal-subscription").hide();
-            $(this).closest(".item-product").find(".box-prices").append(`<span class="d-flex align-items-center mt-2 text-info"><i class="icon-return2 h5 m-0 mr-2"></i><b class="font-size-20">${sale_price}</b>&nbsp; para assinantes</span>`);
-        }); 
-        
-        $(".item-product .compre-x-pague-y").each(function(){
-            if($(this).closest(".item-product").find(".box-compre-pague").length || !$(this).closest(".item-product").find(".sale-price").length) return;
-            const salePrice = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text().trim());
-            const value = (salePrice / $(this).attr("qtd") * $(this).attr("buy")).toCurrency();
-            const $box = $(`<div class="box-compre-pague mt-2 p-1 text-center">Leve ${$(this).attr("qtd")} e pague <span>${value}</span> cada</div>`);
-            $(".list-products .item-product .seals .compre-x-pague-y").hide();
-            $(this).closest(".item-product").find(".prices").append($box);
+        $(".list-products .seal.seal-subscription").each(function(){
+            $(this).insertAfter($(this).closest(".item-product").find(".prices"));
+            $(this).addClass("d-block").show();
         });
-        
-        $(".item-product .compre-x-por-y").each(function(){
-            const $box = $(`<div class="box-compre-pague mt-2 p-1 text-center">Compre ${$(this).attr("qtd")} por <span>${$(this).attr("buy")}</span> cada</div>`);
-            $(".list-products .item-product .seals .compre-x-por-y").hide();
-            $(this).closest(".item-product").find(".prices").append($box);
+
+        $(".item-product .seal-pix").each(function(){
+            const $item = $(this).closest(".item-product");
+            $(this).removeClass("d-none sale-price").insertAfter($item.find(".prices .sale-price"))
         });
-        
-        $(".item-product .percent-off").each(function(){
-//            if($(this).closest(".item-product").find(".box-percent-off").length || !$(this).closest(".item-product").find(".sale-price").length) return;
-//            const salePrice = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text().trim());
-//            const value = ((salePrice * $(this).attr("qtd") - salePrice * $(this).attr("percentage")) / $(this).attr("qtd")).toCurrency();
-//            const $box = $(`<div class="box-percent-off">Ganhe ${$(this).attr("value")}% off na ${$(this).attr("qtd")} uni.</p></div>`);
-            const $box = $(".list-products .item-product .seals .percent-off");
-            $(this).closest(".item-product").find(".prices").append('<div class="box-percent-off mt-2 p-1 text-center"></div>')
-            $(".box-percent-off").append($box);
-        });
-        
-        $(".item-product .seal-desconto-progressivo").each(function(){
-            if($(this).closest(".item-product").find(".box-desconto-progressivo").length || !$(this).closest(".item-product").find(".sale-price").length) return;
-            const price = fromCurrencyToFloat($(this).closest(".item-product").find(".sale-price").text());
-            const value = roundToTwo(price - (price * $(this).attr("percentage"))).toCurrency();
-            const quantity = $(this).attr("qtd");
-            const $box = $(`<div class="box-desconto-progressivo text-center mt-2 p-1"><p>Leve ${quantity} pague <span>${value}</span> cada</p></div>`);
-            $(this).closest(".item-product").find(".prices").append($box);
-            //$(this).closest(".list-products .item-product").find(".seals").append(`<span class="seal desconto-progressivo py-1 px-2">Leve mais<span> Por menos</span></span>`);
-        });  
+
     },
     cookieLGPD: function(){
         if(!Cookies.get("accept_cookie")){
            $("body").append(`<div class="accept_cookie">
                 <div class="d-flex flex-column align-items-center">
-					<i class="icon-cookie h1 m-0 text-primary"></i>
+                    <i class="icon-cookie h1 m-0 text-primary"></i>
                     <p class="text-center py-2">Utilizamos cookies para garantir que você tenha uma melhor experiência em nosso site. Ao continuar navegando você concorda com a nossa <a href="/politica-de-privacidade/s" class="text-underline">política de privacidade</a></p>
                     <button class="btn btn-checkout close_accept_cookie">Aceitar e fechar</button>
                 </div>
@@ -76,7 +61,7 @@ const BaseView = $.Class.create({
         };
     },
     fixedHeader: function(){
-        if($("body").hasClass("is_mobile")) return;
+        // if($("body").hasClass("is_mobile")) return;
         $(window).scroll(function(){
             const scroll = $(window).scrollTop();
             if(scroll >= 250){
@@ -95,13 +80,16 @@ const BaseView = $.Class.create({
             data_attribute:"src",
             effect: "show"
         });
-        $("input[name=quantity]:not([type=hidden])").spinner({
-            min: 1
-        });
     },
     bind_events: function(){
         const self = this;
         this.baseFunctions();
+
+        if(!$(".loader").length){
+            $("body").append(`<div class="mask-floating-page"></div><div class="loader"><div class="mask"></div><div class="loading"><div></div></div></div>`);
+        };
+
+        $(".money").toCurrency();
 
         $(".newsletter form").formValidation({
             success: (form, response) => {
@@ -114,12 +102,15 @@ const BaseView = $.Class.create({
                 // log(error)
             }
         });
-        
-        $("body").off("click.convertize2", ".bt_login, .btn-login");
-        $("body").on("click.convertize2", ".bt_login, .btn-login", function(e){
-            setTimeout(function(){
-                $("#boxLogin .initial-page .modal-body").append(`<div class="mt-4"><a href="/cadastro-cliente/s" class="btn btn-block btn-outline-dark py-3"><i class="icon-user h4 align-middle mr-2"></i> Realize seu cadastro</a></div>`);
-            }, 1);
+
+        //$(".title-showcase h2, .title-showcase .title").each(function(){
+        //    $(this).html( $(this).text().replace(/(^\w+)/,'<strong>$1&nbsp;</strong>') );
+        //});
+
+        $("body").off("click.convertize", ".scroll-top .btn");
+        $("body").on("click.convertize", ".scroll-top .btn", function(e){
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" })
         });
 
         $("body").off("click.convertize", ".bt-open-page");
@@ -127,8 +118,16 @@ const BaseView = $.Class.create({
             e.preventDefault();
             const target = $(this).data("target");
 
-            if(target == "#mini-cart" && $(target).hasClass("loading")){
-                self.loadCart();
+            if(target == "#mini-cart"){
+                // GA 4
+                if($(target).hasClass("loading")) self.loadCart();
+                else{
+                    const resp = JSON.parse(self.storage.getItem("cvz_cart") || "{}");
+                    if(resp.totalizers && resp.items){
+                        self.viewCart(resp);
+                    }
+                }
+                // GA 4 - end
             }else if(target == "#floating-menu" && $("#menuMobile").is(":empty")){
                 $("#menuMobile").html(menuMobileTemplate)
             }else if(target == "#floating-sidebar"){
@@ -150,8 +149,13 @@ const BaseView = $.Class.create({
         $("body").off("click.convertize", ".mask-floating-page, .floating-page .close");
         $("body").on("click.convertize", ".mask-floating-page, .floating-page .close", function(e){
             e.preventDefault();
+            const target = $(this).closest(".floating-page").attr("id");
             $("html,body").removeClass("open-page");
             $(".floating-page").removeClass("active");
+            if(target == "floating-menu"){
+                $("#menuMobile, #menuMobile .sub.active").removeAttr("style").removeClass("active");
+                $("#nav-inside .title-departament").text("Categorias");
+            }
         });
 
         $(".countdown").each(function(){
@@ -234,6 +238,14 @@ const BaseView = $.Class.create({
                 $(".modal").modal("hide");
             }
         });
+
+        const shareItems = document.querySelectorAll(".social_share");
+        for (var i = 0; i < shareItems.length; i += 1) {
+            shareItems[i].addEventListener("click", function share(e) {
+                return JSShare.go(this);
+            });
+        }
+
     },
     formSearch: function(){
         const self = this;
@@ -312,8 +324,8 @@ const BaseView = $.Class.create({
                                         <div class="box-prices">
                                             <div class="prices">
                                                 <div class="d-flex align-items-center">
-                                                    ${item.unit_price < item.price ? `<p class="unit-price mr-3"><span>${item.unit_price.toCurrency()}</span></p>`:""}
-                                                    <p class="sale-price"><strong>${item.price.toCurrency()}</strong></p>
+                                                    ${item.price && item.unit_price < item.price ? `<p class="unit-price mr-3"><span>${item.unit_price.toCurrency()}</span></p>`:""}
+                                                    ${item.price ? `<p class="sale-price money"><strong>${item.price.toCurrency()}</strong></p>`:""}
                                                 </div>
                                             </div>
                                         </div>
@@ -332,6 +344,12 @@ const BaseView = $.Class.create({
                                     </form>
                                 </div>
                             </div>`);
+                        } else if(item.type === "category"){
+                            listItems.push(`<a href="${item.url}/?map=${item.url.split("/").filter(u => u && u != request.term).map(u => "c").join(",")}" class="d-flex align-items-center mb-2 mt-2 search-category border-bottom pb-2">
+                                <span class="title">
+                                    <b>${request.term}</b> em ${item.name}
+                                </span>
+                            </a>`);
                         }
                     })
                     $("#floating-search, .form-search .autocomplete").find(".results").html((categories.length > 0 ? `<div class="categories"><h4 class="h6">Sugestões de pesquisa</h4>${categories.join("")}</div><hr class="w-100 mt-2 mb-3" />`:"") + listItems.join("")).removeClass("loading");
@@ -368,7 +386,7 @@ const BaseView = $.Class.create({
                 <ul class="last-search mb-3"></ul>
             `);
             words.slice(0,6).map(function(w){
-				const purifyw = window.DOMPurify.sanitize(w); 
+                const purifyw = window.DOMPurify.sanitize(w); 
                 $("#floating-search, .form-search .autocomplete").find("ul.last-search").append(`<li>
                     <a href="#" data-word="${purifyw}">
                         <i class="icon-history mr-2"></i>
@@ -397,7 +415,7 @@ const BaseView = $.Class.create({
         $("body").off("change.convertize", ".product-form .variations input[type=radio], .product-form .variations select");
         $("body").on("change.convertize", ".product-form .variations input[type=radio], .product-form .variations select", async function(e){
             e.preventDefault();
-            const $boxProduct = $(this).closest(".product-detail, .item-product");
+            const $boxProduct = $(this).closest(".item-product");
             const $form = $(this).closest(".product-form");
             const list_values = $form.find(".form-group input[type=radio]:checked, .form-group select").map(function(){
                 return `option=${$(this).val()}`
@@ -418,23 +436,45 @@ const BaseView = $.Class.create({
                 if(sku){
                     const price = parseFloat(sku.sale_price || sku.unit_price);
 
-                    const discountPix = $boxProduct.find(".sale-price").data("discount");
-                    if(discountPix){
-                        const pricePix = price - (price * (discountPix/100))
-                        $boxProduct.find(".sale-price strong").html(pricePix.toCurrency());
-                    }else{
-                        $boxProduct.find(".sale-price strong").html(price.toCurrency());
-                    };
-                    $boxProduct.find(".spot-price strong").html(sku.get_price_boleto.toCurrency());
+                    if(!price) sku.has_stock = false;
+
+                    const seals = sku.seals ? sku.seals.join(""):"";
+
+                    $boxProduct.find(".seal").remove();
+                    $boxProduct.find(".seals").html(seals);
+                    self.seals();
+
+                    const is_kg = sku.get_options && sku.get_options.length ? sku.get_options.filter(o => o.value.toString().toLowerCase().includes("kg")).length > 0:false;
+
+                    $boxProduct.find(".sale-price").each(function(){
+                        const discount = $(this).data("discount");
+                        let _price;
+                        if(discount){
+                            _price = price - (price * (discount/100))
+                            $(this).html(_price.toCurrency());
+                        }else{
+                            _price = price;
+                            $(this).html(price.toCurrency());
+                        };
+
+                        if(is_kg && sku.has_stock && window.dataProduct && $("#breadcrumb a[href*=racoes]").length > 0){
+                            const o = sku.get_options[0];
+                            const price_per_weight = (_price/fromCurrencyToFloat(o.value)).toCurrency();
+                            if(!$(this).closest("#content-product").find(".price-per-weight").length) $(this).closest("#content-product").find(".prices").append(`<p class="price-per-weight my-1 font-size-14"></p>`);
+                            $(this).closest("#content-product").find(".price-per-weight").html(`Preço por ${o.value.toString().replace(/\d+|\,|\./g, "").toLowerCase()} <strong>${price_per_weight}</strong>`);
+                        };
+
+                    });
+
                     $boxProduct.find(".get_min_installments").html(`${parseInt(price / parseFloat(sku.get_card_price))}x`);
                     $boxProduct.find(".get_card_price").html(parseFloat(sku.get_card_price).toCurrency());
                     if(sku.sale_price){
                         $boxProduct.find(".unit-price").removeClass("hide").show().find("span").html(parseFloat(sku.unit_price).toCurrency());
                         const discount =+ (Math.round(((parseFloat(sku.sale_price) * 100) / parseFloat(sku.unit_price) - 100)*-1 + "e+2") + "e-2");
-                        $boxProduct.find(".discount").removeClass("d-none").addClass("d-inline-block").html(`${parseInt(discount)}%`);
+                        $boxProduct.find(".discount").removeClass("d-none").addClass("d-flex").html(`${parseInt(discount)}%`);
                     }else{
                         $boxProduct.find(".unit-price").addClass("hide").hide().find("span").html("");
-                        $boxProduct.find(".discount").removeClass("d-inline-block").addClass("d-none").find("span").html
+                        $boxProduct.find(".discount").removeClass("d-flex").addClass("d-none").find("span").html
                     }
 
                     if(sku.has_stock){
@@ -450,6 +490,8 @@ const BaseView = $.Class.create({
                     if(window.dataProduct && window.dataProduct.sku) window.dataProduct.sku = sku.id;
 
                     if(self.updateImages) self.updateImages(sku, $boxProduct);
+
+
                 }
             }catch(err){
 
@@ -462,9 +504,10 @@ const BaseView = $.Class.create({
             e.preventDefault();
 
             const $bt = $(this);
+            const $boxProduct = $(this).closest(".item-product");
             const $form = $(this).closest(".product-form");
 
-            $form.addClass("loading");
+            $boxProduct.addClass("loading");
             $bt.addClass("loading").prop("disabled", true);
 
             if($form.data("validator")){
@@ -496,7 +539,7 @@ const BaseView = $.Class.create({
                     element.closest(".form-group").prepend(ul);            
                 },
                 invalidHandler: function(event, validator){
-                    $form.removeClass("loading");
+                    $boxProduct.removeClass("loading");
                     $bt.removeClass("loading").prop("disabled", false);
                 },
                 submitHandler: async function(form, event){
@@ -519,18 +562,44 @@ const BaseView = $.Class.create({
                             products: [body]
                         });
                         const resp = response.data;
-                        self.renderCart(resp);
-                        if(window.events && window.events.loadCart) window.events.loadCart();
+                        
+                        // GA 4
+                        const item = resp.items.find(function(i){
+                            return i.product == parseInt(body.product) && i.sku_options.map(function(item){return item.value_id}).sort().toString() == body.options.sort().toString()
+                        });
 
-                        $(`.my-cart [data-toggle="popover"]`).popover("show");
-                        setTimeout(function(){
-                            $bt.removeClass("added");
-                            $(`.my-cart [data-toggle="popover"]`).popover("hide");
-                        }, 3000);
+                        if(window.cvz && item){
+                            item.quantity = body.quantity;
+                            window.cvz.events.trigger("add_to_cart", item);
+                        }
+                        // GA 4 - end
+
+                        if(window.events && window.events.loadCart){
+                            window.events.loadCart();
+
+                            $boxProduct.removeClass("loading");
+                            $bt.removeClass("loading").prop("disabled", false);
+                            return;
+                        }
+
+                        self.renderCart(resp);
+                        
+
+                        $.toast({
+                            hideAfter: 7000,
+                            icon: "success",
+                            text: "✓ Produto adicionado",
+                            position: "top-center",
+                            showHideTransition: "plain",
+                            beforeShow: function(){
+                                $(".jq-toast-loader").addClass("jq-toast-loaded")
+                            }
+                        });
 
                         $("#mini-cart").addClass("active").removeClass("loading");
 
                     }catch(err){
+                        log(err)
                         if(err.response && err.response.data && err.response.data.messages){
                             err.response.data.messages.map(function(message){
                                 $.toast({
@@ -547,7 +616,7 @@ const BaseView = $.Class.create({
                         };
                     }
 
-                    $form.removeClass("loading");
+                    $boxProduct.removeClass("loading");
                     $bt.removeClass("loading").prop("disabled", false);
 
                     return false;
@@ -620,48 +689,83 @@ const BaseView = $.Class.create({
     },
     cart: function(){
         const self = this;
+        
+        // GA 4
         $("body").off("blur.convertize", "#mini-cart input[name=quantity], .item-product.added input[name=quantity]");
         $("body").on("blur.convertize", "#mini-cart input[name=quantity], .item-product.added input[name=quantity]", async function(e){
             e.preventDefault();
             const $this = $(this);
             const uuid = Cookies.get("convertize_cart_id");
-            const url = `/order/${uuid}/${$(this).closest("form, li").find("input[name=_id]").val()}/`;
+            const id = $(this).closest("li, .item-product").find("input[name=_id]").val();
+            const url = `/order/${uuid}/${id}/`;
 
-            $(this).closest("form, li").addClass("loading");
+            $(this).closest("li, .item-product").addClass("loading");
+
+            const quantity = parseInt($this.val()) <= 0 ? 1:parseInt($this.val());
+            const oldQuantity = $this.attr("data-quantity");
+
+            if(quantity <= 1) $(this).closest("li, .item-product").find(".purchase").addClass("remove");
+            else $(this).closest("li, .item-product").find(".purchase").removeClass("remove");
 
             try{
                 const response = await self.api.put(url, {
-                    quantity: parseInt($this.val()) <= 0 ? 1:parseInt($this.val())
+                    quantity: quantity
                 });
                 const resp = response.data;
                 self.renderCart(resp);
+
+                if(window.cvz && resp && resp.items && resp.items.length){
+                    const item = resp.items.find(function(i){return i.id == parseInt(id)});
+                    if(item){
+                        if(item.quantity > oldQuantity){
+                            item.quantity = item.quantity - oldQuantity
+                            window.cvz.events.trigger("add_to_cart", item);
+                        }else if(item.quantity < oldQuantity){
+                            item.quantity = oldQuantity - item.quantity;
+                            window.cvz.events.trigger("remove_from_cart", item);
+                        }
+                    }
+                }
+
             }catch(err){
                 log(err)
             };
 
-            $(this).closest("form,li").removeClass("loading");
+            $(this).closest("li, .item-product").removeClass("loading");
         });
 
         $("body").off("click.convertize", "#mini-cart .remove-item, .item-product.added .product-form .btn-checkout:not(.not-action)");
         $("body").on("click.convertize", "#mini-cart .remove-item, .item-product.added .product-form .btn-checkout:not(.not-action)", async function(e){
             e.preventDefault();
             const uuid = Cookies.get("convertize_cart_id");
-            const url = `/order/${uuid}/${$(this).closest("form,li").find("input[name=_id]").val()}/`;
+            const id = $(this).closest("li, .item-product").find("input[name=_id]").val();
+            const url = `/order/${uuid}/${id}/`;
+            const $this = $(this);
 
-            $(this).closest("form,li").addClass("loading");
+            $(this).closest("li, .item-product").addClass("loading");
 
             try{
                 const response = await self.api.delete(url);
                 const resp = response.data;
                 self.renderCart(resp);
+
+                if(window.cvz && !resp.items.filter(function(item){ return item.id == parseInt(id)}).length){
+                    const quantity = parseInt($this.closest("li, .item-product").find("input[name=quantity]").val());
+                    window.cvz.events.trigger("remove_from_cart", [{
+                        "item_id": $this.closest("li, .item-product").find("input[name=_sku]").val(),
+                        "item_name": $this.closest("li, .item-product").find(".title").text().trim(),
+                        "quantity": quantity,
+                        "price": fromCurrencyToFloat($this.closest("li, .item-product").find(".sale-price").html()) / quantity
+                    }]);
+                }
+
             }catch(err){
-                log("errr")
                 log(err)
             };
 
-            $(this).closest("form,li").removeClass("loading");
-
+            $(this).closest("li, .item-product").removeClass("loading");
         });
+        // GA 4 - end
 
         $("body").off("click.convertize", "#mini-cart .codes a");
         $("body").on("click.convertize", "#mini-cart .codes a", async function(e){
@@ -689,10 +793,12 @@ const BaseView = $.Class.create({
 
         this.functionsCart();
     },
-    functionsCart: function(){
+    functionsCart: function(element){
         const self = this;
         let interval = false;
-        $("#mini-cart .content-cart input[name=quantity], .item-product .product-form input[name=quantity]").spinner({
+        const _element = element || "#mini-cart .content-cart, .item-product .product-form";
+
+        $(_element).find("input[name=quantity]").spinner({
             min: 1,
             classes: {
                 "ui-spinner": "ui-corner-all",
@@ -757,7 +863,29 @@ const BaseView = $.Class.create({
             }
         });
     },
-    loadCart: async function(){
+    viewCart: function(resp){
+        // GA 4
+        if(window.cvz){
+            if(resp.totalizers && resp.items){
+                window.cvz.events.trigger("view_cart", {
+                    currency: "BRL",
+                    value: resp.totalizers.total_price,
+                    items: resp.items.map(function(item){
+                        return {
+                            item_name: item.sku_name,
+                            item_id: item.sku,
+                            price: item.unit_price,
+                            "quantity": item.quantity
+                        }
+                    })
+                })
+            }
+        }
+        // GA 4 - end
+    },
+    loadCart: async function(callback){
+        if(!$("#mini-cart").length) return;
+
         const self = this;
         const uuid = Cookies.get("convertize_cart_id");
         if(!uuid){
@@ -769,25 +897,34 @@ const BaseView = $.Class.create({
             const response = await self.api.get(`/order/${uuid}/`);
             const resp = response.data;
             self.renderCart(resp);
+            self.viewCart(resp);
+            $("#mini-cart").removeClass("loading");
         }catch(err){
             log(err);
             if(err.response && err.response.status === 404){
                 $("#mini-cart .content-cart ul").html(`<li class="empty">
-                    <div class="empty-cart"><span class="face">:(</span><span class="text"><strong>Ops!</strong><br />Você está sem produtos</span></div>
+                    <div class="empty-cart"><span class="text"><i class="icon-Icone-dos-produtos"></i><strong>Ops!</strong>Seu carrinho está sem produtos</span></div>
                 </li>`);
                 Cookies.remove("convertize_cart_id")
             }
             $("#mini-cart").removeClass("loading");
         }
+
+        if(callback) callback();
+
     },
     renderCart: function(data){
         this.storage.setItem("cvz_cart", JSON.stringify(data));
 
-        if(!$("#mini-cart").length) return;
         let total = data.totalizers.total_price;
         let discount = 0;
 
-        if(data.totalizers.shipping_total && data.totalizers.shipping_total != 0) total += data.totalizers.shipping_total;
+        if($(".request__cart__shipping_total").length){
+            $(".request__cart__shipping_total").html(data.totalizers.shipping_total.toCurrency());
+
+            if(data.totalizers.shipping_total && data.totalizers.shipping_total != 0) total += data.totalizers.shipping_total;
+        }
+
         if(data.totalizers.discount && data.totalizers.discount != 0) discount -= data.totalizers.discount;
         if(data.totalizers.payment_discount && data.totalizers.payment_discount != 0) discount -= data.totalizers.payment_discount;
         if(data.totalizers.interest && data.totalizers.interest != 0) total += data.totalizers.interest;
@@ -796,73 +933,80 @@ const BaseView = $.Class.create({
 
         $(".request__cart__total_price").html(data.totalizers.total_price.toCurrency());
         $(".request__cart__discount_value").html(discount.toCurrency());
-        $(".request__cart__total").html(total.toCurrency());
-        $(".request__cart__total_quantity").html(data.items.length);
+        $(".request__cart__total").html((total).toCurrency());
+        $(".request__cart__total_quantity").html(data.totalizers.quantity);
 
-        $("#mini-cart .content-cart ul").html("");
+        if($("#mini-cart").length){
+            $("#mini-cart .content-cart ul").html("");
 
-        data.items.map(function(item){
-            let price = "";
-            if(item.discount_value < item.total_price){
-                price = `<span class="unit-price">${item.total_price.toCurrency()}</span><br /><span class="sale-price">${item.discount_value.toCurrency()}</span>`;
-            }else{
-                price = `<span class="sale-price">${item.total_price.toCurrency()}</span>`;
-            };
-            $("#mini-cart .content-cart ul").append(`<li>
-                <input type="hidden" value="${item.id}" name="_id" />
-                <input type="hidden" value="${item.sku}" name="_sku" />
-                ${item.image ?
-                    `<a href="${item.url}" class="item-image"><img src="${item.image.replace("/small/", "/mini/")}" width="60" height="60" alt="${item.sku_name}" /></a>`
-                :
-                    `<a href="${item.url}" class="item-image"><img src="${window.__static_prefix__}img/blank.png" width="60" height="60" alt="${item.sku_name}" /></a>`
-                }
-                <div class="item-info">
-                    <a href="${item.url}" class="item-title d-block">${item.sku_name}</a>
-                    <div class="d-flex align-items-center mt-2">
-                        <div>
-                            <span class="item-price">${price}</span>
-                        </div>
-				        <div class="quantity ml-4">
-                            <input type="tel" value="${item.quantity}" name="quantity" class="input" data-quantity="${item.quantity}" />
+            data.items.map(function(item){
+                let price = "";
+                if(item.discount_value < item.total_price){
+                    price = `<span class="unit-price money">${item.total_price.toCurrency()}</span><br /><span class="sale-price money">${item.discount_value.toCurrency()}</span>`;
+                }else{
+                    price = `<span class="sale-price money">${item.total_price.toCurrency()}</span>`;
+                };
+                $("#mini-cart .content-cart ul").append(`<li>
+                    <input type="hidden" value="${item.id}" name="_id" />
+                    <input type="hidden" value="${item.sku}" name="_sku" />
+                    ${item.image ?
+                        `<a href="${item.url}" class="item-image"><img src="${item.image.replace("/small/", "/mini/")}" width="60" height="60" alt="${item.sku_name}" /></a>`
+                    :
+                        `<a href="${item.url}" class="item-image"><img src="${window.__static_prefix__}img/blank.png" width="60" height="60" alt="${item.sku_name}" /></a>`
+                    }
+                    <div class="item-info">
+                        <a href="${item.url}" class="item-title d-block">${item.sku_name}</a>
+                        <div class="d-flex align-items-center mt-2">
+                            <div>
+                                <span class="item-price prices">${price}</span>
+                            </div>
+                            <div class="quantity mx-4">
+                                <input type="tel" value="${item.quantity}" name="quantity" class="input" data-quantity="${item.quantity}" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <a class="remove-item"><i class="icon-trash"></i></a>
-            </li>`);
-        });
-
-        $("#mini-cart footer .codes").html("");
-
-        data.coupons.map(function(value){
-            $("#mini-cart footer .codes").append(`<a>${value}</a>`);
-        });
-
-        if(data.coupons.length > 0) $("#mini-cart footer .codes").addClass("active");
-        else $("#mini-cart .footer .codes").removeClass("active");
-
-        if(data.items.length > 0){
-            $("#mini-cart footer").show();
-        }else{
-            $("#mini-cart footer").hide();
-            $("#mini-cart .content-cart ul").html(`<li class="empty">
-                <div class="empty-cart"><span class="face">:(</span><span class="text"><strong>Ops!</strong><br />Você está sem produtos</span></div>
-            </li>`);
-        };
-
-        if(data.messages && data.messages.length){
-            data.messages.map(function(message){
-                $.toast({
-                    hideAfter: 7000,
-                    icon: message.level.toLowerCase(),
-                    text: message.message,
-                    position: "top-center",
-                    showHideTransition: "plain",
-                    beforeShow: function(){
-                        $(".jq-toast-loader").addClass("jq-toast-loaded")
-                    }
-                });
+                    <a href="#" class="remove-item ml-3"><i class="icon-trash"></i></a>
+                </li>`);
             });
-        };
+
+            $("#mini-cart footer .codes").html("");
+
+            data.coupons.map(function(value){
+                $("#mini-cart footer .codes").append(`<a>${value}</a>`);
+            });
+
+            if(data.coupons.length > 0) $("#mini-cart footer .codes").addClass("active");
+            else $("#mini-cart .footer .codes").removeClass("active");
+
+            if(data.items.length > 0){
+                $("#mini-cart footer").show();
+            }else{
+                $("#mini-cart footer").hide();
+                $("#mini-cart .content-cart ul").html(`<li class="empty">
+                    <div class="empty-cart"><span class="text"><i class="icon-Icone-dos-produtos"></i><br /><strong>Ops!</strong>Seu carrinho está sem produtos</span></div>
+                </li>`);
+            };
+        }
+
+        try{
+            if(data.messages && data.messages.length){
+                data.messages.map(function(message){
+                    if(message.indexOf("frete") >= 0) return
+                    $.toast({
+                        hideAfter: 7000,
+                        icon: message.level.toLowerCase(),
+                        text: message.message,
+                        position: "top-center",
+                        showHideTransition: "plain",
+                        beforeShow: function(){
+                            $(".jq-toast-loader").addClass("jq-toast-loaded")
+                        }
+                    });
+                });
+            };
+        }catch(err){
+            
+        }
 
         $("#mini-cart").removeClass("loading");
 
@@ -870,26 +1014,46 @@ const BaseView = $.Class.create({
         this.functionsCart();
     },
     renderFront: function(){
-        if(!Cookies.get("convertize_cart_id")) return
         const cart = JSON.parse(this.storage.getItem("cvz_cart"), "{}");
+
+        if(!Cookies.get("convertize_cart_id") || (cart && cart.uuid && cart.uuid != Cookies.get("convertize_cart_id"))){
+            if(cart && cart.uuid) this.storage.removeItem("cvz_cart")
+            return;
+        };
+
         if(cart && cart.items){
             $(".item-product").removeClass("added").find("input[name=_id]").remove();
-            $(".item-product .product-form input[name=quantity]").val(1);
+            $(".item-product .product-form input[name=quantity]").val(1).removeAttr("data-quantity");
             cart.items.map(item => {
                 $(`.item-product[data-id=sku_${item.sku}]`).addClass("added");
                 $(`.item-product[data-id=sku_${item.sku}] .product-form`).append(`<input type="hidden" name="_id" value="${item.id}" />`);
-                $(`.item-product[data-id=sku_${item.sku}] input[name=quantity]`).val(item.quantity);
+                $(`.item-product[data-id=sku_${item.sku}] input[name=quantity]`).val(item.quantity).attr("data-quantity", item.quantity);
+
+                if(item.quantity <= 1){
+                    $(`.item-product[data-id=sku_${item.sku}] .purchase`).addClass("remove");
+                } else {
+                    $(`.item-product[data-id=sku_${item.sku}] .purchase`).removeClass("remove");
+                }
+
+                setTimeout(function() {
+                    item.selected_services.map(service => {
+                        service.fields.filter(f => f.value).map(field => {
+                            $(`#load-services #form-service-${service.service} input[name="field-${field.id}"][value="${field.value}"]`).prop("checked", true);
+                        });
+                    })
+                }, 300)
+
             });
-        }
+        };
+
     },
     carousel: function(){
         const self = this;
-	
+    
         if($(".carousel").length){
             $(".carousel").each(function(){
                 const $this = $(this);
                 const fixOwl = function(){
-                    console.log("onInitialized");
                     var $stage = this.$element.find(".owl-stage"),
                         stageW = $stage.outerWidth(),
                         $el = this.$element.find(".owl-item"),
@@ -905,6 +1069,7 @@ const BaseView = $.Class.create({
                 const options = $(this).data("owl-carousel") || {};
                 options.lazyLoad = true;
                 const $item = $(this);
+                const element = this;
                 try{
                     if(!$(this).hasClass("banner") && !options.hasOwnProperty("responsive")){
                         options["responsive"] = {
@@ -922,15 +1087,31 @@ const BaseView = $.Class.create({
                             }
                         };
                     };
+
                     if(options.hasOwnProperty("startPosition") && options["startPosition"] == "auto") options["startPosition"] = $item.find(".item.active").index();
+
                     if(options["autoWidth"]) options["onLoadedLazy"] = fixOwl;
-                    if(!$(this).hasClass("banner") && !$("body").hasClass("is_mobile")) options["margin"] = 3;
+
+                    if(!options.margin){
+                        if(!$(this).hasClass("banner")) options["margin"] = $("body").hasClass("is_mobile") ? 10:20;
+                        else options["margin"] = 8;
+                    }
+
+                    // if(options.margin) options["margin"] = parseInt(options.margin)
+                    // log(options)
+
+                    options["navText"] = [
+                        `<span aria-label="Anterior"><i class="icon-arrow-left"></i></span>`,
+                        `<span aria-label="Próximo"><i class="icon-arrow-right"></i></span>`
+                    ];
+
+                    $item.on("changed.owl.carousel", function(event){
+                        self.renderFront();
+                        self.functionsCart(element);
+                    });
+
                     $item.owlCarousel(options);
-					if(screen.width < 700){
-					 	$('.showcase-banners-menores ul').removeClass()
-						$('.showcase-banners-menores .item').css('min-width','390px').css('width','390px').css('padding-bottom','10px')
-						$('.showcase-banners-menores ul img').css('width','390px')
-					}
+
                 }catch(err){
                     console.error(err);
                 };
@@ -942,13 +1123,22 @@ const BaseView = $.Class.create({
             e.preventDefault();
             const _this = $(this);
                 _parent = $(this).parent();
-            
+
             let level = parseInt($(this).parent().attr("class").match(/level-[\w-]*\b/).join("").match(/\d+/g).join(""));
 
             if($(this).hasClass("back")) level -= 1;
             else level += 1;
 
-            $("#nav-inside .content-nav-inside").css({left:($("#nav-inside .content-nav-inside").width()*level)*-1});
+            if($(this).hasClass("back")) $("#nav-inside .title-departament").text($(this).data("prev"));
+            else{
+                const $ul = _parent.children(".sub").children("ul");
+                if(!$ul.find(".back").length) $ul.prepend(`<li class="level-${level} li-back"><a class="back" data-prev="${$("#nav-inside .title-departament").text()}"><span class="link">Voltar</span></a></li>`);
+
+                $("#nav-inside .title-departament").data("prev", $("#nav-inside .title-departament").text()).text($(this).find(".link").text());
+            };
+
+            $("#nav-inside .content-page").scrollTop(0);
+            $("#nav-inside .content-nav-inside").css({left: ($("#nav-inside .content-nav-inside").width() * level) * -1});
 
             if($(this).next(".sub").length){
                 $("#nav-inside .content-nav-inside").find(".sub").removeClass("active");
@@ -1109,27 +1299,3 @@ const BaseView = $.Class.create({
         }
     }
 });
-
-function addCartNotification() {
-    if ($('.jq-toast-wrap').length) {
-        $('.jq-toast-wrap').remove();
-    } else {
-        $('[data-toggle="popover"]').popover('show')
-        setTimeout(() => {
-            $('[data-toggle="popover"]').popover('hide')
-        }, 3000);
-    }
-}
-
-$(document).ready(
-    function () {
-        var showPopover = function () {
-                $(this).popover('show');
-            },
-            hidePopover = function () {
-                $(this).popover('hide');
-            };
-        $('[data-toggle="popover"]').popover({
-            trigger: 'manual'
-        })
-    })

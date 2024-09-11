@@ -1,0 +1,16 @@
+{% load compress %}
+{% compress js %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/class/Checkout.js"></script>
+{% endcompress %}
+
+{% compress js %}
+    <script src="{{ STATIC_URL }}js/libs/jquery.min.js" async></script>
+    <script src="{{ STATIC_URL }}js/libs/popper.min.js" async></script>
+    <script src="{{ STATIC_URL }}js/libs/bootstrap.min.js" async></script>
+    <script src="{{ STATIC_URL }}js/libs/axios.min.js" async></script>
+    <script src="{{ STATIC_URL }}js/libs/owl.carousel.min.js" async></script>
+    <script src="{{ STATIC_URL }}js/class/Class.js" async></script>
+    <script src="{{ STATIC_URL }}js/class/BaseView.js" async></script>
+    <script src="{{ STATIC_URL }}js/class/Checkout.js" async></script>
+    <script src="{{ STATIC_URL }}js/class/Nav.js" async></script>
+{% endcompress %}
