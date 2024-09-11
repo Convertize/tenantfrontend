@@ -1,6 +1,7 @@
 {% load i18n l10n thumbnail shop_tags user_agents %}
 {% with p.has_stock as has_stock %}
     {% localize off %}
+    {% payment_price p.price "pix" as pix_discount %}
         <div 
             class="item-product{% if not has_stock %} not_stock{% endif %}" 
             data-id="{{ p.id }}" 
@@ -49,15 +50,6 @@
                                         <strong>{{ p.price|currency }}</strong>
                                     </p>
                                 </div>
-                                {% comment %}
-                                <p class="boleto-price" data-discount="{{ billet_discount|floatformat }}">
-                                    <strong>{{ p.price|get_price_boleto|currency }}</strong> o boleto
-                                </p>
-                                {% payment_price p.price "pix" as pix_discount %}
-                                <p class="pix-price">
-                                    <strong>{{ pix_discount.value|currency }}</strong> no pix
-                                </p>
-                                {% endcomment %}
                                 <p class="card-installments">
                                     <span class="parcel">em até <strong class="get_min_installments">{{ p.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ p.price|get_card_price|currency }}</strong> no cartão</span>
                                 </p>
@@ -109,7 +101,7 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
-                        <div class="purchase">
+                        <div class="purchase    ">
                             <label aria-label="Quantidade" class="m-0 mr-2">
                                 <input type="tel" value="1" name="quantity" />
                             </label>

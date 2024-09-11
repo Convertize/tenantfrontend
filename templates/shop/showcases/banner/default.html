@@ -1,9 +1,0 @@
-<div class="row">
-    <div class="col-12">
-        <a class="banner-u"{% if object.banner.link %} href="{{ object.banner.link }}"{% if object.banner.target %} target="_blank"{% endif %}{% endif %}{% if object.banner.style %} style="{{ object.banner.style }}"{% endif %}>
-            {% with width=object.banner.image.dimensions|first height=banner.image.dimensions|last %}
-                <img src="{{ STATIC_URL }}img/blank.gif" data-src="{{ object.banner.image.url }}" alt="{{ object.banner.title }}" title="{{ object.banner.title }}" class="owl-lazy" width="{{ width }}" height="{{ height }}" style="aspect-ratio:{{ width }}/{{ height  }}" />
-            {% endwith %}
-        </a>
-    </div>
-</div>
