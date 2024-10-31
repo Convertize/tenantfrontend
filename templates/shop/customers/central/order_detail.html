@@ -38,7 +38,7 @@
                         </p>
                         {% if order.days_to_shipping %}
                             <p class="mb-2">
-                                Entrega em até <b>{{ order.days_to_shipping }}</b> dias úteis após o despacho
+                                Entrega em até <b>{{ order.days_to_shipping }}</b> {{ order.get_shipping_time_format_display|lower }}{{ order.days_to_shipping|pluralize }} út{{ order.days_to_shipping|pluralize:"il,eis" }}
                             </p>
                         {% endif %}
                         <p>
@@ -82,7 +82,7 @@
                 <div class="col text-center current-1">
                     <a>
                         <span class="box-icon">
-                            <i class="icon-clock-full"></i>
+                            <i class="icon-check"></i>
                         </span>
                         Aguardando pagamento
                     </a>
@@ -91,7 +91,7 @@
                     <div class="col text-center current-2">
                         <a>
                             <span class="box-icon">
-                                <i class="icon-like-full"></i>
+                                <i class="icon-check"></i>
                             </span>
                             Pagamento confirmado
                         </a>
@@ -100,7 +100,7 @@
                     <div class="col text-center current-2">
                         <a>
                             <span class="box-icon">
-                                <i class="icon-close-radius"></i>
+                                <i class="icon-check"></i>
                             </span>
                             Cancelado
                             <br />
@@ -111,7 +111,7 @@
                 <div class="col text-center current-3">
                     <a>
                         <span class="box-icon">
-                            <i class="icon-stock-full"></i>
+                            <i class="icon-check"></i>
                         </span>
                         Em separação
                     </a>
@@ -119,7 +119,7 @@
                 <div class="col text-center current-4">
                     <a>
                         <span class="box-icon">
-                            <i class="icon-delivery-full"></i>
+                            <i class="icon-check"></i>
                         </span>
                         Em transporte{% if 'retirar' in order.shipping_type|slugify %} para loja escolhida {% endif %}
                     </a>
@@ -128,7 +128,7 @@
                     <a>
                         {% if 'retirar' in order.shipping_type|slugify %}
                             <span class="box-icon">
-                                <i class="icon-box-full"></i>
+                                <i class="icon-check"></i>
                             </span>
                             Pronto para a retirada
                         {% else %}
