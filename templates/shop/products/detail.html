@@ -1,176 +1,313 @@
-{% extends "shop/base.html" %}{% load i18n l10n shop_tags user_agents compress %}
-{% block body_id %}product{% endblock %}
+{% extends "shop/base.html" %}{% load i18n l10n shop_tags showcases_tags %}
 
-{% block extra_meta %}
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="{{ shop_settings.SEO_TITLE }}">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ product.name }}">
-    <meta property="og:url" content="https://{{ request.get_host }}{{ product.get_absolute_url }}">
-    <meta property="og:description" content="{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}">
-    <meta property="og:image" content="http:{{ MEDIA_URL|cut:'https://' }}{{ product.image }}">
-    <meta property="og:image:secure_url" content="https:{{ MEDIA_URL }}{{ product.image }}">
-    <meta property="og:image:type" content="image/jpeg">
-    {% localize off %}
-        <script>
-            window.dataProduct = {
-                "id": "{{ product.id }}",
-                "name": "{{ product.name }}",
-                "sku": "{{ product.get_sku_default.id }}",
-                "price": "{{ product.price|get_card_price }}",
-                "sale_price": "{{ product.price }}",
-                "url": "{{ product.get_absolute_url }}",
-                "options": {% if sku %}{{ sku.options|default:'""' }}{% else %}{{ product.get_sku_default.options|default:'""' }}{% endif %}
-            }
-        </script>
-    {% endlocalize %}
-{% endblock%}
+{% block bodyId %}product{% endblock %}
 
-{% block meta_title %}{% if product.title and product.name != product.title %}{% trans product.title %}{% else %}{% trans product.name %} | {{ block.super }} {% endif %}{% endblock %}
-
-{% block meta_description %}{% if product.description %}{{ product.description }}{% else %}{{ product.title }}{% endif %}{% endblock %}
-{% block meta_keywords %}{% if product.keywords %}{{ product.keywords }}{% endif %}{% endblock %}
-{% block meta_robots %}{{ block.super }}<link rel="canonical" href="https://{{ request.get_host }}/{{ product.slug }}/p">{% endblock %}
+{% block metaTitle %}{{ product.name }} | {{ shop_settings.SEO_TITLE }}{% endblock %}
+{% block metaDescription %}{{ product.seo_description|default:product.name }}{% endblock %}
 
 {% block content %}
-    {% get_data_json product.specifications as json_specifications %}
-        {% localize off %}
-			<div itemscope itemtype="http://schema.org/Product">
-				{% include 'shop/products/detail_ajax.html' %}
-				<div class="container">
-                    <div class="card mt-3 border-0">
-                        <div class="font-size-14">
-                            <div class="accessibility-font p-3 float-right d-none d-sm-flex align-items-center">
-                                Acessibilidade 
-                                <button type="button" data-action="minus" class="mx-2">A <i class="icon-minus"></i></button>
-                                <button type="button" data-action="plus">A <i class="icon-plus"></i></button>
-                            </div>
-                            {% if product.details %}
-                                <div class="card-body">
-                                    <div class="card-title mb-3">
-                                        <div class="font-size-26">Descrição</div>
-                                    </div>
-                                    <div class="text-body" id="description">
-                                        {{ product.details|safe }}
+{% get_data_json product.specifications as json_specifications %}
+{% get_data_json product.specifications_visible as json_specifications_visible %}
+    {% block productHeader %}
+        <div class="product-header py-3">
+            {% block productBreadcrumb %}
+                <nav class="nav-breadcrumb container" aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="home breadcrumb-item">
+                            <a href="{% url 'home' %}">{% trans 'Início' %}</a>
+                        </li>
+                        {% for category in categories %}
+                            <li class="breadcrumb-item">
+                                <a href="{{ category.get_absolute_url }}">{{ category.title }}</a>
+                            </li>
+                        {% endfor %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                    </ol>
+                </nav>
+            {% endblock productBreadcrumb %}
+        </div>
+    {% endblock productHeader %}
+    {% localize off %}
+    <div class="product-content">
+        {% block productContent %}
+            <div class="container">
+                <div class="row justify-content-between item-product loading-product"
+                     data-product="{{ product.id }}"
+                     data-sku="{{ sku.id }}"
+                     data-upc="{{ product.upc }}">
+
+                    {% block productGallery %}
+                        <div class="col-12 col-lg-7 mb-4 mb-lg-0">
+                            <div class="product-gallery-wrapper d-flex flex-column-reverse flex-lg-row align-items-stretch align-items-lg-start gap-3">
+                                <div class="gallery-thumbs-col">
+                                    <div class="swiper gallery-thumbs"
+                                         data-direction="horizontal"
+                                         data-slides-per-view="4"
+                                         data-space-between="10"
+                                         data-watch-slides-progress="true"
+                                         data-swiper='{"breakpoints":{"992":{"direction":"vertical"}}}'>
+                                        {# as miniaturas são geradas via JS a partir dos slides principais (data-thumb) #}
+                                        <div class="swiper-wrapper"></div>
                                     </div>
                                 </div>
-                            {% endif %}
-                            {% with get_contents=product.get_contents %}
-                                {% for c in get_contents %}
-                                    <div class="card-body">
-                                        <div class="card-title mb-3"><div class="font-size-26">{{ c.title }}</div></div>
-                                        <div class="text-body">
-                                            {{ c.content|safe }}
+                                <div class="gallery-main-col flex-grow-1 overflow-hidden position-relative">
+                                    <button type="button" class="gallery-zoom-btn" aria-label="{% trans 'Ampliar imagem' %}" title="{% trans 'Ampliar imagem' %}">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <circle cx="11" cy="11" r="7"></circle>
+                                            <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+                                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                                        </svg>
+                                    </button>
+                                    <div class="swiper swiper-container gallery-product"
+                                         data-slides-per-view="1"
+                                         data-loop="true"
+                                         data-zoom="true"
+                                         data-thumbs=".gallery-thumbs">
+                                        <div class="swiper-wrapper">
+                                            {% for image in product.get_images %}
+                                                {% if not image.video and forloop.counter <= 10 %}
+                                                    <div class="swiper-slide">
+                                                        <figure class="swiper-zoom-container mb-0">
+                                                            <img loading="lazy"
+                                                                 src="{{ MEDIA_URL }}{{ image.version_big }}"
+                                                                 data-thumb="{{ MEDIA_URL }}{{ image.version_medium|default:image.version_big }}"
+                                                                 data-zoom-src="{{ MEDIA_URL }}{{ image.version_large|default:image.version_big }}"
+                                                                 class="img-fluid"
+                                                                 alt="{{ product.name }} - {{ forloop.counter }}"
+                                                                 title="{{ product.name }}"
+                                                                 width="{{ shop_settings.SHOP_PRODUCT_THUMB_BIG|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_BIG|split:'x'|last }}"
+                                                                 {% if forloop.first %}fetchpriority="high"{% endif %} />
+                                                        </figure>
+                                                        <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                                    </div>
+                                                {% endif %}
+                                            {% empty %}
+                                                <div class="swiper-slide">
+                                                    <figure class="mb-0"><span class="not-found"></span></figure>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="swiper-button-next"></div>
+                                        <div class="swiper-button-prev"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock productGallery %}
+
+                    {% block productInfo %}
+                        <div class="col-12 col-lg-4">
+                            <div class="card border-0 shadow-sm">
+                                <div class="item-container p-3">
+                                    <div class="widget-wishlist position-absolute top-0 end-0 m-2 z-1 fs-20" data-sku="{{ sku.id }}"></div>
+
+                                    {% if product.brand %}
+                                        <div class="item-brand fs-12 text-uppercase text-secondary mb-1">{{ product.brand }}</div>
+                                    {% endif %}
+
+                                    <h1 class="item-title mb-2">{{ product.name }}</h1>
+
+                                    <div class="title-content d-flex align-items-center lh-sm mb-3">
+                                        <div class="rating-star rating-star-{{ product.rating|default:0|floatformat:0 }} d-flex align-items-center gap-1">
+                                            <span class="star"></span>
+                                            <span class="star"></span>
+                                            <span class="star"></span>
+                                            <span class="star"></span>
+                                            <span class="star"></span>
+                                            {% if product.rating_total %}
+                                                <a href="#product-ratings" class="total ms-2 mb-0 fs-12 text-secondary">({{ product.rating_total }})</a>
+                                            {% endif %}
                                         </div>
                                     </div>
-                                {% endfor %}
-                            {% endwith %}
-                            {% if json_specifications %}
-                                <div class="card-body">
-                                    <div class="card-title mb-3"><div class="font-size-26">Ficha técnica</div></div>
-                                    <table border="0" cellpadding="0" cellspacing="0" class="table table-striped table-borderless" width="100%">
-                                        <tbody>
-                                            {% for s,v in json_specifications.items %} 
-                                            {% if v.value and s not in 'age_group,gender,adult,is_bundle,pattern'|split %}
-                                            <tr>
-                                                <td class="font-weight-bold">{{ v.label }}</td>
-                                                <td class="{{ v.label|slugify }}">{{ v.value }}</td>
-                                            </tr>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="container">
-                    {% if product.get_similars %}
-                        <div class="title-showcase">
-                            <h2>{% trans 'Produtos similares' %} </h2>
-                        </div>
-                        <div class="carousel owl-carousel list-products list-products-paginate">
-                            {% for p in product.get_similars %}
-                                <div class="li">
-                                    {% include "shop/includes/product.html" %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% if product.get_suggestions %}
-                        <div class="title-showcase">
-                            <h2>{% trans 'Nossas sugestões' %} </h2>
-                        </div>
-                        <div class="carousel owl-carousel list-products list-products-paginate">
-                            {% for p in product.get_suggestions %}
-                                <div class="li">
-                                    {% include "shop/includes/product.html" %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% if product.get_accessories %}
-                        <div class="title-showcase">
-                            <h2>{% trans 'Acessórios' %} </h2>
-                        </div>
-                        <div class="carousel owl-carousel list-products list-products-paginate">
-                            {% for p in product.get_accessories %}
-                                <div class="li">
-                                    {% include "shop/includes/product.html" %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% if upsell_products %}
-                        <div class="title-showcase">
-                            <h2>{% trans 'Quem comprou, comprou também' %} </h2>
-                        </div>
-                        <div class="carousel owl-carousel list-products list-products-paginate">
-                            {% for p in upsell_products %}
-                                <div class="li">
-                                    {% include "shop/includes/product.html" %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="container">
-                    <div class="mt-3">
-                        {% include "shop/products/rating_details.html" %}
-                    </div>
-                </div>
-			</div>
-        {% endlocalize %}
-{% endblock %}
 
-{% block footer_script %}
-    {{ block.super }}
-    {% compress js %}
-        <script src="{{ STATIC_URL }}js/libs/photoswipe.min.js"></script>
-        <script src="{{ STATIC_URL }}js/libs/photoswipe-ui-default.min.js"></script>
-    {% endcompress %}
-    {% compress css %}
-        <link href="{{ STATIC_URL }}css/photoswipe/photoswipe.css" rel="stylesheet" type="text/css">
-        <link href="{{ STATIC_URL }}css/photoswipe/default-skin/default-skin.css" rel="stylesheet" type="text/css">
-    {% endcompress %}
-{% endblock %}
+                                    <div class="divider-gray-light mb-3"></div>
 
-{% block extra_footer %}
-    {{ block.super }}
-    <div class="modal fade" id="all_installments" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title fw600">Parcelamento no cartão de crédito</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="all_installments">
-                        <ul></ul>
-                    </div>
+                                    <div class="purchase d-flex flex-column">
+                                        {% if product.available %}
+                                            <form method="POST" action="{{ product.get_absolute_url }}" class="product-form">
+                                                {% csrf_token %}
+
+                                                <input type="hidden" value="{{ product.id }}" name="product" />
+                                                <input type="hidden" value="{{ sku.id }}" name="sku" />
+                                                <input type="hidden" value="{{ product.slug }}" name="slug" />
+                                                <input type="hidden" value="{{ sku.price|unlocalize }}" name="price" />
+
+                                                {% block productVariations %}{# marca as opções do SKU da página (sku.options), senão o produto abre sem nenhuma variação marcada #}
+                                                    {% with options=product.get_all_options %}
+                                                        {% regroup options by option_title as options %}
+                                                        {% if options %}
+                                                            <div class="item-variations mb-3">
+                                                                {% for option in options %}
+                                                                    <div class="form-group form-group-{{ option.grouper|slugify }} mb-2"{% if option.list|length <= 1 %} style="display:none"{% endif %}>
+                                                                        <label class="form-label fw-bold fs-12 mb-1 d-block">{{ option.grouper|title }}</label>
+                                                                        {% if product.grid.display == "select" %}
+                                                                            <select name="option_{{ option.list.0.option_id }}" class="form-control" data-title="{{ option.grouper|title }}" required>
+                                                                                <option value="">-------------</option>
+                                                                                {% for value in option.list|dictsort:"option__value" %}
+                                                                                    <option value="{{ value.option__value_id }}"{% if value.option__value_id in sku.options %} selected{% endif %}>{{ value.option__value }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        {% else %}
+                                                                            <div class="values d-flex gap-2 flex-wrap">
+                                                                                {% for value in option.list %}
+                                                                                    <label class="option-value">
+                                                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-title="{{ option.grouper|title }}" required{% if value.option__value_id in sku.options %} checked{% endif %} />
+                                                                                        <span>{{ value.option__value }}</span>
+                                                                                    </label>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                {% endblock productVariations %}
+
+                                                {% block productPrices %}
+                                                    <div class="prices position-relative mb-1">
+                                                        <div class="item-prices position-relative">
+                                                            <p class="unit-price fs-12 fw-light mb-0 text-decoration-line-through text-secondary{% if sku.unit_price <= sku.price %} d-none{% endif %}">
+                                                                {{ sku.unit_price|currency }}
+                                                            </p>
+
+                                                            <p class="sale-price money mb-0">
+                                                                {{ sku.price|currency }}
+                                                            </p>
+
+                                                            <span class="discount detail-page{% if not product.descont_percentage %} d-none{% endif %}">{{ product.descont_percentage|floatformat|cut:'-' }}%</span>
+                                                        </div>
+
+                                                        {% if pix_discount.value > 0 %}
+                                                            <p class="pix-price mb-0">
+                                                                <strong>{{ pix_discount.value|currency }}</strong><small> {% trans 'no pix' %}</small>
+                                                            </p>
+                                                        {% endif %}
+
+                                                        <p class="installments mt-1 mb-0{% if not sku.get_card_price %} d-none{% endif %}">
+                                                            <span class="parcel fs-14 text-secondary">
+                                                                {% trans 'ou' %}
+                                                                <span class="get_min_installments">{{ sku.price|get_min_installments }}</span>x
+                                                                {% trans 'de' %}
+                                                                <span class="get_card_price">{{ sku.price|get_card_price|currency }}</span>
+                                                                {% trans 'sem juros' %}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                {% endblock productPrices %}
+
+                                                <div class="item-purchase detail">
+                                                    <div class="quantity product-detail">
+                                                        <label class="visually-hidden" for="product-quantity">{% trans 'Quantidade' %}</label>
+                                                        <input type="number" value="1" name="quantity" id="product-quantity" class="form-control text-center spinner-input" min="1" step="1" />
+                                                    </div>
+
+                                                    <button type="submit" class="btn btn-checkout d-flex align-items-center justify-content-center gap-2" data-text-loading="{% trans 'adicionando...' %}">
+                                                        <i class="icon-cart"></i> {% trans 'Adicionar' %}
+                                                    </button>
+                                                </div>
+
+                                                {% if product.get_seals %}
+                                                    <span class="seals">
+                                                        {% for seal in product.get_seals %}{% if "{" not in seal %}{{ seal|safe }}{% endif %}{% endfor %}
+                                                    </span>
+                                                {% endif %}
+                                            </form>
+                                        {% else %}
+                                            <div class="product-form mt-2">
+                                                <button type="button" class="btn btn-secondary w-100 py-3 disabled text-uppercase" disabled>
+                                                    {% trans 'Produto indisponível' %}
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="content-offers position-relative"></div>
+                                </div>
+                            </div>
+
+                            {% block productFreight %}
+                                <div class="card border-0 shadow-sm mt-3">
+                                    <form class="form-inline box-calculate-shipping border-0 p-3" action="/freight/shipping-simulation/" method="GET" data-content-type="text/javascript">
+                                        <input type="hidden" value="{{ product.get_sku_default.id }}" name="sku" />
+                                        <div class="form-group w-100">
+                                            <label class="fw-bold mb-2 d-block" for="fieldZipcode">{% trans 'Calcule o frete e o prazo' %}</label>
+                                            <div class="input-group flex-nowrap">
+                                                <input type="tel" name="zipcode" class="form-control" placeholder="00000-000" required maxlength="9" data-mask="00000-000" id="fieldZipcode" autocomplete="postal-code" />
+                                                <button type="submit" class="btn btn-zipcode">{% trans 'Calcular' %}</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-return w-100 mt-2"></div>
+                                    </form>
+                                </div>
+                            {% endblock productFreight %}
+                        </div>
+                    {% endblock productInfo %}
+
                 </div>
             </div>
-        </div>
+        {% endblock productContent %}
     </div>
-{% endblock %}
+
+    <div class="container">
+        <div class="cvz-recommendations" data-layout="vertical" data-product="{{ product.id }}" data-limit="8" data-intent="related" data-title="Combina com sua lista">
+    </div>
+    {% endlocalize %}
+
+
+
+    {% block productDetails %}
+        <div class="container">
+            {% with get_contents=product.get_contents %}
+                {% if product.details or json_specifications_visible or get_contents %}
+                    <div class="card card-body border-0 shadow-sm mt-5">
+                        <div class="accessibility-font d-none d-sm-flex align-items-center justify-content-end text-secondary fs-13 px-3">
+                            {% trans 'Acessibilidade' %}
+                            <button type="button" data-action="minus" class="btn btn-link p-0 mx-2" aria-label="{% trans 'Diminuir fonte' %}">A -</button>
+                            <button type="button" data-action="plus" class="btn btn-link p-0" aria-label="{% trans 'Aumentar fonte' %}">A +</button>
+                        </div>
+                        {% if product.details %}
+                            <div class="card-body pt-0">
+                                <div class="card-title fs-18 mb-3">{% trans 'Descrição' %}</div>
+                                <div class="text-body fs-15 text-secondary" id="description">
+                                    {{ product.details|safe }}
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% for c in get_contents %}
+                            <div class="card-body">
+                                {% if c.title %}<div class="card-title fs-18 mb-3">{{ c.title }}</div>{% endif %}
+                                <div class="text-body">{{ c.content|safe }}</div>
+                            </div>
+                        {% endfor %}
+                    
+                        {% if json_specifications_visible %}
+                            <div class="card-body">
+                                <div class="card-title fs-18 mb-3">{% trans 'Ficha técnica' %}</div>
+                                <table class="table table-striped table-borderless" width="100%">
+                                    <tbody>
+                                        {% for s, v in json_specifications_visible.items %}
+                                            {% if v.value and s not in 'age_group,gender,adult,is_bundle'|split %}
+                                                <tr>
+                                                    <td class="align-middle">{{ v.label }}</td>
+                                                    <td class="align-middle {{ v.label|slugify }}">{{ v.value }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="mt-5 mb-5">
+                {% include "shop/products/rating-detail.html" %}
+            </div>
+        </div>
+    {% endblock productDetails %}
+
+{% endblock content %}

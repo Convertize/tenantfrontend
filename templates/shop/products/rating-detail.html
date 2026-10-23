@@ -1,0 +1,75 @@
+{% load i18n l10n thumbnail shop_tags user_agents %}
+<div id="product-ratings" class="mt-5 mt-md-0">
+    <div class="title-content d-flex align-items-center mx-0 mx-md-3 lh-sm fs-18">
+        <p class="me-2 mb-0">
+            {% trans "Avaliações dos clientes" %}
+        </p>
+        <div class="rating-star ml-auto ml-md-3 rating-star-{{ product.rating|default:0 }} d-flex align-items-center gap-1">
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+        </div>
+    </div>
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <div id="ratings">
+                <div id="tab-list">
+                    <div id="ratings-tab-list">
+                        {% for rating in ratings.object_list %}
+                            <div class="box-ratings pt-3 pb-3{% if not forloop.last %} border-bottom{% endif %}">
+                                <div class="row">
+                                    <div class="col-2 d-flex flex-column align-items-center justify-content-center">
+                                        <div class="avatar rounded-circle mb-1 d-flex align-items-center justify-content-center bg-custom-gray">
+                                            {{ rating.name|slice:"1"|upper }}{% if rating.name|split:" "|length > 1 %}{{ rating.name|split:" "|slice:"1:2"|join:""|slice:"1"|upper }}{% else %}{{ rating.name|slice:"1:2"|upper }}{% endif %}
+                                        </div>
+                                        <p class="text-center font-weight-bold fs-14">
+                                            {{ rating.name|split:" "|first }}
+                                        </p>
+                                    </div>
+                                    <div class="col-10">
+                                          <div class="mt-2">
+                                                <p class="rating-date mr-3 fs-14 mb-1">
+                                                    {{ rating.add_date|date:"d/m/Y" }}
+                                                </p>
+                                            </div>
+                                            {% if rating.title %}
+                                                <p class="rating-title font-weight-bold fs-14 mb-1">{{ rating.title }}</p>
+                                            {% endif %}
+                                            <p class="rating-opinion mt-1 fs-12">{{ rating.opinion|linebreaksbr }} </p>
+                                            {% if rating.why_site %}
+                                                <p class="mt-2">
+                                                    <b>{% trans "Eu recomendo este site" %}:</b> {{ rating.why_site }}
+                                                </p>
+                                            {% endif %}
+                                            <div class="rating-star rating-star-{{ rating.vote|default:0 }} d-flex align-items-center gap-1 mb-2">
+                                               <span class="star"></span>
+                                               <span class="star"></span>
+                                               <span class="star"></span>
+                                               <span class="star"></span>
+                                               <span class="star"></span>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="py-3">
+                                <span>Nenhuma avaliação disponível</span>
+                            </div>
+                        {% endfor %}
+                        {% pagination_for ratings %}
+                    </div>
+                </div>
+                <div class="border-top mt-3 pt-4">
+                    <a href="{% url 'product:add_rating' product.slug %}" class="d-flex align-items-center font-size-16 font-weight-bold text-muted{% if not request.customer %} btn-login{% endif %}">
+                        <span class="d-flex btn btn-secondary2 mr-3 rounded-circle align-items-center justify-content-center" style="background-color: #D9D9D9; width: 68px;min-width: 68px;height: 68px;min-height: 68px;">
+                            <span class="icon-increase fs-22"></span>
+                        </span>
+                        <p class="ms-2 mb-0"> Avalie esse produto e ajude outros compradores :)</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

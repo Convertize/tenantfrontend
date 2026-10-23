@@ -1,0 +1,4 @@
+{% load search_tags shop_tags %}
+<a href="#" data-rel="fq={{ v.key }}:{{ item.0|slugify }}" class="search-filter search-sidebar-facet-item{% if v.key in map and item.0|slugify in v.key|facets_actives:map_list %} active{% endif %}">
+    {{ item.1|replace:"---,/" }} <small class="badge rounded-pill">{{ item.2 }}</small>
+</a>

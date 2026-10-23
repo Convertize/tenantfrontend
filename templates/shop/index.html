@@ -1,22 +1,14 @@
-{% extends "base.html" %}{% load i18n showcases_tags cms_tags user_agents shop_tags %}
-{% block body_id %}home{% endblock %}
-{% block meta_title %}{{ shop_settings.SEO_TITLE_HOME }}{% endblock %}
+{% extends "shop/base.html" %}{% load i18n showcases_tags cms_tags user_agents shop_tags %}
 
-{% block logo %}
-	<h1 class="logo m-0 text-center" itemscope="" itemtype="http://schema.org/Organization">
-        <a href="{% url 'home' %}" itemprop="name">{{ shop_settings.SEO_TITLE }}</a>
-        <meta itemprop="url" content="https://{{ request.get_host }}">
-        <meta itemprop="logo" content="https:{{ STATIC_URL }}img/logo.png">
-    </h1>
-{% endblock %}
+{% block metaTitle %}{{ shop_settings.SEO_TITLE_HOME|default:shop_settings.SEO_TITLE }}{% endblock %}
+
+{% block bodyId %}home{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="areaTopBanner">
-            {% showcase_widget "AreaTopBanner" %}
-        </div>
-        <div class="areaContent">
-            {% showcase_widget "AreaContent" %}
-        </div>
+    <div class="areaTopBanner">
+        {% showcase_widget "AreaTopBanner" %}
+    </div>
+    <div class="areaContent">
+        {% showcase_widget "AreaContent" %}
     </div>
 {% endblock %}

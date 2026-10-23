@@ -1,0 +1,21 @@
+{% load user_agents %}
+<div class="swiper-slide" style="{% if banner.background_color %}background-color:{{ banner.background_color }};{% endif %}{% if banner.background_image %}background-image:url({{ banner.background_image.url }});{% endif %}{% if banner.background_repeat %}background-repeat: {{ banner.background_repeat }};{% endif %}background-position: center;{% if banner.style %}{{ banner.style }}{% endif %}">
+    {% if banner.link %}
+        <a class="d-inline-flex" href="{{ banner.link }}"{% if banner.target %} target="_blank" rel="noreferrer"{% endif %} aria-label="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" data-cvz-type="click" data-cvz-name="{{ object.name|slugify }}" data-cvz-category="showcases" data-cvz-label="{% if banner.title %}{{ banner.title }}{% else %}banner_{{ banner.id }}{% endif %}" data-cvz-event="interaction">
+    {% endif %}
+        {% if banner.image_mobile.dimensions and request|is_mobile %}
+            {% with width=banner.image_mobile.dimensions|first height=banner.image_mobile.dimensions|last %}
+                <img{% if object.area == "AreaTopBanner" and forloop.counter <= 1 %} src="{{ banner.image_mobile.url }}" fetchpriority="high" loading="lazy"{% else %} loading="lazy" src="{{ banner.image_mobile.url }}"{% endif %} alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title|default:'' }}" width="{{ width }}" height="{{ height }}" style="{% if object.area == "AreaTopBanner" and forloop.counter <= 1 %}opacity:1;{% endif %}width:{{ width }}px;aspect-ratio:{{ width }}/{{ height  }}" />
+            {% endwith %}
+        {% elif banner.image.dimensions %}
+            {% with width=banner.image.dimensions|first height=banner.image.dimensions|last %}
+                <img{% if object.area == "AreaTopBanner" and forloop.counter <= 1 %} src="{{ banner.image.url }}" fetchpriority="high" loading="lazy"{% else %} loading="lazy" src="{{ banner.image.url }}"{% endif %} alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title|default:'' }}" width="{{ width }}" height="{{ height }}" style="{% if object.area == "AreaTopBanner" and forloop.counter <= 1 %}opacity:1;{% endif %}width:{{ width }}px;aspect-ratio:{{ width }}/{{ height  }}" />
+            {% endwith %}
+        {% else %}
+            <img class="owl-lazy" loading="lazy" src="{{ banner.image.url }}" alt="{% if banner.title %}{{ banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ banner.title|default:'' }}" />
+        {% endif %}
+    {% if banner.link %}
+        </a>
+    {% endif %}
+    <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+</div>

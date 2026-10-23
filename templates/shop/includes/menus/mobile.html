@@ -1,0 +1,24 @@
+{% load cms_tags %}{% comment %}
+    Gaveta do celular, igual para qualquer tipo de menu do desktop, com o mesmo menu do CMS.
+    Aberta pelo .btn-open-menu do cabeçalho (offcanvas do Bootstrap). O convertize-frontend
+    acrescenta o botão de abrir/fechar dos itens que têm subcategorias.
+{% endcomment %}
+{% with menu_name=menu|default:"navbar-header" %}
+    <div class="offcanvas offcanvas-start menu-drawer" tabindex="-1" id="menu-drawer" aria-labelledby="menu-drawer-title">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title menu-drawer__title" id="menu-drawer-title">Categorias</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar menu"></button>
+        </div>
+        <nav class="offcanvas-body menu-drawer__body" aria-label="Categorias">
+            {% cms_menu menu_name %}
+        </nav>
+        <div class="menu-drawer__footer">
+            {% if request.customer %}
+                <a class="btn btn-dark" href="{% url 'customers:my_panel' 'dados-pessoais' %}">Minha conta</a>
+            {% else %}
+                <a class="btn btn-dark" href="{% url 'customers:my_panel' 'meus-pedidos' %}">Entrar</a>
+            {% endif %}
+            <a class="btn btn-outline-dark" href="{% url 'customers:my_panel' 'meus-pedidos' %}">Meus pedidos</a>
+        </div>
+    </div>
+{% endwith %}

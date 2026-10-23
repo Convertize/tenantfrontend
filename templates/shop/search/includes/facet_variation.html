@@ -1,0 +1,2 @@
+{% load search_tags shop_tags %}{# chip em vez de checkbox; mesmo data-rel/ativo do facet.html (o SearchView usa .search-filter) #}
+<a href="#" data-rel="fq={{ v.key }}:{{ item.1 }}" class="search-filter search-filter-chip {{ item.0|slugify }} search-sidebar-facet-item{% if v.key in map and item.1 in v.key|facets_actives:map_list %} active" aria-pressed="true{% endif %}">{{ item.0|replace:"---,/" }}</a>

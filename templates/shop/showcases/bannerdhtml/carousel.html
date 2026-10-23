@@ -1,0 +1,23 @@
+{% load l10n shop_tags %}
+{% localize off %}
+    {% if object.bannerdhtml.title %}
+        <div class="title-showcase">
+            <h2 class="title">{{ object.bannerdhtml.title }} </h2>
+            {% if object.bannerdhtml.sub_title %}
+                <h3 class="sub-title">{{ object.bannerdhtml.sub_title }}</h3>
+            {% endif %}
+        </div>
+    {% endif %}
+    <div id="{{ object.bannerdhtml.name|slugify }}" class="swiper swiper-container" data-slides-per-view="{{ object.bannerdhtml.num_columns }}" data-autoplay="{{ object.bannerdhtml.autoplay|lower }}" data-loop="{{ object.bannerdhtml.loop|lower }}"{% if object.bannerdhtml.extra_data.swiper %} data-swiper="{{ object.bannerdhtml.extra_data.swiper|return_json }}"{% endif %}{% if object.bannerdhtml.attr %} {{ object.bannerdhtml.attr|safe }}{% endif %}>
+        <div class="swiper-wrapper">
+            {% for banner in object.bannerdhtml.get_images %}
+                {% include "shop/showcases/bannerdhtml/includes/item.html" %}
+            {% endfor %}
+        </div>
+        {% if object.bannerdhtml.navigation|lower == 'true' %}
+            <div class="swiper-navigation swiper-button-next"></div>
+            <div class="swiper-navigation swiper-button-prev"></div>
+        {% endif %}
+        {% if object.bannerdhtml.pagination %}<div class="swiper-pagination"></div>{% endif %}
+    </div>
+{% endlocalize %}

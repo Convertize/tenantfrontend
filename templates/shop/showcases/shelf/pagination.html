@@ -1,17 +1,23 @@
-<div class="showcase-shelf">
-    {% if object.shelf.title %}
+{% load l10n shop_tags %}
+{% if object.shelf.title %}
     <div class="title-showcase">
-        <h2>{{ object.shelf.title }} </h2>
+        <h2 class="title">{{ object.shelf.title }} </h2>
         {% if object.shelf.sub_title %}
-            <h3>{{ object.shelf.sub_title }}</h3>
+            <h3 class="sub-title">{{ object.shelf.sub_title }}</h3>
         {% endif %}
     </div>
-    {% endif %}
-    <div class="carousel owl-carousel list-products list-products-paginate{% if object.shelf.navigation and object.shelf.get_products|length > object.shelf.num_columns %} carousel-navigation{% endif %}" data-owl-carousel='{"nav":{{ object.shelf.navigation|lower }}, {% if object.shelf.num_columns %}"items":{{ object.shelf.num_columns }}, {% endif %}"dots":{{ object.shelf.pagination|lower }}, "autoplay":{{ object.shelf.autoplay|lower }}, "loop":{{ object.shelf.loop|lower }}{% if object.shelf.attr %}, {{ object.shelf.attr|safe }}{% endif %}}'>
-        {% for p in object.shelf.get_products %}
-            {% ifchanged p.product_id %}
-                <div class="li">{% include "shop/includes/product.html" %}</div>
+{% endif %}
+<div id="{{ object.shelf.name|slugify }}" class="swiper swiper-container list-products" data-slides-per-view="{{ object.shelf.num_columns }}" data-autoplay="{{ object.shelf.autoplay|lower }}" data-loop="{{ object.shelf.loop|lower }}"{% if object.shelf.extra_data.swiper %} data-swiper="{{ object.shelf.extra_data.swiper|return_json }}"{% endif %}{% if object.shelf.attr %} {{ object.shelf.attr|safe }}{% endif %}>
+    <div class="swiper-wrapper">
+        {% for product in object.shelf.get_products %}
+            {% ifchanged product.product_id %}
+                <div class="swiper-slide">{% include "shop/includes/product.html" %}</div>
             {% endifchanged %}
         {% endfor %}
     </div>
+    {% if object.shelf.navigation|lower == 'true' %}
+        <div class="swiper-navigation swiper-button-next"></div>
+        <div class="swiper-navigation swiper-button-prev"></div>
+    {% endif %}
+    {% if object.shelf.pagination %}<div class="swiper-pagination"></div>{% endif %}
 </div>
