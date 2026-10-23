@@ -1,1 +1,184 @@
-{% extends 'base.html' %}
+{% load l10n i18n cms_tags user_agents shop_tags showcases_tags compress static %}{% spaceless %}<!doctype html>
+{% with is_mobile=request|is_mobile %}
+{% if shop_settings.CUSTOM_FIELDS %}{% get_data_json shop_settings.CUSTOM_FIELDS as custom_fields %}{% endif %}
+<html lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta charset="utf-8" />
+        {% block metaViewPort %}
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        {% endblock %}
+        <title>{% block metaTitle %}{{ shop_settings.SEO_TITLE }}{% endblock %}</title>
+        <meta name="description" content="{% block metaDescription %}{{ shop_settings.SEO_DESCRIPTION }}{% endblock %}" />
+        {% block metaRobots %}
+            <meta name="robots" content="index, follow" />
+        {% endblock %}
+        {% if request.cart.order %}<meta http-equiv="refresh" content="0; URL='{% url 'shop_cart' %}'"/>{% endif %}
+        {% block extraMeta %}
+            <link href="{{ STATIC_URL }}img/favicon.ico" rel="shortcut icon" />
+        {% endblock %}
+        {% compress css %}
+            <link href="{% static 'convertize-frontend/dist/convertize.min.css' %}" rel="stylesheet" />
+            <link href="{% static 'convertize-frontend/dist/style.min.css' %}" rel="stylesheet" />
+            <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" />
+        {% endcompress %}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        {% block styles %}{% endblock %}
+        {% block icons %}
+            <link rel="stylesheet" href="https://i.icomoon.io/public/9a2a1e86fa/ConvertizeFrontend/style.css" />
+        {% endblock %}
+        <script>
+            window.cvz = window.cvz||function(c){(cvz.q=cvz.q||[]).push(c)};
+            window.__url_path__ = '{% url "home" %}';
+            window.__static_prefix__ = "{{ STATIC_URL }}";
+            window.__media_prefix__ = "{{ MEDIA_URL }}";
+            {% if request.customer %}window.__customer__ = "{{ request.customer.uuid }}";{% endif %}
+        </script>
+        {% compress js %}
+            <script defer type="text/javascript" src="{% static 'convertize-sdk/dist/sdk.min.js' %}" charset="utf-8"></script>
+            <script defer type="text/javascript" src="{% static 'convertize-frontend/dist/convertize.min.js' %}" charset="utf-8"></script>
+        {% endcompress %}
+        {% if shop_settings.EXTRA_HEAD %}{% render shop_settings.EXTRA_HEAD|safe %}{% endif %}
+        {% block extraHead %}{% endblock %}
+    </head>
+    <body id="{% block bodyId %}internal{% endblock %}" class="{{ LANGUAGE_CODE }}{% block bodyClass %}{% endblock %}{% if is_mobile or request|is_tablet %} isMobile{% endif %}" data-variations="{% block variationsLayout %}picker{% endblock %}">{# variações no card: "inline" (até 3 + "+N") ou "picker" (resumo e escolha ao clicar); vale também num contêiner de vitrine #}
+        {% if shop_settings.EXTRA_BODY %}{% render shop_settings.EXTRA_BODY|safe %}{% endif %}
+        {% include "shop/sellers/seller/toolbar.html" %}
+        <header id="header">
+        {% block header %}
+            <div class="content-header">
+                <div class="container">
+                    <div class="site-header">
+                        <button type="button" class="btn btn-open-menu site-header__menu d-md-none" data-bs-toggle="offcanvas" data-bs-target="#menu-drawer" aria-controls="menu-drawer" aria-label="{% trans 'Abrir menu' %}">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"></path></svg>
+                        </button>
+                        <div class="site-header__brand">
+                            {% block logo %}
+                                <div class="logo">
+                                    <a href="{% url 'home' %}">
+                                        {{ shop_settings.SEO_TITLE }}
+                                    </a>
+                                </div>
+                            {% endblock %}
+                        </div>
+                        <form class="form-search site-header__search" method="GET" action="{% url 'search:search' slug='' %}" role="search">
+                            <svg class="site-header__search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                            <input type="search" aria-label="{% trans 'Buscar produtos' %}" name="q" placeholder="{% trans 'O que você procura hoje?' %}" class="form-control" required autocomplete="off" />
+                            <button type="submit" class="btn btn-search" aria-label="{% trans 'Buscar' %}">{% trans 'Buscar' %}</button>
+                        </form>
+                        <div class="site-header__actions">
+                            <a href="{% url 'customers:my_panel' 'meus-pedidos' %}" class="btn btn-header d-none d-lg-flex{% if not request.customer %} btn-login{% endif %}">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7z"></path><path d="M9 7V5a3 3 0 0 1 6 0v2"></path></svg>
+                                {% trans "Meus pedidos" %}
+                            </a>
+                            {% if request.customer %}
+                                <div class="dropdown">
+                                    <button class="btn btn-header dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+                                        <span class="d-none d-md-inline">{% trans "Olá," %} {{ request.customer.name|split:" "|slice:"1"|join:"" }}</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="{% url 'customers:my_panel' 'dados-pessoais' %}">Meus dados</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'customers:my_panel' 'meus-pedidos' %}">Meus pedidos</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'customers:my_panel' 'assinaturas' %}">Minhas assinaturas</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'customers:logout' %}">Sair</a></li>
+                                    </ul>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'customers:my_panel' 'meus-pedidos' %}" class="btn btn-header btn-login d-none d-md-flex">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+                                    {% trans "Entrar" %}
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'shop_checkout' %}#/carrinho"{% if not is_mobile %} data-bs-toggle="offcanvas" data-bs-target="#mini-cart"{% endif %} aria-controls="mini-cart" aria-label="{% trans 'Carrinho' %}" class="btn btn-my-cart">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle><path d="M2 3h3l2.5 12h11.5l2-8H6.5"></path></svg>
+                                <span class="badge rounded-pill cart-total-quantity"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% block siteNav %}
+                {# tipo do menu: troque o include (mega.html, dropdown.html ou icons.html); os itens vêm do menu "navbar-header" do CMS #}
+                <div class="d-none d-md-block">
+                    {% include "shop/includes/menus/panel.html" %}
+                </div>
+            {% endblock siteNav %}
+        {% endblock %}
+        </header>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+        <footer id="footer">
+            {% block footer %}
+                <div class="footer-copyright py-4 text-center border-top">
+                    <div class="container">
+                        <img src="{% static 'convertize-frontend/dist/assets/logo-copyright.svg' %}" width="152" height="17" alt="Convertize" />
+                    </div>
+                </div>
+            {% endblock %}
+        </footer>
+
+        {% block menuDrawer %}
+            {% include "shop/includes/menus/mobile.html" %}
+        {% endblock menuDrawer %}
+
+        <div class="offcanvas offcanvas-end mini-cart-recommendations" id="mini-cart">
+            <div class="offcanvas-header gap-3">
+                <button type="button" class="btn-close ms-0" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <h5 class="offcanvas-title" id="offcanvasRightLabel">Carrinho de compras</h5>
+                <a class="title ms-auto" href="{% url 'checkout_backend' 'carrinho' %}">
+                    <i class="icon-arrow-right"></i>
+                </a>
+            </div>
+            <div class="offcanvas-body d-flex flex-column p-0">
+                <div class="content-cart list-products p-3"></div>
+            </div>
+        </div>
+
+        <script>
+
+            window.addEventListener("convertize:ready", function(e){
+                const sdk = e.detail
+
+                console.log("SDK initialized 2", sdk)
+                
+                // sdk.events.on("*", ({ event, payload }) => {
+                //     console.log("evento:", event, payload)
+                // })
+
+            })
+
+        </script>
+
+        {% block extraPlugins %}
+        {% endblock %}
+
+        <script>window.CVZ_GA4 = { currency: "BRL", debug: true };</script>
+        {% compress js %}
+            <script src="{% static 'convertize-frontend/plugins/ga4.js' %}" defer></script>
+            <script src="{% static 'convertize-frontend/plugins/login.js' %}" defer></script>
+        {% endcompress %}
+
+        {% block extraFooter %}{% endblock %}
+
+        {% if shop_settings.EXTRA_FOOTER %}{% render shop_settings.EXTRA_FOOTER|safe %}{% endif %}
+
+        <script>
+            cvz(function (sdk) {
+                console.log("SDK initialized", sdk)
+                //sdk.events.on("cart:updated", (payload) => console.log(payload))
+                //sdk.events.on("*", ({ event, payload }) => console.log(event, payload))
+            })
+
+            cvz(function (sdk) {
+                console.log("SDK initialized 3", sdk)
+                //sdk.events.on("cart:updated", (payload) => console.log(payload))
+                //sdk.events.on("*", ({ event, payload }) => console.log(event, payload))
+            })
+
+        </script>
+
+    </body>
+</html>{% endwith %}{% endspaceless %}

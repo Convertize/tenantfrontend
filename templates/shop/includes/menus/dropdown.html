@@ -1,0 +1,13 @@
+{% load cms_tags %}{% comment %}
+    Lista suspensa: nível 2 numa lista abaixo do item; o nível 3 abre ao lado.
+    O HTML é o do menu do CMS (CMS › Menu, botão "Gerar HTML"); este include só escolhe o tipo.
+    Uso: {% include "shop/includes/menus/dropdown.html" %} ou, para outra variável do CMS,
+    {% include "shop/includes/menus/dropdown.html" with menu="nome-da-variavel" %}.
+{% endcomment %}
+{% with menu_name=menu|default:"navbar-header" %}
+    <nav class="site-nav site-nav--dropdown" aria-label="Categorias">
+        <div class="container">
+            {% cms_menu menu_name %}
+        </div>
+    </nav>
+{% endwith %}

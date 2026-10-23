@@ -1,10 +1,10 @@
 {% load cms_tags %}
 {% for object in plugins %}
     {% if object %}
-        {% if object.html %}
-            {% include object.template %}
-        {% else %}
-            <div class="showcase-object showcase-{{ object.name|slugify }}">
+        <div class="showcase-object showcase-{{ object.name|slugify }}{% if object.extra_data and object.extra_data.fluid %} container-fluid{% else %} container{% endif %}">
+            {% if object.html %}
+                {% include object.template %}
+            {% else %}
                 {% if object.template_html %}
                     {% render object.template_html %}
                 {% elif object.extra_data and object.extra_data.template %}
@@ -12,7 +12,7 @@
                 {% else %}
                     {% include object.template %}
                 {% endif %}
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     {% endif %}
 {% endfor %}

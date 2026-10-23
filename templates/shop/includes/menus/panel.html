@@ -1,0 +1,32 @@
+{% load cms_tags %}{% comment %}
+    Painel com abas, só CSS: passar o mouse (ou focar) no botão "Menu" abre o painel; à esquerda
+    as categorias do nível 1 (passar o mouse troca o conteúdo da direita); à direita o nível 2 — itens COM imagem no CMS viram
+    círculos com foto, itens SEM imagem viram título + lista do nível 3 — e o banner do item.
+    O HTML é o do menu do CMS (CMS › Menu, "Gerar HTML"); este include só escolhe o tipo.
+    Uso: {% include "shop/includes/menus/panel.html" %}
+         {% include "shop/includes/menus/panel.html" with menu="nome" menu_footer="nome-rodape" %}
+    menu_footer (opcional): outro menu do CMS com os links do rodapé da coluna (ex.: Televendas,
+    Descontos, Nossas Lojas — imagem do item vira o ícone).
+    "Ver todos": cadastre como item no CMS (o script, se presente, cria um quando o nível 1 tem link).
+{% endcomment %}
+{% with menu_name=menu|default:"navbar-header" %}
+    <nav class="site-nav site-nav--panel" aria-label="Categorias">
+        <div class="container">
+            {# abre no hover/foco (só CSS): o painel é filho do wrapper, então ir do botão ao painel não fecha #}
+            <div class="site-nav__panel-wrap">
+                <button type="button" class="site-nav__toggle" aria-haspopup="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+                    Menu
+                </button>
+                <div class="site-nav__panel">
+                    <div class="site-nav__tabs">
+                        {% cms_menu menu_name %}
+                        {% if menu_footer %}
+                            <div class="site-nav__panel-footer">{% cms_menu menu_footer %}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endwith %}

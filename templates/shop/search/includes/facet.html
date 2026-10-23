@@ -1,0 +1,4 @@
+{% load search_tags shop_tags %}
+<a href="#" data-rel="fq={{ v.key }}:{{ item.1 }}" class="search-filter search-filter-check {{ item.0|slugify }} search-sidebar-facet-item{% if v.key in map and item.1 in v.key|facets_actives:map_list %} active{% endif %}">
+    <i class="icon-checkbox{% if v.key in map and item.1 in v.key|facets_actives:map_list %}-checked{% endif %}"></i> {{ item.0|replace:"---,/" }}
+</a>

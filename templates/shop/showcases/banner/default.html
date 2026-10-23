@@ -1,0 +1,20 @@
+{% load l10n user_agents %}
+{% localize off %}
+<div class="row">
+    <div class="col-12">
+        <a class="banner-u"{% if object.banner.link %} href="{{ object.banner.link }}"{% if object.banner.target %} target="_blank"{% endif %}{% endif %}{% if object.banner.style %} style="{{ object.banner.style }}"{% endif %}>
+            {% if object.banner.image_mobile.dimensions and request|is_mobile %}
+                {% with width=object.banner.image_mobile.dimensions|first height=object.banner.image_mobile.dimensions|last %}
+                    <img src="{{ STATIC_URL }}img/blank.gif" data-src="{{ object.banner.image_mobile.url }}" alt="{{ object.banner.title }}" title="{{ object.banner.title }}" class="img-lazy" width="{{ width }}" height="{{ height }}" style="aspect-ratio:{{ width }}/{{ height  }}" />
+                {% endwith %}
+            {% elif object.banner.image.dimensions %}
+                {% with width=object.banner.image.dimensions|first height=object.banner.image.dimensions|last %}
+                    <img src="{{ STATIC_URL }}img/blank.gif" data-src="{{ object.banner.image.url }}" alt="{{ object.banner.title }}" title="{{ object.banner.title }}" class="img-lazy" width="{{ width }}" height="{{ height }}" style="aspect-ratio:{{ width }}/{{ height  }}" />
+                {% endwith %}
+            {% else %}
+                <img src="{{ STATIC_URL }}img/blank.png" data-src="{{ object.banner.image.url }}" alt="{% if object.banner.title %}{{ object.banner.title }}{% else %}Banner {{ forloop.counter }}{% endif %}" title="{{ object.banner.title }}" class="img-lazy" />
+            {% endif %}
+        </a>
+    </div>
+</div>
+{% endlocalize %}

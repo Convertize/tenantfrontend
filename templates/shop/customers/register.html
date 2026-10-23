@@ -1,0 +1,668 @@
+{% extends 'shop/base.html' %}{% load i18n static %}
+{% block metaTitle %}{% trans "Cadastro" %} | {{ block.super }}{% endblock %}
+{% block bodyClass %} register{% endblock %}
+
+{% block extraHead %}
+    <style>
+        .register-hero h1{
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+        .register-card{
+            background: #fff;
+            border: 1px solid rgb(0 0 0 / 6%);
+            border-radius: 1rem;
+            box-shadow: 0 1px 2px rgb(16 24 40 / 4%), 0 8px 24px -12px rgb(16 24 40 / 12%);
+            padding: 1.75rem;
+            height: 100%;
+        }
+        .register-step{
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: 1.5rem;
+        }
+        .register-step .step-number{
+            flex: 0 0 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: .875rem;
+            color: var(--bs-success);
+            background: rgba(var(--bs-success-rgb), .12);
+        }
+        .register-step h2{
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .register-step p{
+            font-size: .8125rem;
+            margin: 0;
+            color: var(--bs-secondary-color);
+        }
+        .register .form-floating > .form-control,
+        .register .form-floating > .form-select{
+            border-radius: .625rem;
+            border-color: #dfe3e8;
+        }
+        .register .form-floating > .form-control:focus,
+        .register .form-floating > .form-select:focus{
+            border-color: var(--bs-success);
+            box-shadow: 0 0 0 .2rem rgba(var(--bs-success-rgb), .15);
+        }
+        .register .form-floating > .form-control[readonly],
+        .register .form-floating > .form-select:disabled{
+            background-color: #f8f9fa;
+        }
+        /* sem ícone de validação dentro do campo: aperta os campos estreitos */
+        .register .form-control.is-valid,
+        .register .form-control.is-invalid,
+        .register .form-select.is-valid,
+        .register .form-select.is-invalid{
+            background-image: none;
+            padding-right: .75rem;
+        }
+        .register .form-select.is-valid,
+        .register .form-select.is-invalid{
+            background-image: var(--bs-form-select-bg-img);
+            padding-right: 2.25rem;
+        }
+        .register .form-control.is-valid,
+        .register .form-select.is-valid{
+            border-color: #dfe3e8;
+        }
+        .register .form-check-input.is-valid{
+            border-color: var(--bs-border-color);
+        }
+        .register .form-check-input.is-valid:checked{
+            border-color: var(--bs-success);
+        }
+        .register .form-check-input.is-valid ~ .form-check-label{
+            color: inherit;
+        }
+        .register .form-floating > label{
+            color: #6c757d;
+        }
+        .register .required-mark{
+            color: var(--bs-danger);
+        }
+        .register .field-help{
+            font-size: .75rem;
+            margin-top: .25rem;
+        }
+        .register .form-check-input:checked{
+            background-color: var(--bs-success);
+            border-color: var(--bs-success);
+        }
+        .register .form-check-input:focus{
+            border-color: var(--bs-success);
+            box-shadow: 0 0 0 .2rem rgba(var(--bs-success-rgb), .15);
+        }
+        .register .pj-toggle{
+            border: 1px dashed #dfe3e8;
+            border-radius: .75rem;
+            padding: .875rem 1rem;
+        }
+        .register .pj-toggle .form-check{
+            margin: 0;
+        }
+        .register .pj-toggle.is-open{
+            border-style: solid;
+            background: #fafbfc;
+        }
+        .register .btn-register{
+            border-radius: .75rem;
+            padding: .875rem 2.5rem;
+            font-weight: 600;
+            min-width: 220px;
+        }
+        .register .register-success .success-icon{
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: var(--bs-success);
+            background: rgba(var(--bs-success-rgb), .12);
+        }
+        @media (max-width: 575.98px){
+            .register-card{
+                padding: 1.25rem;
+            }
+            .register .btn-register{
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container register-page py-4 py-md-5">
+        <div class="register-hero text-center mb-4 mb-md-5">
+            <h1 class="mb-2">Crie sua conta</h1>
+            <p class="text-muted mb-0">
+                Leva menos de um minuto. Já tem cadastro?
+                <a href="{% url 'customers:my_panel' 'meus-pedidos' %}" class="btn-login fw-semibold link-success">Entrar</a>
+            </p>
+        </div>
+
+        <form class="cadastrese" id="form-cadastrese" name="cadastrese" method="POST" novalidate>
+            <div class="row g-4">
+                <div class="col-12 col-lg-6">
+                    <section class="register-card">
+                        <div class="register-step">
+                            <span class="step-number">1</span>
+                            <div>
+                                <h2>Seus dados</h2>
+                                <p>Só o essencial para a sua compra</p>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input class="form-control" type="email" id="id_email" name="email" placeholder=" " maxlength="255" autocomplete="email" required />
+                                    <label for="id_email">E-mail <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_name" name="name" placeholder=" " maxlength="255" autocomplete="name" required data-rule-fullname />
+                                    <label for="id_name">Nome completo <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_document" name="document" placeholder=" " maxlength="14" autocomplete="off" required data-rule-cpf />
+                                    <label for="id_document">CPF <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating">
+                                    <input class="form-control" type="tel" id="id_phone" name="phone" placeholder=" " maxlength="15" autocomplete="tel-national" required data-rule-phone />
+                                    <label for="id_phone">Celular <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            {% if "birthdate" in shop_settings.SHOP_CUSTOMER_ADDITIONAL_FIELDS %}
+                            <div class="col-sm-6">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_birthdate" name="birthdate" placeholder=" " inputmode="numeric" maxlength="10" autocomplete="bday" required data-rule-birthdate />
+                                    <label for="id_birthdate">Data de nascimento <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if "gender" in shop_settings.SHOP_CUSTOMER_ADDITIONAL_FIELDS %}
+                            <div class="col-sm-6">
+                                <div class="form-floating">
+                                    <select id="id_gender" name="gender" class="form-select" required>
+                                        <option value="" selected>Selecione</option>
+                                        <option value="1">Feminino</option>
+                                        <option value="2">Masculino</option>
+                                        <option value="3">Outros</option>
+                                        <option value="4">Prefiro não informar</option>
+                                    </select>
+                                    <label for="id_gender">Sexo <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-12">
+                                <div class="pj-toggle">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="toggle_pj" />
+                                        <label class="form-check-label fw-semibold" for="toggle_pj">Comprar como pessoa jurídica</label>
+                                    </div>
+                                    <div class="cnpj d-none pt-3">
+                                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                                <div class="form-floating">
+                                                    <input class="form-control" type="text" id="id_corporate_document" name="corporate_document" placeholder=" " maxlength="18" autocomplete="off" required data-rule-cnpj />
+                                                    <label for="id_corporate_document">CNPJ <span class="required-mark">*</span></label>
+                                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                                </div>
+                                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating">
+                                    <input class="form-control ie" type="text" id="inscricao_estadual" name="inscricao_estadual" placeholder=" " maxlength="25" />
+                                    <label for="inscricao_estadual">Inscrição estadual</label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input ie_isento" type="checkbox" name="inscricao_estadual_isento" value="1" id="inscricao_estadual_isento" />
+                                    <label class="form-check-label small" for="inscricao_estadual_isento">Isento de I.E.</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_corporate_name" name="corporate_name" placeholder=" " maxlength="255" autocomplete="organization" required />
+                                    <label for="id_corporate_name">Razão social <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_fancy_name" name="fancy_name" placeholder=" " maxlength="255" autocomplete="off" required />
+                                    <label for="id_fancy_name">Nome fantasia <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <section class="register-card">
+                        <div class="register-step">
+                            <span class="step-number">2</span>
+                            <div>
+                                <h2>Endereço de entrega</h2>
+                                <p>Usado para envio e cobrança</p>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-5">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_zipcode" name="zipcode" placeholder=" " maxlength="9" autocomplete="postal-code" required data-rule-cep data-rule-cepfound />
+                                    <label for="id_zipcode">CEP <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                                <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank" rel="noopener" class="field-help d-inline-block link-secondary">Não sei meu CEP</a>
+                            </div>
+                            <div class="col-sm-7 d-none d-sm-block"></div>
+                            <div class="col-sm-9">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_address" name="address" placeholder=" " maxlength="100" minlength="3" required />
+                                    <label for="id_address">Endereço <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_number" name="number" placeholder=" " maxlength="100" required />
+                                    <label for="id_number">Número <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_complement" name="complement" placeholder=" " maxlength="100" />
+                                    <label for="id_complement">Complemento</label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_neighborhood" name="neighborhood" placeholder=" " maxlength="100" minlength="3" required />
+                                    <label for="id_neighborhood">Bairro <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_city" name="city" placeholder=" " maxlength="100" readonly required />
+                                    <label for="id_city">Cidade <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="id_state" name="state" required>
+                                        <option value="" selected>--</option>
+                                        <option value="AC">AC</option>
+                                        <option value="AL">AL</option>
+                                        <option value="AP">AP</option>
+                                        <option value="AM">AM</option>
+                                        <option value="BA">BA</option>
+                                        <option value="CE">CE</option>
+                                        <option value="DF">DF</option>
+                                        <option value="ES">ES</option>
+                                        <option value="GO">GO</option>
+                                        <option value="MA">MA</option>
+                                        <option value="MT">MT</option>
+                                        <option value="MS">MS</option>
+                                        <option value="MG">MG</option>
+                                        <option value="PA">PA</option>
+                                        <option value="PB">PB</option>
+                                        <option value="PR">PR</option>
+                                        <option value="PE">PE</option>
+                                        <option value="PI">PI</option>
+                                        <option value="RJ">RJ</option>
+                                        <option value="RN">RN</option>
+                                        <option value="RS">RS</option>
+                                        <option value="RO">RO</option>
+                                        <option value="RR">RR</option>
+                                        <option value="SC">SC</option>
+                                        <option value="SP">SP</option>
+                                        <option value="SE">SE</option>
+                                        <option value="TO">TO</option>
+                                    </select>
+                                    <label for="id_state">Estado <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_receiver" name="receiver" placeholder=" " maxlength="100" minlength="3" required />
+                                    <label for="id_receiver">Quem vai receber <span class="required-mark">*</span></label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input class="form-control" type="text" id="id_reference" name="reference" placeholder=" " maxlength="255" />
+                                    <label for="id_reference">Ponto de referência</label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="code_ibge" />
+                        <input type="hidden" name="city_id" />
+                    </section>
+                </div>
+
+                <div class="col-12">
+                    <section class="register-card">
+                        <div class="row g-4 align-items-center">
+                            <div class="col-12 col-md">
+                                <div class="form-check form-switch mb-3">
+                                    <input type="checkbox" role="switch" id="id_newsletter" name="newsletter" value="1" class="form-check-input" />
+                                    <label class="form-check-label" for="id_newsletter">Quero receber ofertas e novidades por e-mail</label>
+                                </div>
+                                <div class="form-check mb-0">
+                                    <input type="checkbox" id="id_gdpr_agreement" name="gdpr_agreement" value="1" class="form-check-input" required data-msg-required="É necessário aceitar os Termos de Uso." />
+                                    <label for="id_gdpr_agreement" class="form-check-label">
+                                        Li e aceito os <a href="/politica-de-privacidade/s" class="link-success fw-semibold" target="_blank">Termos de Uso</a> e o uso dos meus dados
+                                    </label>
+                                    <div class="invalid-feedback" data-cvz-error="1"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-auto text-md-end">
+                                <button type="submit" id="go-to-cadastrese" class="btn btn-success btn-lg btn-register">
+                                    <span class="spinner-border spinner-border-sm me-2 d-none" aria-hidden="true"></span>
+                                    <span class="btn-label">Criar minha conta</span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </form>
+
+        <div class="register-success d-none" id="registerSuccess">
+            <div class="register-card text-center mx-auto py-5" style="max-width: 520px;">
+                <div class="success-icon mb-3"><i class="icon-check"></i></div>
+                <h2 class="h4 fw-bold mb-2">Conta criada!</h2>
+                <p class="text-muted mb-4">
+                    Obrigado por se cadastrar. Ficamos felizes em ter você por aqui!<br />
+                    Crie uma senha para acessar sua conta com mais rapidez.
+                </p>
+                <div class="d-grid gap-2 col-sm-8 mx-auto">
+                    <a href="/" class="btn btn-success btn-lg btn-login rounded-3" data-step="create-password" data-email="" id="btn-create-password">Criar senha de acesso</a>
+                    <a href="{% url 'home' %}" class="btn btn-link link-secondary">Voltar para a loja</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extraFooter %}
+    <script src="{% static 'convertize-frontend/plugins/validate.js' %}" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var form = document.getElementById("form-cadastrese");
+            var submitBtn = document.getElementById("go-to-cadastrese");
+            var api = new Http({ baseURL: "" });
+
+            function setLoading(on) {
+                submitBtn.disabled = on;
+                submitBtn.querySelector(".spinner-border").classList.toggle("d-none", !on);
+                submitBtn.querySelector(".btn-label").textContent = on ? "Criando conta..." : "Criar minha conta";
+            }
+
+            function field(name) {
+                return form.querySelector("[name=" + name + "]");
+            }
+
+            // Validadores específicos do cadastro
+            CVZValidate.addMethod("fullname", function (value) {
+                return !value.trim() || value.trim().split(/\s+/).length > 1;
+            }, "Digite seu nome completo.");
+
+            CVZValidate.addMethod("birthdate", function (value) {
+                if (!value) return true;
+                var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+                if (!m) return false;
+                var d = new Date(+m[3], +m[2] - 1, +m[1]);
+                return d.getDate() === +m[1] && d.getMonth() === +m[2] - 1 && d < new Date() && +m[3] > 1900;
+            }, "Informe uma data válida (dd/mm/aaaa).");
+
+            CVZValidate.addMethod("cepfound", function (value, el) {
+                return el.getAttribute("data-not-found") !== "1";
+            }, "CEP não encontrado!");
+
+            var birthdate = field("birthdate");
+            if (birthdate) {
+                CVZValidate.mask(birthdate, function (value) {
+                    var d = value.replace(/\D/g, "").slice(0, 8);
+                    if (d.length > 4) return d.slice(0, 2) + "/" + d.slice(2, 4) + "/" + d.slice(4);
+                    if (d.length > 2) return d.slice(0, 2) + "/" + d.slice(2);
+                    return d;
+                });
+            }
+            CVZValidate.applyMasks(form);
+
+            var validator = cvzValidate(form, {
+                submitHandler: submit
+            });
+
+            // Pessoa jurídica: campos ficam desabilitados enquanto ocultos, assim
+            // não são validados nem enviados (o plugin olha el.disabled, que não
+            // enxerga <fieldset disabled>).
+            var cnpjBox = form.querySelector(".cnpj");
+            var togglePj = document.getElementById("toggle_pj");
+
+            function toggleCnpj(show) {
+                cnpjBox.classList.toggle("d-none", !show);
+                cnpjBox.querySelectorAll("input").forEach(function (el) {
+                    el.disabled = !show;
+                    if (!show) el.classList.remove("is-invalid", "is-valid");
+                });
+                cnpjBox.closest(".pj-toggle").classList.toggle("is-open", show);
+                if (show) {
+                    syncIsento();
+                    field("corporate_document").focus();
+                }
+            }
+            togglePj.addEventListener("change", function () { toggleCnpj(togglePj.checked); });
+
+            var isento = form.querySelector(".ie_isento");
+            function syncIsento() {
+                var ie = form.querySelector(".ie");
+                ie.disabled = isento.checked;
+                if (isento.checked) ie.value = "";
+            }
+            isento.addEventListener("change", syncIsento);
+            toggleCnpj(togglePj.checked);
+
+            // Destinatário: sugere o nome do cliente enquanto não for editado
+            var receiver = field("receiver");
+            field("name").addEventListener("input", function () {
+                if (receiver.dataset.edited) return;
+                receiver.value = this.value;
+                if (receiver.classList.contains("is-invalid")) validator.element(receiver);
+            });
+            receiver.addEventListener("input", function () {
+                receiver.dataset.edited = receiver.value ? "1" : "";
+            });
+
+            // CEP → endereço
+            var zipcode = field("zipcode");
+            var lastZipcode = null;
+
+            function setNeighborhood(options, value) {
+                var current = field("neighborhood");
+                var el;
+                if (options && options.length > 1) {
+                    el = document.createElement("select");
+                    el.className = "form-select";
+                    el.add(new Option("---------", ""));
+                    options.forEach(function (b) { el.add(new Option(b, b)); });
+                } else {
+                    el = document.createElement("input");
+                    el.type = "text";
+                    el.className = "form-control";
+                    el.placeholder = " ";
+                    el.maxLength = 100;
+                    el.value = value || "";
+                }
+                el.name = "neighborhood";
+                el.id = "id_neighborhood";
+                el.required = true;
+                current.replaceWith(el);
+                var feedback = el.parentNode.querySelector(".invalid-feedback");
+                if (feedback) feedback.textContent = "";
+            }
+
+            function unlockAddress() {
+                field("city").readOnly = false;
+                field("state").disabled = false;
+                var hidden = form.querySelector("input[type=hidden][name=state]");
+                if (hidden) hidden.remove();
+            }
+
+            function loadZipcode(value) {
+                field("code_ibge").value = "";
+                field("city_id").value = "";
+                zipcode.readOnly = true;
+                zipcode.removeAttribute("data-not-found");
+
+                api.get("/ws/zipcode/?zipcode=" + encodeURIComponent(value))
+                    .then(function (response) {
+                        var resp = response.data || {};
+                        if (!resp.success) throw response;
+
+                        field("code_ibge").value = resp.codigo_ibge || "";
+                        field("city_id").value = resp.localidade_id || "";
+                        field("address").value = resp.endereco || "";
+                        field("city").value = resp.cidade || "";
+                        field("city").readOnly = !!resp.cidade;
+
+                        var bairros = resp.bairros || [];
+                        setNeighborhood(bairros, bairros.length === 1 ? bairros[0] : "");
+
+                        var hidden = form.querySelector("input[type=hidden][name=state]");
+                        if (hidden) hidden.remove();
+                        var state = field("state");
+                        if (resp.uf) {
+                            // select desabilitado não é enviado; o hidden leva o valor
+                            state.value = resp.uf;
+                            state.disabled = true;
+                            hidden = document.createElement("input");
+                            hidden.type = "hidden";
+                            hidden.name = "state";
+                            hidden.value = resp.uf;
+                            state.parentNode.appendChild(hidden);
+                        } else {
+                            state.disabled = false;
+                        }
+
+                        ["zipcode", "address", "neighborhood", "city", "state"].forEach(function (name) {
+                            if (field(name).value) validator.element(field(name));
+                        });
+                        (field("address").value ? field("number") : field("address")).focus();
+                    })
+                    .catch(function () {
+                        field("city").value = "";
+                        setNeighborhood([], "");
+                        unlockAddress();
+                        zipcode.setAttribute("data-not-found", "1");
+                        validator.element(zipcode);
+                    })
+                    .finally(function () {
+                        zipcode.readOnly = false;
+                    });
+            }
+
+            zipcode.addEventListener("input", function () {
+                var digits = zipcode.value.replace(/\D/g, "");
+                if (digits.length === 8 && digits !== lastZipcode) {
+                    lastZipcode = digits;
+                    loadZipcode(zipcode.value);
+                } else if (digits.length < 8) {
+                    lastZipcode = null;
+                }
+            });
+            zipcode.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") e.preventDefault();
+            });
+
+            // E-mail/CPF já cadastrados
+            function identify(input, value, message) {
+                if (!value) return;
+                submitBtn.disabled = true;
+                api.post("/api/v1/public/customer/identify/", { email: value, update: true })
+                    .then(function (response) {
+                        if (response.data && response.data.is_register === false) {
+                            validator._showError(input, message);
+                        }
+                    })
+                    .catch(function (err) { console.log(err); })
+                    .finally(function () { submitBtn.disabled = false; });
+            }
+
+            field("email").addEventListener("change", function () {
+                if (validator.element(this)) identify(this, this.value.trim(), "E-mail já cadastrado.");
+            });
+            field("document").addEventListener("change", function () {
+                if (validator.element(this)) identify(this, this.value.replace(/\D/g, ""), "Documento já cadastrado.");
+            });
+
+            // Envio
+            function submit() {
+                var data = validator.serialize();
+                setLoading(true);
+
+                api.post("/api/v1/public/customer/", data, { headers: { Accept: "application/json" } })
+                    .then(function (response) {
+                        var messages = (response.data && response.data.messages) || [];
+                        var errors = messages.filter(function (m) { return m.level === "ERROR"; });
+                        if (errors.length) {
+                            toast.fromResponse(errors);
+                            return;
+                        }
+
+                        toast.success("Cadastro realizado com sucesso!");
+                        document.getElementById("btn-create-password").setAttribute("data-email", data.email);
+                        form.reset();
+                        form.classList.add("d-none");
+                        document.querySelector(".register-hero").classList.add("d-none");
+                        document.getElementById("registerSuccess").classList.remove("d-none");
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    })
+                    .catch(function (err) {
+                        var messages = err && err.data && err.data.messages;
+                        if (messages && messages.length) toast.fromResponse(messages);
+                        else toast.error("Erro ao realizar o cadastro!");
+                    })
+                    .finally(function () {
+                        setLoading(false);
+                    });
+            }
+        });
+    </script>
+{% endblock %}

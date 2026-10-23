@@ -1,117 +1,128 @@
 {% load i18n l10n thumbnail shop_tags user_agents %}
-{% with p.has_stock as has_stock %}
+{% with product.has_stock as has_stock %}
     {% localize off %}
-    {% payment_price p.price "pix" as pix_discount %}
         <div 
-            class="item-product{% if not has_stock %} not_stock{% endif %}" 
-            data-id="{{ p.id }}" 
-            data-sku="{{ p.get_sku_not_variation }}" 
+            class="item-product loading-product{% if not has_stock %} not-stock{% endif %}" 
+            data-product="{{ product.product_id }}" 
+            data-sku="{{ product.django_id }}" 
         >
-            <a href="{{ p.get_absolute_url }}" class="item-image">
-                {% if p.image %}
-                    <img data-src="{{ MEDIA_URL }}{{ p.image }}" src="{{ STATIC_URL }}img/blank.png" alt="{{ p.name }}" title="{{ p.name }}" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" class="img-lazy" />
-                {% else %}
-                    <img alt="" width="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first }}" height="{{ shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last }}" />
-                {% endif %}
-                {% if p.descont_percentage %}
-                    <span class="discount"><span>{{ p.descont_percentage|floatformat|cut:'-' }}%</span></span>
-                {% endif %}
-                {% if p.get_seals %}
-                    <span class="seals">
-                        {% for seal in p.get_seals %}
-                            {% if "{" not in seal %}
-                                {{ seal|safe }}
+            <div class="item-image position-relative">
+                <a href="{{ product.get_absolute_url }}">
+                    {% with width=shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|first height=shop_settings.SHOP_PRODUCT_THUMB_SMALL|split:'x'|last %}
+                        {% if product.image %}
+                            {% if forloop.counter <= 2 %}
+                                <img src="{{ MEDIA_URL }}{{ product.image }}" alt="{{ product.name }}" title="{{ product.name }}" width="{{ width }}" height="{{ height }}" fetchpriority="high" />
+                            {% else %}
+                                <img src="{{ MEDIA_URL }}{{ product.image }}" alt="{{ product.name }}" title="{{ product.name }}" width="{{ width }}" height="{{ height }}" loading="lazy" />
                             {% endif %}
-                        {% endfor %}
-                    </span>
-                {% endif %}
-            </a>
-            <div class="desc position-relative">
-                <div>
-                    <h2 class="title">
-                        <a href="{{ p.get_absolute_url }}">
-                            {{ p.name }}
-                        </a>
-                    </h2>
-                    <div class="box-prices">
-                        {% if not has_stock %}
-                            <p class="font-size-16 font-weight-bold">Avise-me</p>
-                        {% elif not p.available %}
-                            <p class="font-size-16 font-weight-bold">Avise-me</p>
-                        {% elif p.price %}
-                            <div class="prices">
-                                <div class="d-flex align-items-end">
-                                    {% if p.price < p.unit_price %}
-                                        <p class="unit-price mr-2">
-                                            <span>{{ p.unit_price|currency }}</span>
-                                        </p>
-                                    {% endif %}
-                                    <p class="sale-price">
-                                        <strong>{{ p.price|currency }}</strong>
-                                    </p>
-                                </div>
-                                <p class="card-installments">
-                                    <span class="parcel">em até <strong class="get_min_installments">{{ p.price|get_min_installments }}x</strong> de <strong class="get_card_price">{{ p.price|get_card_price|currency }}</strong> no cartão</span>
-                                </p>
-                            </div>
                         {% else %}
-                            <p class="font-size-16 font-weight-bold">Produto Indisponível</p>
+                            <span class="not-found"></span>
                         {% endif %}
-                    </div>
+                    {% endwith %}
+                </a>
+                {% if product.get_seals %}
+                    <span class="seals">{% for seal in product.get_seals %}{{ seal|safe }}{% endfor %}</span>
+                {% endif %}
+                <div class="widget-wishlist position-absolute top-0 end-0 fs-20" data-sku="{{ product.django_id }}"></div>
+            </div>
+            <div class="item-content">
+                {% if product.brand %}
+                    <div class="item-brand">{{ product.brand }}</div>
+                {% else %}
+                    <div class="item-brand py-2"></div>
+                {% endif %}
+                <h3 class="item-title">
+                    <a href="{{ product.get_absolute_url }}">
+                        {{ product.name }}
+                    </a>
+                </h3>
+                <div class="item-prices position-relative">
+                    {% if not has_stock %}
+                        <p class="font-size-14 my-4 text-secondary">Produto Indisponível</p>
+                    {% elif not product.available %}
+                        <p class="font-size-14 my-4 text-secondary">Produto Indisponível</p>
+                    {% elif product.price %}
+                        {% if product.price < product.unit_price %}
+                            <p class="unit-price">
+                                {{ product.unit_price|currency }}
+                            </p>
+                        {% endif %}
+                        <p class="sale-price money">
+                            {{ product.price|currency }}
+                        </p>
+                        {% if product.descont_percentage %}
+                            <div class="discount">
+                                {{ product.descont_percentage|floatformat|cut:'-' }}%
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <p class="font-size-14 my-4 text-secondary">Produto Indisponível</p>
+                    {% endif %}
                 </div>
-                {% if has_stock and p.available %}
-                    <form method="POST" action="{{ p.get_absolute_url }}" class="product-form">
-                        <div style="display:none;">
-                            <input type="hidden" value="{{ p.product_id }}" name="product"/>
-                            <input type="hidden" value="{{ p.price }}" name="price"/>
-                            <input type="hidden" value="{{ p.get_absolute_url|split:'/'|slice:'1:2'|first }}" name="slug">
-                        </div>
-                        {% regroup p.get_all_options|load_json by option_title as options %}
+                {% if has_stock and product.available %}
+                    <form method="POST" action="{{ product.get_absolute_url }}" class="product-form mt-3">
+                        <input type="hidden" value="{{ product.product_id }}" name="product"/>
+                        <input type="hidden" value="{{ product.price }}" name="price"/>
+                        <input type="hidden" value="{{ product.get_absolute_url|split:'/'|slice:'1:2'|first }}" name="slug">
+                        {% regroup product.get_all_options|load_json by option_title as options %}
                         {% if options %}
-                            <div class="variations">
+                            {# resumo para data-variations="picker" (ex.: "3 opções de cores") #}
+                            <p class="item-variations-summary">{% for option in options %}{% if option.list|length > 1 %}<span>{{ option.list|length }} opções de {{ option.grouper|lower }}</span>{% endif %}{% endfor %}</p>
+                            <div class="item-variations">
+                                <button type="button" class="item-variations-close" aria-label="Fechar opções">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+                                </button>
                                 {% for option in options %}
-                                    <div class="required form-group"{% if option.list|length <= 1 %} style="display:none"{% endif %}>
+                                    <div class="form-group mb-2"{% if option.list|length <= 1 %} style="display:none"{% endif %}>
+                                        <label class="form-label fw-bold w-100 mb-1 fs-12">{{ option.grouper }}</label>
                                         {% if product.grid.display == "select" %}
-                                            <select name="option_{{ option.list.0.option_id }}" class="form-control">
+                                            <select name="option_{{ option.list.0.option_id }}" class="form-control" required>
                                                 <option value="">{{ option.grouper|title }}</option>
-                                                {% for value in option.list %}
+                                                {% for value in option.list|dictsort:"option__value" %}
                                                     <option 
                                                         value="{{ value.option__value_id }}" 
-                                                        {% if not value.available %}disabled {% endif %}
-                                                        {% for o in p.get_options|load_json %}{% if o.value_id == value.option__value_id %}selected{% endif %}{% endfor %}
+                                                        {% for o in product.get_options|load_json %}{% if o.value_id == value.option__value_id %}selected{% endif %}{% endfor %}
                                                     >
                                                         {{ value.option__value }}
                                                     </option>
                                                 {% endfor %}
                                             </select>
                                         {% else %}
-                                            <label class="font-weight-bold font-size-14">
-                                                {{ option.grouper|title }}
-                                            </label>
-                                            <div>
-                                                {% for value in option.list %}
-                                                    <label class="value{% if not value.available %} disabled{% endif %}">
-                                                        <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" data-available="{{ value.available }}" data-title="{{ option.grouper|title }}" />
-                                                        <span>{{ value.option__value }}</span>
-                                                    </label>
-                                                {% endfor %}
-                                            </div>
+                                            {% with first=forloop.first %}
+                                                <div class="d-flex gap-2 flex-wrap values">
+                                                    {% for value in option.list %}
+                                                        {# a partir da 4ª: escondida em data-variations="inline" (vira o "+N") #}
+                                                        <label class="option-value{% if forloop.counter > 3 %} is-extra{% endif %}">
+                                                            <input type="radio" value="{{ value.option__value_id }}" name="option_{{ value.option_id }}" required data-title="{{ option.grouper|title }}" {% if first and value.option__value_id|slugify in product.options %} checked {% endif %} />
+                                                            <span>{{ value.option__value }}</span>
+                                                        </label>
+                                                    {% endfor %}
+                                                    {% if option.list|length > 3 %}
+                                                        <a class="option-more" href="{{ product.get_absolute_url }}" aria-label="Ver todas as opções de {{ option.grouper|lower }}">+{{ option.list|length|add:"-3" }}</a>
+                                                    {% endif %}
+                                                </div>
+                                            {% endwith %}
                                         {% endif %}
                                     </div>
                                 {% endfor %}
                             </div>
                         {% endif %}
-                        <div class="purchase    ">
-                            <label aria-label="Quantidade" class="m-0 mr-2">
-                                <input type="tel" value="1" name="quantity" />
-                            </label>
-                            {% if p.product_type == '3' %}
-                                <a href="{{ p.get_absolute_url }}" class="btn btn-checkout not-action" aria-label="Comprar">Comprar</a>
+                        <div class="item-purchase">
+                            {# spinner-remove-at-min: no carrinho, o "−" vira lixeira na quantidade 1 #}
+                            <div class="quantity m-0 spinner-remove-at-min" style="display:none;">
+                                <input type="number" value="1" name="quantity" class="spinner-input" min="1" step="1" />
+                            </div>
+                            {% if product.product_type == "3" %}
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-checkout d-flex align-items-center justify-content-center gap-2 not-action" aria-label="Comprar"><i class="icon-cart"></i> Comprar</a>
                             {% else %}
-                                <button type="button" class="btn btn-checkout" aria-label="Comprar">Comprar</button>
+                                <button type="button" class="btn btn-checkout d-flex align-items-center justify-content-center gap-2" aria-label="Adicionar {{ product.name }} ao carrinho"><i class="icon-cart"></i> <span class="label-add">Adicionar</span><span class="label-choose">Escolher</span></button>
                             {% endif %}
                         </div>
                     </form>
+                {% else %}
+                    <div class="product-form">
+                        <a href="{{ product.get_absolute_url }}" class="btn btn-checkout not-action">Visualizar</a>
+                    </div>
                 {% endif %}
             </div>
         </div>
